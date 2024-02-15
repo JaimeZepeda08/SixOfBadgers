@@ -1,19 +1,10 @@
-As a player, I want the cards to be randomized at the start of each game so that each game offers a unique and fair playing experience.
-
-As a player, I want to be able to create and join game sessions with my friends so that we can play Euchre together regardless of our physical locations.
-
-As a player, I want a navigation bar to easily access different sections of the app (e.g.game rul es) so that I can navigate through the app seamlessly.
-
-As a player, I want to see my own hand of cards displayed on the screen so that I can strategize and plan my moves effectively during the game.
-
-As a player, I want the gameplay to be turn-based so that each player gets a fair chance to make their moves and decisions during the game.
-
-As a player, I want to be notified when it's my turn to play a card so that I can stay engaged and actively participate in the game.
-
-As a player, I want the option to set a time limit for each turn so that the game progresses at a reasonable pace and doesn't get stalled by indecision.
-
-As a player, I want the game session to display relevant information such as the current score, the trump suit, and the players' names so that I can keep track of the game's progress.
-
-As a player, I want the option to chat with other players during the game session so that we can communicate and strategize together.
-
-As a player, I want the game session to end automatically when a team reaches the winning score so that the game concludes smoothly and the winning team is declared.
+1) As a player, I want the cards to be randomized at the start of each game so that each game offers a unique and fair playing experience.
+2) As a player, I want to be able to create and join game sessions with my friends so that we can play Euchre together regardless of our physical locations.
+3) As a player, I want a navigation bar to easily access different sections of the app (e.g.game rul es) so that I can navigate through the app seamlessly.
+4) As a player, I want to see my own hand of cards displayed on the screen so that I can strategize and plan my moves effectively during the game.
+5) As a player, I want the gameplay to be turn-based so that each player gets a fair chance to make their moves and decisions during the game.
+6) As a player, I want to be notified when it's my turn to play a card so that I can stay engaged and actively participate in the game.
+7) As a player, I want the option to set a time limit for each turn so that the game progresses at a reasonable pace and doesn't get stalled by indecision.
+8) As a player, I want the game session to display relevant information such as the current score, the trump suit, and the players' names so that I can keep track of the game's progress.
+9) As a player, I want the option to chat with other players during the game session so that we can communicate and strategize together.
+10) As a player, I want the game session to end automatically when a team reaches the winning score so that the game concludes smoothly and the winning team is declared.
