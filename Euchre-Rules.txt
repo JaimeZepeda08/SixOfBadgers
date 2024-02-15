@@ -1,0 +1,7 @@
+Sort out a standard deck of cards. Euchre is played with 9's, 10's, J's, Q's, K's, and A's (J=Jack, Q=Queen, K=King, and A=Ace).
+
+Dealer shuffles and deals clockwise to the left. FIve cards are dealt to each person, in groups of two then three (or three then two).
+
+Put the rest of the cards face down on table. Flip the top one over.
+
+
