@@ -4,4 +4,17 @@ Dealer shuffles and deals clockwise to the left. FIve cards are dealt to each pe
 
 Put the rest of the cards face down on table. Flip the top one over.
 
+The Trump Suit: The card flipped over determines the trump suit for the round. This suit holds a special power, outranking all others. Keep a keen eye on this suit, for it may sway the tide of the game.
+
+Bidding and Naming Trump: Starting with the player left of the dealer, each player has the chance to bid or pass. The bidding revolves around the ability to name the trump suit. If a player is confident in their hand, they may opt to declare a trump suit, elevating the stakes of the game.
+
+The Makers and the Defenders: The player who successfully bids the highest becomes the "maker" and must now achieve their declared number of tricks. The remaining players form the "defenders," tasked with preventing the maker from reaching their goal.
+
+The Order of Play: The player left of the dealer leads the first trick. Players must follow suit if possible. If they cannot, they may play any card. The highest card of the led suit or the highest trump card, if any, wins the trick.
+
+The Power of the Right Bower and Left Bower: In Euchre, the Jack of the trump suit, known as the Right Bower, and the Jack of the same color as the trump suit, known as the Left Bower, hold immense power. They rank above all other cards, often determining the outcome of a trick.
+
+Scoring: The game progresses through multiple rounds, each with its own maker and defenders. Points are awarded based on the number of tricks taken by the maker. If the maker fails to meet their declared goal, their opponents score instead.
+
+Rotation and Continuation: After each round, the dealer position rotates clockwise, and the game continues with new hands.
 
