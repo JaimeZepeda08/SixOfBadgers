@@ -1,0 +1,3 @@
+Frontend: Will use HTML, Tailwind, Javascript and React.js library.
+
+Backend: Java
