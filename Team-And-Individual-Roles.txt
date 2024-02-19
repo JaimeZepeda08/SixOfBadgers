@@ -1,0 +1,13 @@
+Sprint 2 Scrum Master: Eric
+Sprint 2 Product Owner: Casey
+
+Sprint 3 Scrum Master: Pranav
+Sprint 3 Product Owner: Jay
+
+(very) Initial Roles
+Eric: Database
+Kaldan: Backend
+Casey: Backend
+Jaime: Frontend
+Jay: Frontend
+Pranav: Frontend
