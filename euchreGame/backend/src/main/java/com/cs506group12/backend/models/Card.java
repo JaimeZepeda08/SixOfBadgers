@@ -1,4 +1,5 @@
-package euchreGame;
+package com.cs506group12.backend.models;
+
 /**
  * Card Class
  * 
@@ -24,9 +25,7 @@ public class Card {
     }
 
     public Rank getRank() {
-       return rank;
+        return rank;
     }
-    
 
-  
 }

@@ -1,6 +1,7 @@
-package euchreGame;
+package com.cs506group12.backend;
 
 import java.util.*;
+import com.cs506group12.backend.models.*;
 
 public class EuchreGame {
     private ArrayList<Card> deck;
@@ -11,8 +12,7 @@ public class EuchreGame {
         initializeDeck();
         shuffleDeck();
         dealCards();
-        cardsLeft = deck.size(); 
-        
+        cardsLeft = deck.size();
     }
 
     /**
@@ -53,7 +53,6 @@ public class EuchreGame {
         cardsLeft = deck.size() - 16;
     }
 
-
     /*
      * Getter method for playerHands
      */
@@ -68,7 +67,6 @@ public class EuchreGame {
         return cardsLeft;
     }
 
-    
     public static void main(String[] args) {
         EuchreGame game = new EuchreGame();
         List<Card>[] playerHands = game.getPlayerHands();
