@@ -21,7 +21,10 @@ The customer for this project is someone who wishes to play Euchre with their fr
 
 <!--This section lists the behavior that the users see. This information needs to be presented in a logical, organized fashion. It is most helpful if this section is organized in outline form: a bullet list of major topics (e.g., one for each kind of user, or each major piece of system functionality) each with some number of subtopics.-->
 
-
+1. Player should have a timer that they can see counting down.
+2. Player should be able to get help, with a page that tells them the rules
+3. Player should be able to play by themselves OR choose to play with someone else.
+4. Game should end automatically when the score is reached.
 ### Use Cases & User Stories
 
 <!--Use cases and user stories that support the user requirements in the previous section. The use cases should be based off user stories. Every major scenario should be represented by a use case, and every use case should say something not already illustrated by the other use cases. Diagrams (such as sequence charts) are encouraged. Ask the customer what are the most important use cases to implement by the deadline. You can have a total ordering, or mark use cases with “must have,” “useful,” or “optional.” For each use case you may list one or more concrete acceptance tests (concrete scenarios that the customer will try to see if the use case is implemented).-->
@@ -52,6 +55,8 @@ The customer for this project is someone who wishes to play Euchre with their fr
 
 <!--List here all of the external entities, other than users, on which your system will depend. For example, if your system inter-operates with sendmail, or if you will depend on Apache for the web server, or if you must target both Unix and Windows, list those requirements here. List also memory requirements, performance/speed requirements, data capacity requirements, if applicable.-->
 
+1. React will be used for frontend; React needs to be able to run on the computer
+
 
 ### Specification
 
@@ -62,6 +67,9 @@ The customer for this project is someone who wishes to play Euchre with their fr
 <!--Included below are some sample diagrams, including some example tech stack diagrams.-->
 
 <!--You can make headings at different levels by writing `# Heading` with the number of `#` corresponding to the heading level (e.g. `## h2`).-->
+
+##### Navbar
+![nav_bar](\card-game\Navbar_pictures\Screenshot_2024-02-26_151207.png)
 
 #### Technology Stack
 
