@@ -11,8 +11,8 @@ public class EuchreGame {
         initializeDeck();
         shuffleDeck();
         dealCards();
-        cardsLeft = deck.size(); 
-        
+        cardsLeft = deck.size();
+
     }
 
     /**
@@ -53,7 +53,6 @@ public class EuchreGame {
         cardsLeft = deck.size() - 16;
     }
 
-
     /*
      * Getter method for playerHands
      */
@@ -68,19 +67,4 @@ public class EuchreGame {
         return cardsLeft;
     }
 
-    
-    public static void main(String[] args) {
-        EuchreGame game = new EuchreGame();
-        List<Card>[] playerHands = game.getPlayerHands();
-
-        for (int i = 0; i < 4; i++) {
-            System.out.println("Player " + (i + 1) + "'s hand:");
-            for (Card card : playerHands[i]) {
-                System.out.println(card);
-            }
-            System.out.println();
-        }
-
-        System.out.println("Cards left in the deck: " + game.getCardsLeft());
-    }
 }
