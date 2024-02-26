@@ -13,6 +13,10 @@ public class EuchreGame {
         shuffleDeck();
         dealCards();
         cardsLeft = deck.size();
+<<<<<<< HEAD:euchreGame/src/euchreGame/EuchreGame.java
+
+=======
+>>>>>>> 51f249ce09b871b29df7b7a6d8a8f5049636cc69:euchreGame/backend/src/main/java/com/cs506group12/backend/EuchreGame.java
     }
 
     /**
@@ -67,18 +71,5 @@ public class EuchreGame {
         return cardsLeft;
     }
 
-    public static void main(String[] args) {
-        EuchreGame game = new EuchreGame();
-        List<Card>[] playerHands = game.getPlayerHands();
 
-        for (int i = 0; i < 4; i++) {
-            System.out.println("Player " + (i + 1) + "'s hand:");
-            for (Card card : playerHands[i]) {
-                System.out.println(card);
-            }
-            System.out.println();
-        }
-
-        System.out.println("Cards left in the deck: " + game.getCardsLeft());
     }
-}
