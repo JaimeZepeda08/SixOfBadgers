@@ -1,0 +1,30 @@
+Sort out a standard deck of cards. Euchre is played with 9's, 10's, J's, Q's, K's, and A's (J=Jack, Q=Queen, K=King, and A=Ace).
+
+Dealer shuffles and deals clockwise to the left. Five cards are dealt to each person, in groups of two then three (or three then two).
+
+Put the rest of the cards face down on table. Flip the top one over.
+
+The Trump Suit: The card flipped over determines the trump suit for the round. This suit holds a special power, outranking all others.
+
+Bidding and Naming Trump: Starting with the player left of the dealer, each player has the chance to accept the upturned card as the trump suit, or to pass. A player accepting the trump suit tells the dealer to "pick it up." The dealer, if ordered to pick it up, or selecting to pick it up on their turn, takes the face up card from the stack and places it in their hand. They then place one card from their hand face down on the stack. If no player opts to declare the face up card as trump, players go around again, having the opportunity to pass again or name any other suit as trump. If no player has named a suit by the time it is the dealer's second turn, the dealer must name a suit. This is called "sticking the dealer." 
+
+The Makers and the Defenders: The player who orders the trump becomes the "maker" and must now achieve their declared number of tricks. The remaining players form the "defenders," tasked with preventing the maker from reaching their goal. When a player decides the trump, they may elect to "go alone," in which case their partner sits out from all tricks played this hand. If the maker wins in this manner, they win extra points as detailed in the scoring section below.
+
+The Order of Play: The player left of the dealer leads the first trick. Players must follow suit if possible. If they cannot, they may play any card. The highest card of the led suit or the highest trump card, if any, wins the trick. The winner of a trick plays the first card for the following trick, until all cards have been played.
+
+The Power of the Right Bower and Left Bower: In Euchre, the Jack of the trump suit, known as the Right Bower, and the Jack of the same color as the trump suit, known as the Left Bower, are the highest ranking cards.
+
+Scoring: The game progresses through multiple rounds, each with its own maker and defenders. Points are awarded based on the number of tricks taken by the maker. If the maker fails to meet their declared goal, their opponents score instead.
+Points are scored as follows:
+Bidding partnership (makers) wins 3 or 4 tricks :       1
+Bidding partnership (makers) wins 5 tricks (march) :	2
+Bidder goes alone and wins 3 or 4 tricks :  	        1
+Bidder goes alone and wins 5 tricks (march) :       	4
+Defenders win 3 or more tricks (makers are euchred) :	2 
+
+When one team reaches a score of 10, they are declared the winners.
+
+Score is kept with the 6 and 4 cards of the same suit. The cards are initially placed facing eachother on the table. As points are scored, pips are uncovered from the cards. The number of pips showing is the team's score.
+
+Rotation and Continuation: After each round, the dealer position rotates clockwise, and the game continues with new hands.
+
