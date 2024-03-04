@@ -1,4 +1,4 @@
-package com.cs506group12.backend;
+
 
 import java.util.*;
 import com.cs506group12.backend.models.*;
@@ -7,6 +7,12 @@ public class EuchreGame {
     private ArrayList<Card> deck;
     private List<Card>[] playerHands;
     private int cardsLeft;
+    private ArrayList<Player> players;
+    private boolean areTurnsTimed;
+    private boolean threePlayers = false; // currently unimplemented
+    private Suit trump;
+    private int turn; // = starts at dealer+1%4
+    private int dealer; // position of dealer
 
     public EuchreGame() {
         initializeDeck();
@@ -37,6 +43,7 @@ public class EuchreGame {
     private void shuffleDeck() {
         Collections.shuffle(deck);
     }
+    
 
     /**
      * Deals out 4 cards to each person

@@ -2,6 +2,7 @@
 public class Timer implements Runnable{
 
 	private int seconds = 0;
+	
 	private int timeLeft = 0;
 	private boolean isTurn = true;
 	
