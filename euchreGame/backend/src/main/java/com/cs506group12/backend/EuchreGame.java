@@ -19,10 +19,6 @@ public class EuchreGame {
         shuffleDeck();
         dealCards();
         cardsLeft = deck.size();
-<<<<<<< HEAD:euchreGame/src/euchreGame/EuchreGame.java
-
-=======
->>>>>>> 51f249ce09b871b29df7b7a6d8a8f5049636cc69:euchreGame/backend/src/main/java/com/cs506group12/backend/EuchreGame.java
     }
 
     /**
@@ -78,5 +74,8 @@ public class EuchreGame {
         return cardsLeft;
     }
 
-
+    public static void main(String[] args) {
+    	
     }
+    
+   }

@@ -8,12 +8,12 @@ public class Player {
 	// maybe a team function - i wpuld prefer for teammates to be 0 and 1 in array but maybe no possible?
 	// do i need login functions?
 	
-	public void setHand(Arraylist<Card> hand) {
+	public void setHand(ArrayList<Card> hand) {
 		this.hand = hand;
 	}
 	
-	public ArrayList<Card> getHand(Arraylist<Card> hand) {
-		this.hand = hand;
+	public ArrayList<Card> getHand(ArrayList<Card> hand) {
+		return hand;
 	}
 	
 	public int getPoints() {
@@ -32,10 +32,11 @@ public class Player {
 	 */
 	public Card playAndRemoveCard(Card card) {
 		for (int i = 0; i < hand.size(); i++) {
-			if card.equals(hand.get(i)){
+			if (card.equals(hand.get(i))){
 				return hand.remove(i);
 			}
 		}
+		return null;
 	}
 	
 }
