@@ -47,6 +47,8 @@ The customer for this project is someone who wishes to play Euchre with their fr
 
 <!--Images can be included with `![alt_text](image_path)`-->
 
+A full breakdown can be found in the file: 
+
 ### Security Requirements
 
 <!--Discuss what security requirements are necessary and why. Are there privacy or confidentiality issues? Is your system vulnerable to denial-of-service attacks?-->
@@ -69,7 +71,7 @@ The customer for this project is someone who wishes to play Euchre with their fr
 <!--You can make headings at different levels by writing `# Heading` with the number of `#` corresponding to the heading level (e.g. `## h2`).-->
 
 ##### Navbar
-![nav_bar](\card-game\Navbar_pictures\Screenshot_2024-02-26_151207.png)
+![nav_bar](Navbar_pictures\Screenshot_2024-02-26_151207.png)
 
 #### Technology Stack
 
