@@ -29,16 +29,46 @@ The customer for this project is someone who wishes to play Euchre with their fr
 
 <!--Use cases and user stories that support the user requirements in the previous section. The use cases should be based off user stories. Every major scenario should be represented by a use case, and every use case should say something not already illustrated by the other use cases. Diagrams (such as sequence charts) are encouraged. Ask the customer what are the most important use cases to implement by the deadline. You can have a total ordering, or mark use cases with “must have,” “useful,” or “optional.” For each use case you may list one or more concrete acceptance tests (concrete scenarios that the customer will try to see if the use case is implemented).-->
 
-1. As a player, I want the cards to be randomized at the start of each game so that each game offers a unique and fair playing experience.
-2. As a player, I want to be able to create and join game sessions with my friends so that we can play Euchre together regardless of our physical locations.
-3. As a player, I want a navigation bar to easily access different sections of the app (e.g.game rul es) so that I can navigate through the app seamlessly.
-4. As a player, I want to see my own hand of cards displayed on the screen so that I can strategize and plan my moves effectively during the game.
-5. As a player, I want the gameplay to be turn-based so that each player gets a fair chance to make their moves and decisions during the game.
-6. As a player, I want to be notified when it's my turn to play a card so that I can stay engaged and actively participate in the game.
-7. As a player, I want the option to set a time limit for each turn so that the game progresses at a reasonable pace and doesn't get stalled by indecision.
-8. As a player, I want the game session to display relevant information such as the current score, the trump suit, and the players' names so that I can keep track of the game's progress.
-9. As a player, I want the option to chat with other players during the game session so that we can communicate and strategize together.
-10. As a player, I want the game session to end automatically when a team reaches the winning score so that the game concludes smoothly and the winning team is declared.
+* As a player, I want the cards to be randomized at the start of each game so that each game offers a unique and fair playing experience.
+* As a player, I want to be able to create and join game sessions with my friends so that we can play Euchre together regardless of our physical locations.
+* As a player, I want a navigation bar to easily access different sections of the app (e.g.game rul es) so that I can navigate through the app seamlessly.
+* As a player, I want to see my own hand of cards displayed on the screen so that I can strategize and plan my moves effectively during the game.
+* As a player, I want the gameplay to be turn-based so that each player gets a fair chance to make their moves and decisions during the game.
+* As a player, I want to be notified when it's my turn to play a card so that I can stay engaged and actively participate in the game.
+* As a player, I want the option to set a time limit for each turn so that the game progresses at a reasonable pace and doesn't get stalled by indecision.
+* As a player, I want the game session to display relevant information such as the current score, the trump suit, and the players' names so that I can keep track of the game's progress.
+* As a player, I want the option to chat with other players during the game session so that we can communicate and strategize together.
+* As a player, I want the game session to end automatically when a team reaches the winning score so that the game concludes smoothly and the winning team is declared.
+
+* As a player, I want the cards to be randomized at the start of each game so that each game offers a unique and fair playing experience.
+* As a player, I want a navigation bar to easily access different sections of the app (e.g. game rules) so that I can navigate through the app seamlessly.
+* As a player, I want to see my own hand of cards displayed on the screen so that I can strategize and plan my moves effectively during the game.
+* As a player, I want the option to set a time limit for each turn so that the game progresses at a reasonable pace and doesn't get stalled by indecision.
+* As a player, I want the cards to be randomized at the start of each game so that each game offers a unique and fair playing experience.
+* As a player, I want the gameplay to be turn-based so that each player gets a fair chance to make their moves and decisions during the game.
+* As a player, I want to be notified when it's my turn to play a card so that I can stay engaged and actively participate in the game.
+* As a player, I want the game session to display relevant information such as the current score, the trump suit, and the players' names so that I can keep track of the game's progress.
+* As a player, I want the option to chat with other players during the game session so that we can communicate and strategize together.
+* As a player, I want the game session to end automatically when a team reaches the winning score so that the game concludes smoothly and the winning team is declared.
+
+* As a player, my games should be saved for later
+* As a player, I want to be able to see the game data that is saved
+* As a player, I want to have a page that displays and shows all my saved and played games
+* As a user, I want to be able to use docker to play the game locally.
+* As a player, I want to have a page and interface that allows me to start a game
+* As a player, I should have the basic functionality logic to play (as text)
+* As a user I want to be able to choose to play against the computer or against other players
+* As a player, I want to be able to coordinate with my teamate.
+* As a player, I want a home page that can introduce me to the site and let me navigate to other parts of the site
+* As a player, I should be able to play the game with 4 people on one device
+* As a player, I want an about page for each game that explains the rules of the games and gives me information I may not know
+* As a player, I want to have a login page that would allow me to login to the site to have relevant data such as saved games
+* As a player, I want to see other players' cards (the back not front) around me
+
+* As a player, I want to ensure that that my games are shown by date played, and then sorted by time played.
+* As a player, I want the design of the cards game visuals to be clear and easy to understand
+
+
 ### User Interface Requirements
 
 <!--Describes any customer user interface requirements including graphical user interface requirements as well as data exchange format requirements. This also should include necessary reporting and other forms of human readable input and output. This should focus on how the feature or product and user interact to create the desired workflow. Describing your intended interface as “easy” or “intuitive” will get you nowhere unless it is accompanied by details.-->
@@ -53,11 +83,15 @@ A full breakdown can be found in the file:
 
 <!--Discuss what security requirements are necessary and why. Are there privacy or confidentiality issues? Is your system vulnerable to denial-of-service attacks?-->
 
+Our system will be hosted and played locally. There are no privacy or confidentiality issues. THe only identifying data would be the name of the players.
+
 ### System Requirements
 
 <!--List here all of the external entities, other than users, on which your system will depend. For example, if your system inter-operates with sendmail, or if you will depend on Apache for the web server, or if you must target both Unix and Windows, list those requirements here. List also memory requirements, performance/speed requirements, data capacity requirements, if applicable.-->
 
 1. React will be used for frontend; React needs to be able to run on the computer
+2. Java will run the backend
+3. MySQL will hold the database.
 
 
 ### Specification
@@ -73,9 +107,22 @@ A full breakdown can be found in the file:
 ##### Navbar
 ![nav_bar](Navbar_pictures\Screenshot_2024-02-26_151207.png)
 
-#### Technology Stack
+The navbar hold multiple buttons. Home will show the user the game creation screen. Rules will show the user what the rules for the game are. Help will give hints for euchre. Play will go to the game that is being played.
 
-Here are some sample technology stacks that you can use for inspiration:
+![saved_games](saved_games.png)
+
+This is the saved games screen. It will show the previous game, sorted by most recent first. It will have a game number, the day played, whether you won or loss, the game time, and the number of points won during the game.
+
+![homepage](Homepage.png)
+
+This is the homepage that would show up after clicking home on the navigation bar. It includes the main logo and a vertical version of the navigation bar.
+
+![game_Creation](game_creation.png)
+
+This is the game creation screen. It allows to pick the number of physical players playing.It also allows the user to set the number of seconds each turn will be allowed. It indicates the number of points needed to win, and the number of rounds played.
+
+## Technology Stack
+
 
 ```mermaid
 flowchart RL
@@ -95,41 +142,38 @@ A <--> B
 B <--> C
 ```
 
-#### Database
+## Database
 
 ```mermaid
 To Be Designed
 ```
 
-#### Class Diagram
+## Class Diagram
+
+#### Card
+Enumeration for the suits and the type of card
+
+## Flowchart
 
 ```mermaid
 To Be Designed
 ```
 
-#### Flowchart
+## Behavior
 
 ```mermaid
 To Be Designed
 ```
 
-#### Behavior
-
-```mermaid
-To Be Designed
-```
-
-#### Sequence Diagram
+## Sequence Diagram
 
 ```mermaid
 To Be Further Specified
 ```
 ![System Architecture Diagram](sys-architecture-diagram.png)
 
-### Standards & Conventions
+# Standards & Conventions
 
-<!--Here you can document your coding standards and conventions. This includes decisions about naming, style guides, etc.-->
-# Coding Standards
 
 This document outlines the standards we will use for our code, but is subject to change. 
 
