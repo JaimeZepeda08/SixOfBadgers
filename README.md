@@ -93,6 +93,10 @@ Our system will be hosted and played locally. There are no privacy or confidenti
 2. Java will run the backend
 3. MySQL will hold the database.
 
+#### System Architecture Diagram
+
+![system_map](sys-architecture-diagram.png)
+
 
 ### Specification
 
