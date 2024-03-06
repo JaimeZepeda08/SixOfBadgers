@@ -1,9 +1,11 @@
+package com.cs506group12.backend.models;
+
 import java.util.*;
 import com.cs506group12.backend.models.*;
 
 public class Player {
 	private ArrayList<Card> hand;
-	public String usernName;
+	public String userName;
 	private int points;
 	// maybe a team function - i wpuld prefer for teammates to be 0 and 1 in array but maybe no possible?
 	// do i need login functions?

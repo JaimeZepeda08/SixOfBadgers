@@ -1,3 +1,4 @@
+package com.cs506group12.backend.models;
 
 public class Timer implements Runnable{
 
