@@ -19,7 +19,7 @@ export default function TopNav() {
 
   return (
     // create horizontal navbar
-    <nav className="bg-red-500">
+    <nav className="bg-red-500  border border-black border-2">
         <ul className="flex">
             <Image
                 src="/6ofBadgers_red.png"
@@ -31,10 +31,10 @@ export default function TopNav() {
             {/* set of all links that will be highlighted when hovered over
             navlink will stay white when we are on that page */}
             {links.map((link, index) => (
-                <li key={index} className="mr-4 cursor-pointer">
+                <li key={index} className="mr-4">
                     <Link href={link.href}>
                         <span className={clsx(
-                            'block px-5 py-5 mt-7 text-2xl rounded hover:bg-gray-200 hover:text-gray-800 hover:border-transparent text-decoration-line: underline',
+                            'block px-5 py-5 mt-7 text-2xl rounded hover:bg-gray-200 hover:text-gray-800 hover:border-transparent text-decoration-line: underline cursor-pointer',
                             {
                             'text-white': pathname === link.href,
                             },
