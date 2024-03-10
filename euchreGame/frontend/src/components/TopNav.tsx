@@ -17,8 +17,6 @@ export default function TopNav() {
         { name: 'Stats', href: '/pages/stats'},
     ];
 
-    console.log(pathname)
-
   return (
     // create horizontal navbar
     <nav className="bg-red-500">
