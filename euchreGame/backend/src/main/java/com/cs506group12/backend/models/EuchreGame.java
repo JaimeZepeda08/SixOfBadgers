@@ -1,22 +1,23 @@
-package com.cs506group12.backend;
+package com.cs506group12.backend.models;
 
 import java.util.*;
-import com.cs506group12.backend.models.*;
 
 public class EuchreGame {
     private ArrayList<Card> deck;
     private List<Card>[] playerHands;
     private int cardsLeft;
+    private ArrayList<Player> players;
+    private boolean areTurnsTimed;
+    private boolean threePlayers = false; // currently unimplemented
+    private Suit trump;
+    private int turn; // = starts at dealer+1%4
+    private int dealer; // position of dealer
 
     public EuchreGame() {
         initializeDeck();
         shuffleDeck();
         dealCards();
         cardsLeft = deck.size();
-<<<<<<< HEAD:euchreGame/src/euchreGame/EuchreGame.java
-
-=======
->>>>>>> 51f249ce09b871b29df7b7a6d8a8f5049636cc69:euchreGame/backend/src/main/java/com/cs506group12/backend/EuchreGame.java
     }
 
     /**
@@ -37,6 +38,7 @@ public class EuchreGame {
     private void shuffleDeck() {
         Collections.shuffle(deck);
     }
+
 
     /**
      * Deals out 4 cards to each person
@@ -71,5 +73,8 @@ public class EuchreGame {
         return cardsLeft;
     }
 
+    public static void main(String[] args) {
 
     }
+
+   }

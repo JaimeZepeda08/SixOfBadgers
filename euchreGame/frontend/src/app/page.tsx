@@ -1,4 +1,4 @@
-import Image from "next/image";
+import {getHello} from "@/lib/userService";
 
 export default function Home() {
   return (

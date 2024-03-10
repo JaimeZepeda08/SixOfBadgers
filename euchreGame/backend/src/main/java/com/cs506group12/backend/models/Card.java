@@ -10,7 +10,7 @@ public class Card {
     private final Suit suit;
     private final Rank rank;
 
-    public Card(Suit suit, Rank rank) {
+    public Card(com.cs506group12.backend.models.Suit suit, Rank rank) {
         this.suit = suit;
         this.rank = rank;
     }

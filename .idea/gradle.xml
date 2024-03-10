@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/euchreGame/backend" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/euchreGame/backend" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/euchreGame/backend/src/main/cs506group12" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/euchreGame/backend/src/main/cs506group12" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

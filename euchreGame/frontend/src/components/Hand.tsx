@@ -1,7 +1,11 @@
 import React from "react";
 import Card from "./Card";
 
-const Hand = ({ cards }) => {
+interface Hand {
+  cards: Card[];
+}
+
+const Hand = ({ cards }: Hand) => {
   const spreadAngle = 5;
   const spreadOffset = ((cards.length - 1) * spreadAngle) / 2;
   const padding = 30;
