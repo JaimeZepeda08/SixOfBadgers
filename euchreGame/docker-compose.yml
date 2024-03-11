@@ -8,6 +8,8 @@ services:
       - "3000:3000"
     links:
       - backend
+    volumes:
+      - ./frontend:/app
   backend:
     build: ./backend
     container_name: backend
@@ -15,5 +17,3 @@ services:
       - "8080:8080"
     environment:
       - SPRING.PROFILES.ACTIVE=default
-
-
