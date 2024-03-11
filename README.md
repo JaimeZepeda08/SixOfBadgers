@@ -156,11 +156,36 @@ To Be Designed
 
 #### Card
 Enumeration for the suits and the type of card
+Card and Enumeration TSX FIlesf for the frontend
+React for the frontend.
 
 ## Flowchart
 
 ```mermaid
-To Be Designed
+flowchart RL
+
+subgraph "Start Game"
+    A(Choose Settings)
+end
+
+subgraph "Choose Settings"
+    B[Help Page]
+    A --(If help needed)--> B
+    B --(After help)--> A
+    A --(If settings chosen)--> "Gameplay"
+end
+
+subgraph "Gameplay"
+    C(Gameplay)
+end
+
+subgraph "Gameplay ends"
+    D(Gameplay ends)
+end
+
+A --> B
+B --> C
+C --> D
 ```
 
 ## Behavior
