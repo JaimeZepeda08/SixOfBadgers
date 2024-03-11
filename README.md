@@ -30,43 +30,52 @@ The customer for this project is someone who wishes to play Euchre with their fr
 <!--Use cases and user stories that support the user requirements in the previous section. The use cases should be based off user stories. Every major scenario should be represented by a use case, and every use case should say something not already illustrated by the other use cases. Diagrams (such as sequence charts) are encouraged. Ask the customer what are the most important use cases to implement by the deadline. You can have a total ordering, or mark use cases with “must have,” “useful,” or “optional.” For each use case you may list one or more concrete acceptance tests (concrete scenarios that the customer will try to see if the use case is implemented).-->
 
 * As a player, I want the cards to be randomized at the start of each game so that each game offers a unique and fair playing experience.
-* As a player, I want to be able to create and join game sessions with my friends so that we can play Euchre together regardless of our physical locations.
+    * I should be able to see my four cards, and not be able to see any other cards
+    * Test: There should be 4 cards in the players hand. Furthermore, there should be 20 other cards leftover with no duplicates.
 * As a player, I want a navigation bar to easily access different sections of the app (e.g.game rul es) so that I can navigate through the app seamlessly.
+    * I should have a navigation bar that functions
+    * Test: I should see a navigation bar on all portions of the screen, and I should be able to use it.
 * As a player, I want to see my own hand of cards displayed on the screen so that I can strategize and plan my moves effectively during the game.
+    * Test: I should be able to see the cards
 * As a player, I want the gameplay to be turn-based so that each player gets a fair chance to make their moves and decisions during the game.
-* As a player, I want to be notified when it's my turn to play a card so that I can stay engaged and actively participate in the game.
-* As a player, I want the option to set a time limit for each turn so that the game progresses at a reasonable pace and doesn't get stalled by indecision.
+    * Test: there should be a timer that runs based on the input of the user (which varies). This is by design.
 * As a player, I want the game session to display relevant information such as the current score, the trump suit, and the players' names so that I can keep track of the game's progress.
-* As a player, I want the option to chat with other players during the game session so that we can communicate and strategize together.
-* As a player, I want the game session to end automatically when a team reaches the winning score so that the game concludes smoothly and the winning team is declared.
+    * Test: this should be visually displayed and updated with each play.
 
-* As a player, I want the cards to be randomized at the start of each game so that each game offers a unique and fair playing experience.
-* As a player, I want a navigation bar to easily access different sections of the app (e.g. game rules) so that I can navigate through the app seamlessly.
-* As a player, I want to see my own hand of cards displayed on the screen so that I can strategize and plan my moves effectively during the game.
-* As a player, I want the option to set a time limit for each turn so that the game progresses at a reasonable pace and doesn't get stalled by indecision.
-* As a player, I want the cards to be randomized at the start of each game so that each game offers a unique and fair playing experience.
-* As a player, I want the gameplay to be turn-based so that each player gets a fair chance to make their moves and decisions during the game.
-* As a player, I want to be notified when it's my turn to play a card so that I can stay engaged and actively participate in the game.
-* As a player, I want the game session to display relevant information such as the current score, the trump suit, and the players' names so that I can keep track of the game's progress.
-* As a player, I want the option to chat with other players during the game session so that we can communicate and strategize together.
 * As a player, I want the game session to end automatically when a team reaches the winning score so that the game concludes smoothly and the winning team is declared.
+    * Test: this should work for multiple scores. This should also be automatic.
 
 * As a player, my games should be saved for later
+    * Test: On the frontend this should be displayed. For the backend, we should be able to create a game dummy, and pull the relavant information, having it work.
 * As a player, I want to be able to see the game data that is saved
+    * Test: I should be able to save an incomplete game.
 * As a player, I want to have a page that displays and shows all my saved and played games
+    * Test: Frontend should call for the games to be displayed. It shall be displayed from newest to oldest.
 * As a user, I want to be able to use docker to play the game locally.
+    * Test: calling one docker command will cause the game to start running seamlessly, with integration from the frontend, backend, and database.
 * As a player, I want to have a page and interface that allows me to start a game
-* As a player, I should have the basic functionality logic to play (as text)
+    * Test: the frontend shall display a screen that allows the user to play a game, get the rules, or get help.
+* As a player, I should have the basic functionality logic to play
+    * Test: Overall function of the game works and runs correclty.
 * As a user I want to be able to choose to play against the computer or against other players
-* As a player, I want to be able to coordinate with my teamate.
-* As a player, I want a home page that can introduce me to the site and let me navigate to other parts of the site
-* As a player, I should be able to play the game with 4 people on one device
-* As a player, I want an about page for each game that explains the rules of the games and gives me information I may not know
-* As a player, I want to have a login page that would allow me to login to the site to have relevant data such as saved games
-* As a player, I want to see other players' cards (the back not front) around me
+    * Test: Frontend; there is an option for the number of players.
+    * Test: Backend: There will be 4 game options. For each, a game runs correctly based on the number of human players inputted.
 
-* As a player, I want to ensure that that my games are shown by date played, and then sorted by time played.
+* As a player, I want a home page that can introduce me to the site and let me navigate to other parts of the site
+    * Test: the frontend will display a homepage.
+* As a player, I should be able to play the game with up to 4 people on one device
+    * Test: Frontend; there is an option for the number of players.
+    * Test: Backend: There will be 4 game options. For each, a game runs correctly based on the number of human players inputted.
+* As a player, I want an about page for each game that explains the rules of the games and gives me information I may not know
+    * Test: There will be a displayed written rules under the Help Tab.
+* As a player, I want to see other players' cards (the back not front) around me
+    * Test: there will be red graphics on the gameplay page.
+
+* As a player, I want to ensure that that my games are shown by date played, and then sorted by date.
+    *  Test: Frontend: Verify that the games are displayed in the order of date played on the user interface.
+    * Test: Backend: Confirm that the games are sorted correctly by date played in the backend database.
 * As a player, I want the design of the cards game visuals to be clear and easy to understand
+    *  Test: the cards will display color, suit, and number.
 
 
 ### User Interface Requirements
