@@ -92,6 +92,7 @@ Our system will be hosted and played locally. There are no privacy or confidenti
 1. React will be used for frontend; React needs to be able to run on the computer
 2. Java will run the backend
 3. MySQL will hold the database.
+4. Docker is needed to run the image
 
 #### System Architecture Diagram
 
@@ -125,7 +126,7 @@ This is the homepage that would show up after clicking home on the navigation ba
 
 This is the game creation screen. It allows to pick the number of physical players playing.It also allows the user to set the number of seconds each turn will be allowed. It indicates the number of points needed to win, and the number of rounds played.
 
-## Technology Stack
+#### Technology Stack
 
 
 ```mermaid
@@ -146,20 +147,19 @@ A <--> B
 B <--> C
 ```
 
-## Database
+#### Database
 
 ```mermaid
 To Be Designed
 ```
 
-## Class Diagram
 
-#### Card
+##### Card Representation
 Enumeration for the suits and the type of card
 Card and Enumeration TSX FIlesf for the frontend
 React for the frontend.
 
-## Flowchart
+#### Flowchart
 
 ```mermaid
 flowchart RL
@@ -183,20 +183,10 @@ B --> C
 C --> D
 ```
 
-## Behavior
-
-```mermaid
-To Be Designed
-```
-
-## Sequence Diagram
-
-```mermaid
-To Be Further Specified
-```
+#### System Architecture Diagram
 ![System Architecture Diagram](sys-architecture-diagram.png)
 
-# Standards & Conventions
+# Coding Standards & Conventions
 
 
 This document outlines the standards we will use for our code, but is subject to change. 
