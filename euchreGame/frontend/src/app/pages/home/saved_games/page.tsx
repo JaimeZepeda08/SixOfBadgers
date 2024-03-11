@@ -44,21 +44,21 @@ export default function Page() {
       
     return (
         // creates a grid of saved games
-        <div className="bg-red-500 h-screen">
-        <div className="bg-white text-black py-2 px-4 font-bold">
+        <div className="bg-red-500 h-screen border-2 border-black mt-2">
+          <div className="bg-white text-black py-2 px-4 font-bold">
           {/* header for all the data */}
-          <div className="grid grid-cols-6">
-            <div>Game #</div>
-            <div>Date</div>
-            <div>W/L</div>
-            <div>Game Time</div>
-            <div>Points</div>
-            <div><FaDatabase /></div>
-          </div>
+            <div className="grid grid-cols-6">
+              <div className="border-r border-black pr-4">Game #</div>
+              <div className="border-r border-black pr-4">Date</div>
+              <div className="border-r border-black pr-4">W/L</div>
+              <div className="border-r border-black pr-4">Game Time</div>
+              <div className="border-r border-black pr-4">Points</div>
+              <div ><FaDatabase /></div>
+            </div>
         </div>
         {/* map all data out, a game for every row and a button to access more data later on */}
         {games.map((game, index) => (
-          <div key={index} className="border-t border-black bg-red-300 text-black py-2 px-4">
+          <div key={index} className="border-t border-2 border-black bg-red-300 text-black py-2 px-4">
             <div className="grid grid-cols-6">
               <div>{game.gameNumber}</div>
               <div>{game.date}</div>
