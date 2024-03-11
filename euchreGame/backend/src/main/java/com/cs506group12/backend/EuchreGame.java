@@ -7,24 +7,34 @@ public class EuchreGame {
     private ArrayList<Card> deck;
     private List<Card>[] playerHands;
     private int cardsLeft;
+    
     private ArrayList<Player> players;
     private boolean areTurnsTimed;
     private boolean threePlayers = false; // currently unimplemented
-    private Suit trump;
+    private Suit trump; // move to Turn
     private int turn; // = starts at dealer+1%4
     private int dealer; // position of dealer
+	private int teamOneScore; // do turns until one of the team scores is over threshhold
+    private int teamTwoScore;
+	private int pointsThreshold = 10;
+    private Card faceUpCard;
 
     public EuchreGame() {
         initializeDeck();
         shuffleDeck();
         dealCards();
         cardsLeft = deck.size();
+        while (teamOneScore > pointsThreshold && teamTwoScore > pointsThreshold) {
+        	Turn turn = new Turn(players, areTurnsTimed, dealer);
+        	dealer = (dealer+1)%4;
+        	// need to reassign cards
+        }
     }
 
     /**
      * Initializes the original deck of 24 cards
      */
-    private void initializeDeck() {
+    private static void initializeDeck() {
         deck = new ArrayList<>();
         for (Suit suit : Suit.values()) {
             for (Rank rank : Rank.values()) {
@@ -56,8 +66,15 @@ public class EuchreGame {
                 playerHands[j].add(iterator.next());
             }
         }
+        
+        faceUpCard = iterator.next(); // sets face up card to first card left in deck (after deal)
 
         cardsLeft = deck.size() - 16;
+        
+        // sets it in players object.
+        for (int i = 0; i < players.size(); i++) {
+            players.get(i).setHand((ArrayList<Card>) playerHands[i]);
+        }
     }
 
     /*
@@ -73,9 +90,37 @@ public class EuchreGame {
     public int getCardsLeft() {
         return cardsLeft;
     }
-
-    public static void main(String[] args) {
-    	
+    /*
+     * Getter method for face up card
+     */
+    public Card getFaceUpCard() {
+    	return faceUpCard;
     }
+    public int getTeamOneScore() {
+		return teamOneScore;
+	}
+
+	public void setTeamOneScore(int teamOneScore) {
+		this.teamOneScore = teamOneScore;
+	}
+
+	public int getTeamTwoScore() {
+		return teamTwoScore;
+	}
+
+	public void setTeamTwoScore(int teamTwoScore) {
+		this.teamTwoScore = teamTwoScore;
+	}
+    public int getPointsThreshold() {
+		return pointsThreshold;
+	}
+
+	public void setPointsThreshold(int pointsThreshold) {
+		this.pointsThreshold = pointsThreshold;
+	}
+
+
+	
+
     
    }
