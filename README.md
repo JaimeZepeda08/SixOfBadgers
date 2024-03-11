@@ -163,20 +163,15 @@ React for the frontend.
 
 ```mermaid
 flowchart RL
-
 subgraph "Start Game"
     A(Choose Settings)
 end
 
 subgraph "Choose Settings"
-    B[Help Page]
+    B(Help Page)
     A --(If help needed)--> B
     B --(After help)--> A
-    A --(If settings chosen)--> "Gameplay"
-end
-
-subgraph "Gameplay"
-    C(Gameplay)
+    A --(If settings chosen)--> C
 end
 
 subgraph "Gameplay ends"
