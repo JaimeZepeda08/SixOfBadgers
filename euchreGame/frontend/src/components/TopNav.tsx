@@ -11,10 +11,9 @@ export default function TopNav() {
 
   const links = [
     { name: "Home", href: "/pages/home" },
-    { name: "Rules", href: "/pages/rules" },
     { name: "Play", href: "/pages/play" },
-    { name: "About", href: "/pages/about" },
     { name: "Stats", href: "/pages/stats" },
+    { name: "Rules", href: "/pages/rules" },
   ];
 
   return (
