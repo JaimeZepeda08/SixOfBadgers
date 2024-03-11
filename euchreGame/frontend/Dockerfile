@@ -5,4 +5,4 @@ COPY package-lock.json ./
 WORKDIR /app
 RUN npm i 
 EXPOSE 3000
-CMD ["npm", "run", "dev"]
+ENTRYPOINT [ "npm", "run", "dev" ]

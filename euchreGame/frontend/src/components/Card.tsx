@@ -3,7 +3,26 @@ interface Card {
   value: string;
 }
 
+/**
+ * Card Component
+ *
+ * Renders a visual representation of a playing card. This component is designed to display both the suit and value of a card.
+ * It also includes styling for different card suits (hearts, diamonds, clubs, spades) and a special case for an "opponent's card",
+ * which is not shown to the player (represented by a suit and value of "?").
+ *
+ * @param {object} Card The component props
+ * @param {string} Card.suit The suit of the card. Expected values: "hearts", "diamonds", "clubs", "spades", or "?" for an opponent's hidden card.
+ * @param {string} Card.value The value of the card. Can be "A", "2" through "10", "J", "Q", "K", or "?" for an opponent's hidden card.
+ * @returns HTML representing a card
+ */
 const Card = ({ suit, value }: Card) => {
+  // opponent card - denoted by ?, and should not shown
+  if (suit === "?" && value === "?") {
+    return (
+      <div className="bg-red-900 border border-black rounded-lg h-32 w-20 shadow-sm transform transition-transform hover:scale-110 hover:shadow-2xl hover:-translate-y-3"></div>
+    );
+  }
+
   let cardColor = "";
   if (suit === "hearts" || suit === "diamonds") {
     cardColor = "red";

@@ -1,17 +1,16 @@
 version: "3.8"
 services:
   frontend:
-    image: "frontend:latest"
+    build: ./frontend
+    restart: unless-stopped
     container_name: frontend
-#    build: ./frontend
     ports:
       - "3000:3000"
     links:
       - backend
   backend:
-    image: "backend:latest"
+    build: ./backend
     container_name: backend
-#    build: ./backend
     ports:
       - "8080:8080"
     environment:
