@@ -77,7 +77,8 @@ The customer for this project is someone who wishes to play Euchre with their fr
 
 <!--Images can be included with `![alt_text](image_path)`-->
 
-A full breakdown can be found in the file: 
+GAMEPLAY
+![gameplay](Gameplay.JPEG)
 
 ### Security Requirements
 
