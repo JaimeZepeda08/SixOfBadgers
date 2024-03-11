@@ -85,9 +85,18 @@ The customer for this project is someone who wishes to play Euchre with their fr
 <!--NOTE: Please include illustrations or screenshots of what your user interface would look like -- even if they’re rough -- and interleave it with your description.-->
 
 <!--Images can be included with `![alt_text](image_path)`-->
-
+## Actual Game Images
 GAMEPLAY
 ![gameplay](Gameplay.JPEG)
+
+GAME SETUP
+![game_setup](game.png)
+
+STATS
+![stats](stats.png)
+
+RULES
+![rules](rulespage.png)
 
 ### Security Requirements
 
