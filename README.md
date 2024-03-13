@@ -169,7 +169,30 @@ B <--> C
 #### Database
 
 ```mermaid
-To Be Designed
+---
+title: Initial database schema design
+---
+erDiagram
+Games ||--o{ Users : "references"
+Users {
+int UserUID PK
+string UserName
+varbinary(512) PasswordHash
+datetime AccountCreation
+datetime LastLogin
+varchar(512) Settings
+}
+Games {
+int GameUID PK
+int player1 FK
+int player2 FK
+int player3 FK
+int player4 FK
+datetime GameStartTime
+datetime GameEndTime
+int Team1Score
+int Team2Score
+}
 ```
 
 
