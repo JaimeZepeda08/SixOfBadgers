@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    links:
+      - backend
+    volumes:
+      - ./frontend:/app
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING.PROFILES.ACTIVE=default

@@ -1,7 +1,22 @@
 import React from "react";
 import Card from "./Card";
 
-const Hand = ({ cards }) => {
+interface Hand {
+  cards: Card[];
+}
+
+/**
+ * Hand Component
+ *
+ * Renders a visual representation of a hand of cards. This component is designed to display a sequence of player cards
+ * in a fan-like spread. It dynamically adjusts the layout based on the number of cards, making sure that the hand is visually
+ * appealing and that individual cards are distinguishable and selectable.
+ *
+ * @param {object} Hand The component's props
+ * @param {Card[]} cards An array of cards
+ * @returns HTML representation of a hand of cards
+ */
+const Hand = ({ cards }: Hand) => {
   const spreadAngle = 5;
   const spreadOffset = ((cards.length - 1) * spreadAngle) / 2;
   const padding = 30;

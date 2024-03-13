@@ -1,7 +1,6 @@
-
+package com.cs506group12.backend.models;
 
 import java.util.*;
-import com.cs506group12.backend.models.*;
 
 public class EuchreGame {
     private ArrayList<Card> deck;
@@ -49,7 +48,7 @@ public class EuchreGame {
     private void shuffleDeck() {
         Collections.shuffle(deck);
     }
-    
+
 
     /**
      * Deals out 4 cards to each person
@@ -121,6 +120,4 @@ public class EuchreGame {
 
 
 	
-
-    
    }
