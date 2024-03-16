@@ -1,8 +1,18 @@
+# node base image
 FROM node:18-alpine
+
+# copy all files to a docker directory at /app
 COPY . /app
+
+# copy necessary node setup files
 COPY package.json ./
 COPY package-lock.json ./
+
+# change working directory
 WORKDIR /app
+
+# install dependencies 
 RUN npm i 
-EXPOSE 3000
+
 ENTRYPOINT [ "npm", "run", "dev" ]
+EXPOSE 3000
