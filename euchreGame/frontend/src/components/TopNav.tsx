@@ -18,7 +18,7 @@ export default function TopNav() {
 
   return (
     // create horizontal navbar
-    <div className="bg-red-500  border border-black">
+    <nav className="bg-red-500  border border-black">
       <ul className="flex">
         <Image
           src="/6ofBadgers_red.png"
@@ -46,6 +46,6 @@ export default function TopNav() {
           </li>
         ))}
       </ul>
-    </div>
+    </nav>
   );
 }
