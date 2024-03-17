@@ -6,10 +6,10 @@ RUN apt-get update && \
     apt-get install -y openjdk-17-jdk && \
     apt-get clean
 
-# copy all of the files in backend to a docker directory /app
+# copy all of the files in backend to a docker directory /api
 COPY . /api
 
-# change docker working directory to /app
+# change docker working directory to /api
 WORKDIR /api
 
 # build gradle app with gradlew (gradle wrapper)
