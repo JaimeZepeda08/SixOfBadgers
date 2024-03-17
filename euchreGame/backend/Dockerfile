@@ -1,12 +1,16 @@
-FROM openjdk:17
-# copy xargs - file used by gradle
-COPY xargs /usr/bin/
+# install ubuntu base image
+FROM ubuntu:latest
+
+# Install necessary dependencies
+RUN apt-get update && \
+    apt-get install -y openjdk-17-jdk && \
+    apt-get clean
 
 # copy all of the files in backend to a docker directory /app
-COPY . /app
+COPY . /api
 
 # change docker working directory to /app
-WORKDIR /app
+WORKDIR /api
 
 # build gradle app with gradlew (gradle wrapper)
 RUN ./gradlew build
