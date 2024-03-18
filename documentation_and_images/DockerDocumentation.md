@@ -203,9 +203,11 @@ Use the following command to run the entire app:
 
 ### Stop the app
 
-Use the following command to stop the containers. This will also overide the self-healing policy specified in `docker-compose.yml`.
+Use the following command to stop the containers. This will also override the self-healing policy specified in `docker-compose.yml`.
 
 `docker compose down`
+
+- use `-v` to remove volumes.
 
 ### Common Problems
 

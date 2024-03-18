@@ -19,8 +19,15 @@ const Card = ({ suit, value }: Card) => {
   // opponent card - denoted by ?, and should not shown
   if (suit === "?" && value === "?") {
     return (
+<<<<<<< HEAD
       <div className="bg-red-900 border border-black rounded-lg h-32 w-20 shadow-sm transform transition-transform hover:scale-110 hover:shadow-2xl hover:-translate-y-3"></div>
       // <div className="bg-red-900 border border-black rounded-lg h-32 w-20"></div>
+=======
+      <img
+        src="/card_back.png"
+        className="bg-red-900 border border-black rounded-lg h-[7.5rem] w-20 shadow-sm transform transition-transform hover:scale-110 hover:shadow-2xl hover:-translate-y-3"
+      />
+>>>>>>> 5978861334baae255e0531260d65883f14708fca
     );
   }
 
@@ -32,8 +39,12 @@ const Card = ({ suit, value }: Card) => {
   }
 
   return (
+<<<<<<< HEAD
     <div className="bg-slate-50 border border-black rounded-lg h-32 w-20 shadow-sm transform transition-transform hover:scale-110 hover:shadow-2xl hover:-translate-y-3">
     {/* // <div className="bg-slate-50 border border-black rounded-lg h-32 w-20 "> */}
+=======
+    <div className="bg-slate-50 border border-black rounded-lg h-[7.5rem] w-20 shadow-sm transform transition-transform hover:scale-110 hover:shadow-2xl hover:-translate-y-3">
+>>>>>>> 5978861334baae255e0531260d65883f14708fca
       <div
         className={`absolute top-0 left-0 text-lg font-bold mt ml-1 text-${cardColor}-600`}
       >
