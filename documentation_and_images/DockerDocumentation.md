@@ -122,8 +122,12 @@ FROM ubuntu:latest
 RUN apt-get update && \
     apt-get install -y openjdk-17-jdk && \
     apt-get clean
-COPY . /api
 WORKDIR /api
+COPY gradlew .
+COPY gradle ./gradle
+COPY build.gradle .
+COPY settings.gradle .
+COPY src ./src
 RUN ./gradlew build
 ENTRYPOINT ["java", "-jar", "build/libs/backend-0.0.1.jar"]
 EXPOSE 8080
@@ -211,6 +215,8 @@ Use the following command to stop the containers. This will also override the se
 
 ### Common Problems
 
+#### Gradle
+
 ```
 ------
 [backend 5/5] RUN ./gradlew build:
@@ -218,4 +224,22 @@ Use the following command to stop the containers. This will also override the se
 ------
 ```
 
-> Fix: Unknown
+#### Temporary Fix:
+
+1. Run `./gradlew build` on the command line before running `docker compose up`. Make sure you do it from the `/backend` directory
+2. Replace `backend/Dockerfile` with the code below
+
+```
+FROM ubuntu:latest
+RUN apt-get update && \
+    apt-get install -y openjdk-17-jdk && \
+    apt-get clean
+WORKDIR /api
+COPY . .
+ENTRYPOINT ["java", "-jar", "build/libs/backend-0.0.1.jar"]
+EXPOSE 8080
+```
+
+3. Run Docker Compose as explained above.
+
+> **Make sure you DO NOT add or commit changes to the Dockerfile**
