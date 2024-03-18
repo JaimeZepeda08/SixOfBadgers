@@ -9,6 +9,7 @@ import com.cs506group12.backend.models.Player;
 
 import net.bytebuddy.description.type.TypeDescription.Generic.Visitor.TypeErasing;
 
+@SuppressWarnings("unused")
 public class testPlayer {
 
 	public void testName() {
