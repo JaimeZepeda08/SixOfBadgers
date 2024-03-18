@@ -12,8 +12,9 @@ COPY . /api
 # change docker working directory to /api
 WORKDIR /api
 
+RUN chmod +x gradlewri
 # build gradle app with gradlew (gradle wrapper)
-RUN ./gradlew build
+RUN ./gradlew
 
 ENTRYPOINT ["java", "-jar", "build/libs/backend-0.0.1.jar"]
 EXPOSE 8080
