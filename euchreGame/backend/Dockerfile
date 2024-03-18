@@ -1,18 +1,16 @@
-# install ubuntu base image
 FROM ubuntu:latest
 
-# Install necessary dependencies
 RUN apt-get update && \
     apt-get install -y openjdk-17-jdk && \
     apt-get clean
 
-# copy all of the files in backend to a docker directory /api
-COPY . /api
+WORKDIR /app
+COPY gradlew .
+COPY gradle ./gradle
+COPY build.gradle .
+COPY settings.gradle .
+COPY src ./src
 
-# change docker working directory to /api
-WORKDIR /api
-
-# build gradle app with gradlew (gradle wrapper)
 RUN ./gradlew build
 
 ENTRYPOINT ["java", "-jar", "build/libs/backend-0.0.1.jar"]
