@@ -20,6 +20,7 @@ const Card = ({ suit, value }: Card) => {
   if (suit === "?" && value === "?") {
     return (
       <div className="bg-red-900 border border-black rounded-lg h-32 w-20 shadow-sm transform transition-transform hover:scale-110 hover:shadow-2xl hover:-translate-y-3"></div>
+      // <div className="bg-red-900 border border-black rounded-lg h-32 w-20"></div>
     );
   }
 
@@ -32,6 +33,7 @@ const Card = ({ suit, value }: Card) => {
 
   return (
     <div className="bg-slate-50 border border-black rounded-lg h-32 w-20 shadow-sm transform transition-transform hover:scale-110 hover:shadow-2xl hover:-translate-y-3">
+    {/* // <div className="bg-slate-50 border border-black rounded-lg h-32 w-20 "> */}
       <div
         className={`absolute top-0 left-0 text-lg font-bold mt ml-1 text-${cardColor}-600`}
       >
