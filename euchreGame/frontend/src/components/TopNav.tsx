@@ -5,8 +5,12 @@ import Image from "next/image";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 
+interface TopNavProps {
+  components?: React.ReactNode[];
+}
+
 // keep list of all pages for the navbar to go through in order
-export default function TopNav() {
+const TopNav = ({ components }: TopNavProps) => {
   const pathname = usePathname();
 
   const links = [
@@ -30,11 +34,11 @@ export default function TopNav() {
         {/* set of all links that will be highlighted when hovered over
             navlink will stay white when we are on that page */}
         {links.map((link, index) => (
-          <li key={index} className="mr-4">
+          <li key={index} className="mx-4">
             <Link href={link.href}>
               <span
                 className={clsx(
-                  "block px-5 py-5 mt-7 text-2xl rounded hover:bg-gray-200 hover:text-gray-800 hover:border-transparent text-decoration-line: underline cursor-pointer",
+                  "block px-5 py-5 mt-7 text-2xl rounded hover:bg-gray-200 hover:text-gray-800 hover:border-transparent cursor-pointer",
                   {
                     "text-white": pathname === link.href,
                   }
@@ -45,7 +49,17 @@ export default function TopNav() {
             </Link>
           </li>
         ))}
+        {/* add extra components to the nav bar */}
+        {components?.map((component, index) => (
+          <li key={index} className="mx-8">
+            <div className=" h-full w-[40px] flex items-center justify-center">
+              {component}
+            </div>
+          </li>
+        ))}
       </ul>
     </nav>
   );
-}
+};
+
+export default TopNav;
