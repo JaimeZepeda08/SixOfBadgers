@@ -7,24 +7,24 @@ package com.cs506group12.backend.models;
  *
  */
 public class Card {
-    private final Suit suit;
-    private final Rank rank;
+    private final String suit;
+    private final int rank;
 
-    public Card(com.cs506group12.backend.models.Suit suit, Rank rank) {
+    public Card(String suit, int rank) {
         this.suit = suit;
         this.rank = rank;
     }
 
     @Override
     public String toString() {
-        return rank + " of " + suit;
+        return " " + rank + " of " + suit;
     }
 
-    public Suit getSuit() {
+    public String getSuit() {
         return suit;
     }
 
-    public Rank getRank() {
+    public int getRank() {
         return rank;
     }
 
