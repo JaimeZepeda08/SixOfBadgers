@@ -9,7 +9,6 @@ export default function Page() {
       >
         Go to Saved Games
       </Link>
-      <MusicPlayer src="pokerFace.mp3" />
     </div>
   );
 }

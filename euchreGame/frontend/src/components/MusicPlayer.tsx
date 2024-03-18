@@ -1,7 +1,12 @@
-// MusicPlayer.js
-import React, { useState, useEffect } from 'react';
+"use client";
 
-const MusicPlayer = ({ src }) => {
+import React, { useState, useEffect } from "react";
+
+interface MusicPlayerProps {
+  src: string;
+}
+
+const MusicPlayer = ({ src }: MusicPlayerProps) => {
   const [audio] = useState(new Audio(src));
 
   useEffect(() => {
