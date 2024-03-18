@@ -4,7 +4,7 @@
 
 **6 of Badgers**
 
-![6 of Badgers logo](6ofBadgers_red.png)
+![6 of Badgers logo](./documentation_and_images/6ofBadgers_red.png)
 
 ### Project Abstract
 
@@ -87,16 +87,16 @@ The customer for this project is someone who wishes to play Euchre with their fr
 <!--Images can be included with `![alt_text](image_path)`-->
 ## Actual Game Images
 GAMEPLAY
-![gameplay](Gameplay.JPEG)
+![gameplay](./documentation_and_images/Gameplay.JPEG)
 
 GAME SETUP
-![game_setup](game.png)
+![game_setup](./documentation_and_images/game.png)
 
 STATS
-![stats](stats.png)
+![stats](./documentation_and_images/stats.png)
 
 RULES
-![rules](rulespage.png)
+![rules](./documentation_and_images/rulespage.png)
 
 ### Security Requirements
 
@@ -129,19 +129,19 @@ Our system will be hosted and played locally. There are no privacy or confidenti
 <!--You can make headings at different levels by writing `# Heading` with the number of `#` corresponding to the heading level (e.g. `## h2`).-->
 
 ##### Navbar
-![nav_bar](Navbar_pictures\Screenshot_2024-02-26_151207.png)
+![nav_bar](./Navbar_pictures/navbar_full_size.png)
 
-The navbar hold multiple buttons. Home will show the user the game creation screen. Rules will show the user what the rules for the game are. Help will give hints for euchre. Play will go to the game that is being played.
+The navbar hold multiple buttons. Home will show the user the game creation screen. Rules will show the user what the rules for the game are. Help will give hints for euchre. Play will go to the game that is being played.  The navbar will also change based on screen size and game state.
 
-![saved_games](saved_games.png)
+![saved_games](./documentation_and_images/saved_games.png)
 
 This is the saved games screen. It will show the previous game, sorted by most recent first. It will have a game number, the day played, whether you won or loss, the game time, and the number of points won during the game.
 
-![homepage](Homepage.png)
+![homepage](./documentation_and_images/Homepage.png)
 
 This is the homepage that would show up after clicking home on the navigation bar. It includes the main logo and a vertical version of the navigation bar.
 
-![game_Creation](game_creation.png)
+![game_Creation](./documentation_and_images/game_creation.png)
 
 This is the game creation screen. It allows to pick the number of physical players playing.It also allows the user to set the number of seconds each turn will be allowed. It indicates the number of points needed to win, and the number of rounds played.
 
@@ -226,7 +226,7 @@ C --> D
 ```
 
 #### System Architecture Diagram
-![System Architecture Diagram](sys-architecture-diagram.png)
+![System Architecture Diagram](./documentation_and_images/sys-architecture-diagram.png)
 
 # Coding Standards & Conventions
 
