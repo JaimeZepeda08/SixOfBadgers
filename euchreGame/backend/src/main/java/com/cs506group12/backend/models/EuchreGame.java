@@ -10,7 +10,7 @@ public class EuchreGame {
     private ArrayList<Player> players;
     private boolean areTurnsTimed;
     private boolean threePlayers = false; // currently unimplemented
-    private Suit trump; // move to Turn
+    private String trump; // move to Turn
     private int turn; // = starts at dealer+1%4
     private int dealer; // position of dealer
     private int teamOneScore; // do turns until one of the team scores is over threshhold
