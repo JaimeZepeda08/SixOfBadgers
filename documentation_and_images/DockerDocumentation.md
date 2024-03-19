@@ -224,6 +224,10 @@ Use the following command to stop the containers. This will also override the se
 ------
 ```
 
+#### Fix (VS Code):
+
+> Change line endings in the `gradlew` file from `CRLF` to `LF`
+
 #### Temporary Fix:
 
 1. Run `./gradlew build` on the command line before running `docker compose up`. Make sure you do it from the `/backend` directory
