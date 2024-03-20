@@ -11,18 +11,31 @@ public class Player {
 	// but maybe no possible?
 	// do i need login functions?
 
+	/**
+	* Constructor class for the Player class.
+	*/
 	public Player(String name) {
 		this.userName = name;
 	}
 
+
+	/*
+	 * Setter  class for the hand of the player
+	 */
 	public void setHand(ArrayList<Card> hand) {
 		this.hand = hand;
 	}
 
+	/*
+	 * Getter class for the hand of the player
+	 */
 	public ArrayList<Card> getHand() {
 		return this.hand;
 	}
 
+	/**
+	 *	Getter method for the number of points for the player
+	 */
 	public int getPoints() {
 		return points;
 	}
