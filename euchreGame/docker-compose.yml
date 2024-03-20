@@ -34,7 +34,7 @@ services:
     volumes:
       - euchredb:/var/lib/mysql
     ports:
-      - 3306:3306
+      - 5306:3306
 
 volumes:
   euchredb:

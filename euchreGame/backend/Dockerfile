@@ -17,7 +17,7 @@ COPY settings.gradle .
 COPY src ./src
 
 # Build the application using Gradle
-RUN ./gradlew build
+#RUN ./gradlew build
 
 # Set the entry point to run the JAR file and expose port 8080
 ENTRYPOINT ["java", "-jar", "build/libs/backend-0.0.1.jar"]
