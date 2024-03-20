@@ -12,15 +12,14 @@ public class Player {
 	// do i need login functions?
 
 	/**
-	* Constructor class for the Player class.
-	*/
+	 * Constructor class for the Player class.
+	 */
 	public Player(String name) {
 		this.userName = name;
 	}
 
-
 	/*
-	 * Setter  class for the hand of the player
+	 * Setter class for the hand of the player
 	 */
 	public void setHand(ArrayList<Card> hand) {
 		this.hand = hand;
@@ -34,7 +33,7 @@ public class Player {
 	}
 
 	/**
-	 *	Getter method for the number of points for the player
+	 * Getter method for the number of points for the player
 	 */
 	public int getPoints() {
 		return points;

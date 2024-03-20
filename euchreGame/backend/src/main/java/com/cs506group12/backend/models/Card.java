@@ -36,30 +36,32 @@ public class Card {
 	}
 
 	/**
-     * Compares this card with the specified card for order. Cards are compared
-     * based on their ranks.
-     *
-     * @param other the card to be compared
-     * @return a negative integer, zero, or a positive integer as this card is less
-     *         than, equal to, or greater than the specified card.
-     */
-    @Override
-    public int compareTo(Card other, String leadSuit, String trumpSuit) {
-  
-    	if (other.suit.equals(leadSuit)) {
-    			return this.rank - other.rank;
-    	} else if (!this.card.suit.equals(trumpSuit) && other.suit.equals(trumpSuit)) {
-					return -1;
-			} else if (this.card.suit.equals(trumpSuit) && !other.suit.equals(trumpSuit)) {
-					return 1;
-			} else {
-					return trumpCompare(Card other);
-			}
-    		return 0;
-    	}
+	 * Compares this card with the specified card for order. Cards are compared
+	 * based on their ranks.
+	 *
+	 * @param other the card to be compared
+	 * @return a negative integer, zero, or a positive integer as this card is less
+	 *         than, equal to, or greater than the specified card.
+	 *
+	@Override
+	public int compareTo(Card other, String leadSuit, String trumpSuit) {
 
-			public int trumpCompare(Card other) {
+		if (other.suit.equals(leadSuit)) {
+			return this.rank - other.rank;
+		} else if (!this.suit.equals(trumpSuit) && other.suit.equals(trumpSuit)) {
+			return -1;
+		} else if (this.suit.equals(trumpSuit) && !other.suit.equals(trumpSuit)) {
+			return 1;
+		} else {
+			return trumpCompare(other);
+		}
+		return 0;
+	}
 
-			}
+	*/
+	public int trumpCompare(Card other) {
+
+		return 0;
+	}
 
 }
