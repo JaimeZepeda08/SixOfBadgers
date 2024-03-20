@@ -49,11 +49,11 @@ public class Card {
     	if (other.suit.equals(leadSuit)) {
     			return this.rank - other.rank;
     	} else if (!this.card.suit.equals(trumpSuit) && other.suit.equals(trumpSuit)) {
-					return -1;
+				return -1;
 			} else if (this.card.suit.equals(trumpSuit) && !other.suit.equals(trumpSuit)) {
-					return 1;
+				return 1;
 			} else {
-					return trumpCompare(Card other);
+				return trumpCompare(Card other);
 			}
     		return 0;
     	}
