@@ -17,6 +17,7 @@ public class SavedGamesController {
     public ArrayList<GameRecord> getRecords(@RequestBody String userName) throws SQLException {
         return getGameRecords(userName);
     }
+
     @PostMapping("/saveGameRecord")
     public void postRecord() {
 
