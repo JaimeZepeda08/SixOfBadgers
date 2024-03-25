@@ -14,9 +14,12 @@ import static com.cs506group12.backend.DatabaseConnection.*;
 @RestController
 public class SavedGamesController {
     @GetMapping("/getGameRecords")
-    public ArrayList<GameRecord> getRecords(@RequestBody String userName) throws SQLException {
-        return getGameRecords(userName);
+    public ArrayList<GameRecord> getRecords(@RequestBody String userName) throws SQLException { 
+        return null;
     }
+
+
+
     @PostMapping("/saveGameRecord")
     public void postRecord() {
 

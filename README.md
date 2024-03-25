@@ -21,10 +21,25 @@ The customer for this project is someone who wishes to play Euchre with their fr
 
 <!--This section lists the behavior that the users see. This information needs to be presented in a logical, organized fashion. It is most helpful if this section is organized in outline form: a bullet list of major topics (e.g., one for each kind of user, or each major piece of system functionality) each with some number of subtopics.-->
 
-1. Player should have a timer that they can see counting down.
-2. Player should be able to get help, with a page that tells them the rules
-3. Player should be able to play by themselves OR choose to play with someone else.
-4. Game should end automatically when the score is reached.
+1. When the user starts a game, cards will be randomly assigned to all players and a face up card will be assigned.  The player who's turn it is will have their hand displayed and the face up card will be visible to all players.
+    * Test:  Backend: All cards are valid and there are no duplicates.  Frontend: Cards are visible and match the backends cards.  Cards must be able to be visually distinct to convey rank and suit.
+2. The program shall display a NavBar that will provide access to all parts of the frontend.
+    * Test: All pages of the frontend are reachable by clicking on the navbar options.
+3. The program shall progress through players.  When it is a player's turn, there cards will become visible.  When the user selects a card, that card shall be removed from their hand and will be moved to the played cards area.  The next player will then be prompted to select a card or a round end screen will be presented.
+    * Test: Backend: Played cards recieved from frontend should be removed from player's hand object and turn should increment.  Frontend: Played card must be moved out of player hand and to the played card area.
+4. At any time during the game, trump, overall score, and usernames must be visible to all players.
+    * Test: Backend: Score and trump must be calculated and updated at the end of each round.  The team that won should have a higher score than their previous round's score.  Frontend:  During a game, these veriables must be displayed and updated when necessary.
+5.  The game must end when a team's score is above or equal to the point threshhold.  
+    * Test:  Backend: When the point threshhold is met by either team, all game processes must terminate.  Frontend:  A victory/defeat/summary page must appear to inform users.
+6.  A game must be able to be saved and viewed at a later state:
+    * Test: Backend: A game is able to be saved and then retrieved with matching and complete information.  Frontend:  There must be an option to save games after they finish.  There must also be a page to view sorted and sort saved games that displays the relevant information including players, teams, which team won, and overall score.  
+7.  The final product will be able to mirror a game of euchre.
+    * Test:  After all four players play their cards in a round, the round must be socred correctly.  The winner of the trick must have their points increased.  The starting player, trick,and trump will be recalculated when needed.  The game will end when a team reahces the requirements to win.
+8.  There simply must be an option to play music.
+    * Test: Frontend: There must be an option to play or not play music avalaible to the user at all times during the game.  
+9.  There shall be a help screen avaiable to the user via a NavBar at all times.
+    * Test: Frontend: There must be a help button that redirects to a page describing the website and rules of euchre available at all times.
+
 ### Use Cases & User Stories
 
 <!--Use cases and user stories that support the user requirements in the previous section. The use cases should be based off user stories. Every major scenario should be represented by a use case, and every use case should say something not already illustrated by the other use cases. Diagrams (such as sequence charts) are encouraged. Ask the customer what are the most important use cases to implement by the deadline. You can have a total ordering, or mark use cases with “must have,” “useful,” or “optional.” For each use case you may list one or more concrete acceptance tests (concrete scenarios that the customer will try to see if the use case is implemented).-->
@@ -228,6 +243,9 @@ C --> D
 #### System Architecture Diagram
 ![System Architecture Diagram](./documentation_and_images/sys-architecture-diagram.png)
 
+#### Docker and Setting it All Up
+Please refer to ![Docker Documentation](./documentation_and_images/DockerDocumentation.md)
+
 # Coding Standards & Conventions
 
 
@@ -281,7 +299,9 @@ In general, methods should not be too long, as they will get confusing. If you f
 
 ## 5. Error Return Values and Handling
 For functions that can encounter errors, return a "0" for program exiting successfully, and a "1" for program exiting with errors. When Handling multiple exceptions, start with the most specific/likely first, and go down the ladder until hitting parent Exception class. Example shown below
+
 ```
+
 try {
     // something
 }

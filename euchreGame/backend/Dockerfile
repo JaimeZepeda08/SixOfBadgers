@@ -1,19 +1,24 @@
-# install ubuntu base image
+# Use the latest Ubuntu image as the base
 FROM ubuntu:latest
 
-# Install necessary dependencies
+# Update package lists and install OpenJDK 17
 RUN apt-get update && \
     apt-get install -y openjdk-17-jdk && \
     apt-get clean
 
-# copy all of the files in backend to a docker directory /api
-COPY . /api
-
-# change docker working directory to /api
+# Set working directory for the application
 WORKDIR /api
 
-# build gradle app with gradlew (gradle wrapper)
+# Copy Gradle wrapper and necessary files for building
+COPY gradlew .
+COPY gradle ./gradle
+COPY build.gradle .
+COPY settings.gradle .
+COPY src ./src
+
+# Build the application using Gradle
 RUN ./gradlew build
 
+# Set the entry point to run the JAR file and expose port 8080
 ENTRYPOINT ["java", "-jar", "build/libs/backend-0.0.1.jar"]
 EXPOSE 8080
