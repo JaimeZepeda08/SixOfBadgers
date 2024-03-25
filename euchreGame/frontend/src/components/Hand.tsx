@@ -1,5 +1,8 @@
-import React from "react";
+'use client';
+
+import React, { use, useState } from "react";
 import Card from "./Card";
+import clsx from "clsx";
 
 interface Hand {
   cards: Card[];
@@ -22,6 +25,12 @@ const Hand = ({ cards }: Hand) => {
   const padding = 30;
   const totalWidth = (cards.length - 1) * padding;
 
+  const [selectedCard, setSelectedCard] = useState(-1);
+
+  const handleSelectedCardChange = (event: any) => {
+    setSelectedCard(parseInt(event.target.value));
+  };
+
   return (
     <div
       className="relative flex justify-center items-center"
@@ -37,6 +46,7 @@ const Hand = ({ cards }: Hand) => {
             className="absolute"
             style={{
               transform: `rotate(${rotation}deg) translateX(${translateX}px) translateY(-50%)`,
+              // hover:scale-110 hover:shadow-2xl hover:-translate-y-3 clsx to pick select
             }}
           >
             <Card suit={card.suit} value={card.value} />
