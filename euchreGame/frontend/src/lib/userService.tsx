@@ -63,15 +63,18 @@ export async function createUser(formData: FormData) {
 export async function currentSelectedCard(formData: FormData) {
     "use server"
     const url = `http://${localhost}:8080/selected_card`;
-    // const card = {card: formData.get("card")}
-    // console.log(card);
+    const card = {
+        suite: formData.get("suite"),
+        value: formData.get("value")
+    }
+    console.log(card);
     try {
         const res = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            // body: JSON.stringify(card);
+            body: JSON.stringify(card)
         });
         if (!res.ok) {
             throw new Error("Failed to save selected card")

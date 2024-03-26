@@ -6,6 +6,7 @@ import clsx from "clsx";
 
 interface Hand {
   cards: Card[];
+  onCardSelect: (suit: string, value: string) => void;
 }
 
 /**
@@ -19,7 +20,7 @@ interface Hand {
  * @param {Card[]} cards An array of cards
  * @returns HTML representation of a hand of cards
  */
-const Hand = ({ cards }: Hand) => {
+const Hand = ({ cards, onCardSelect }: Hand) => {
   const spreadAngle = 5;
   const spreadOffset = ((cards.length - 1) * spreadAngle) / 2;
   const padding = 30;
@@ -29,6 +30,7 @@ const Hand = ({ cards }: Hand) => {
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
   const handleCardClick = (index: number) => {
+    onCardSelect(cards[index].suit, cards[index].value)
     setSelectedCard(index === selectedCard ? null : index); // Toggle selection
   };
 
