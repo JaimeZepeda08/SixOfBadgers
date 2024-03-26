@@ -1,6 +1,6 @@
 'use client';
 
-import React, { use, useState } from "react";
+import React, { use, useState, useEffect } from "react";
 import Hand from "../../components/Hand";
 
 /**
@@ -36,8 +36,13 @@ export default function Home() {
 
   const handleCardSelect = (suit: string, value: string) => {
     setSelectedCard({ suit, value });
-    console.log("Suit: " + selectedCard?.suit + " " + "Value: " + selectedCard?.value)
   };
+
+  useEffect(() => {
+    if (selectedCard !== null) {
+      console.log("Suit: " + selectedCard.suit + " Value: " + selectedCard.value);
+    }
+  }, [selectedCard]);
 
   // placeholder for opponents cards
   const handleOppSelect = (suit: string, value: string) => {

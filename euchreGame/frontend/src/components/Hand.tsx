@@ -1,6 +1,6 @@
 'use client';
 
-import React, { use, useState } from "react";
+import React, { use, useState, useEffect } from "react";
 import Card from "./Card";
 import clsx from "clsx";
 
@@ -30,9 +30,19 @@ const Hand = ({ cards, onCardSelect }: Hand) => {
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
   const handleCardClick = (index: number) => {
-    onCardSelect(cards[index].suit, cards[index].value)
-    setSelectedCard(index === selectedCard ? null : index); // Toggle selection
+    if(index === selectedCard) {
+      setSelectedCard(null);
+    } else {
+      setSelectedCard(index);
+      onCardSelect(cards[index].suit, cards[index].value);
+    }
   };
+
+  useEffect(() => {
+    if (selectedCard !== null) {
+      console.log("Suit: " + cards[selectedCard].suit + " " + "Value: " + cards[selectedCard].value);
+    }
+  }, [selectedCard]);
 
   return (
     <div
