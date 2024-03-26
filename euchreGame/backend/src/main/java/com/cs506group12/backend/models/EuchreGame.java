@@ -18,13 +18,11 @@ public class EuchreGame {
     private int pointsThreshold = 10;
     private Card faceUpCard;
 
-    public static ArrayList<String> suits = new ArrayList<String>();
 
     public static ArrayList<Integer> ranks = new ArrayList<>();
 
     public EuchreGame() {
         initializeDeck();
-        shuffleDeck();
         dealCards();
         cardsLeft = deck.size();
         while (teamOneScore > pointsThreshold && teamTwoScore > pointsThreshold) {
@@ -35,42 +33,16 @@ public class EuchreGame {
     }
 
     /**
-     * Initializes the original deck of 24 cards
+     * Initializes the original deck of 24 cards, and shuffles it.
      */
     private static void initializeDeck() {
-        suits.add("Clubs");
-        suits.add("Diamonds");
-        suits.add("Hearts");
-        suits.add("Clover");
+        for(int x=9; x<15; x++){
+			deck.add(new Card(Card.SUIT.CLUBS, x));
+			deck.add(new Card(Card.SUIT.DIAMONDS, x));
+			deck.add(new Card(Card.SUIT.HEARTS, x));
+			deck.add(new Card(Card.SUIT.SPADES, x));
+		}
 
-        for (int i = 0; i <= 5; i++) {
-            if (i == 0) {
-                ranks.add(14); // Ace
-            } else if (i == 1) {
-                ranks.add(13); // King
-            } else if (i == 2) {
-                ranks.add(12); // Queen
-            } else if (i == 3) {
-                ranks.add(11); // Jack
-            } else if (i == 4) {
-                ranks.add(10); // 10
-            } else if (i == 5) {
-                ranks.add(9); // 9
-            }
-        }
-
-        deck = new ArrayList<>();
-        for (String suit : suits) {
-            for (Integer rank : ranks) {
-                deck.add(new Card(suit, rank));
-            }
-        }
-    }
-
-    /**
-     * Shuffles the deck of cards to give to players
-     */
-    private void shuffleDeck() {
         Collections.shuffle(deck);
     }
 
