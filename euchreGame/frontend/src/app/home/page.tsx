@@ -1,5 +1,10 @@
 import Link from "next/link";
 
+/**
+ * Page component representing a page with a link to navigate to saved games.
+ * 
+ * @returns {JSX.Element} The page component.
+ */
 export default function Page() {
   return (
     <div className="flex justify-center items-center h-screen">

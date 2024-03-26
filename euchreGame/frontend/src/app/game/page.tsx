@@ -1,6 +1,14 @@
 import Hand from "../../components/Hand";
 
+/**
+ * Home component representing the main page of the game. Each person
+ * will have a set of cards that are fanned out. All opponents will be hidden while
+ * the users will be shown to them.
+ * 
+ * @returns {JSX.Element} The Home component.
+ */
 export default function Home() {
+  // placeholder for user cards
   const cards = [
     { suit: "hearts", value: "A" },
     { suit: "clubs", value: "Q" },
@@ -10,6 +18,7 @@ export default function Home() {
     { suit: "spades", value: "J" },
   ];
 
+  // placeholder for opponents cards
   const opponents = [
     { suit: "?", value: "?" },
     { suit: "?", value: "?" },
