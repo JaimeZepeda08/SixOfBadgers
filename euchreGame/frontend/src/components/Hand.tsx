@@ -25,10 +25,11 @@ const Hand = ({ cards }: Hand) => {
   const padding = 30;
   const totalWidth = (cards.length - 1) * padding;
 
-  const [selectedCard, setSelectedCard] = useState(-1);
+  // change selected card when we click on another card
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
-  const handleSelectedCardChange = (event: any) => {
-    setSelectedCard(parseInt(event.target.value));
+  const handleCardClick = (index: number) => {
+    setSelectedCard(index === selectedCard ? null : index); // Toggle selection
   };
 
   return (
@@ -36,20 +37,20 @@ const Hand = ({ cards }: Hand) => {
       className="relative flex justify-center items-center"
       style={{ width: `${totalWidth}px` }}
     >
+      {/* map out all cards and make the card hover if we're over it or we already selected it */}
       {cards.map((card, index) => {
         const rotation = index * spreadAngle - spreadOffset;
         const translateX = padding * index - totalWidth / 2;
         return (
           <div
             key={index}
-            // className="absolute hover:z-50"
-            className="absolute"
+            className="absolute cursor-pointer"
+            onClick={() => handleCardClick(index)}
             style={{
-              transform: `rotate(${rotation}deg) translateX(${translateX}px) translateY(-50%)`,
-              // hover:scale-110 hover:shadow-2xl hover:-translate-y-3 clsx to pick select
+              transform: `rotate(${rotation}deg) translateX(${translateX}px) translateY(-50%)`
             }}
           >
-            <Card suit={card.suit} value={card.value} />
+            <Card suit={card.suit} value={card.value} isSelected={index === selectedCard} />
           </div>
         );
       })}

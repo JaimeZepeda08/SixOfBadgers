@@ -1,6 +1,7 @@
 interface Card {
   suit: string;
   value: string;
+  isSelected?: boolean;
 }
 
 /**
@@ -15,7 +16,7 @@ interface Card {
  * @param {string} Card.value The value of the card. Can be "A", "2" through "10", "J", "Q", "K", or "?" for an opponent's hidden card.
  * @returns HTML representing a card
  */
-const Card = ({ suit, value }: Card) => {
+const Card = ({ suit, value, isSelected }: Card) => {
   // opponent card - denoted by ?, and should not shown
   if (suit === "?" && value === "?") {
     return (
@@ -23,6 +24,8 @@ const Card = ({ suit, value }: Card) => {
       // <div className="bg-red-900 border border-black rounded-lg h-32 w-20"></div>
     );
   }
+
+  const applyHoverStyles = "scale-110 shadow-2xl -translate-y-3";
 
   let cardColor = "";
   if (suit === "hearts" || suit === "diamonds") {
@@ -32,8 +35,7 @@ const Card = ({ suit, value }: Card) => {
   }
 
   return (
-    <div className="bg-slate-50 border border-black rounded-lg h-32 w-20 shadow-sm transform transition-transform hover:scale-110 hover:shadow-2xl hover:-translate-y-3">
-    {/* // <div className="bg-slate-50 border border-black rounded-lg h-32 w-20 "> */}
+    <div className={`bg-slate-50 border border-black rounded-lg h-32 w-20 shadow-sm transform transition-transform ${isSelected ? applyHoverStyles : 'hover:scale-110 hover:shadow-2xl hover:-translate-y-3'}`}>
       <div
         className={`absolute top-0 left-0 text-lg font-bold mt ml-1 text-${cardColor}-600`}
       >
