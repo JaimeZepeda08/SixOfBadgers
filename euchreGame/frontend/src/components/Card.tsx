@@ -25,7 +25,7 @@ const Card = ({ suit, value, isSelected }: Card) => {
     );
   }
 
-  const applyHoverStyles = "scale-110 shadow-2xl -translate-y-3";
+  const applyHoverStyles = "scale-110 shadow-2xl -translate-y-3 border border-red-700 rounded-lg";
 
   let cardColor = "";
   if (suit === "hearts" || suit === "diamonds") {
@@ -35,7 +35,7 @@ const Card = ({ suit, value, isSelected }: Card) => {
   }
 
   return (
-    <div className={`bg-slate-50 border border-black rounded-lg h-32 w-20 shadow-sm transform transition-transform ${isSelected ? applyHoverStyles : 'hover:scale-110 hover:shadow-2xl hover:-translate-y-3'}`}>
+    <div className={`bg-slate-50 h-32 w-20 shadow-sm transform transition-transform ${isSelected ? applyHoverStyles : 'hover:scale-110 hover:shadow-2xl hover:-translate-y-3 border border-black rounded-lg'}`}>
       <div
         className={`absolute top-0 left-0 text-lg font-bold mt ml-1 text-${cardColor}-600`}
       >
