@@ -22,9 +22,9 @@ public class testPlayer {
 		Player p = new Player("TestPlayer");
 
 		ArrayList<Card> cards = new ArrayList<Card>();
-		Card card1 = new Card("Clubs", 10);
-		Card card2 = new Card("Clubs", 11);
-		Card card3 = new Card("Clubs", 12);
+		Card card1 = new Card(Card.SUIT.CLUBS, 10);
+		Card card2 = new Card(Card.SUIT.CLUBS, 11);
+		Card card3 = new Card(Card.SUIT.CLUBS, 12);
 
 		cards.add(card1);
 		cards.add(card2);
@@ -36,7 +36,7 @@ public class testPlayer {
 
 		for (int i = 0; i < hand.size(); i++) {
 			assert (hand.get(i).getSuit().equals(cards.get(i).getSuit()));
-			assert (hand.get(i).getRank() == cards.get(i).getRank());
+			assert (hand.get(i).getValue() == cards.get(i).getValue());
 		}
 
 	}
