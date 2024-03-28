@@ -2,6 +2,7 @@
 
 import React, { use, useState, useEffect } from "react";
 import Hand from "../../components/Hand";
+import { currentSelectedCard } from '@/lib/userService';
 
 /**
  * Home component representing the main page of the game. Each person
@@ -49,6 +50,17 @@ export default function Home() {
     console.log("Remove option of touching others cards")
   };
 
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (selectedCard && selectedCard.suit !== "?" && selectedCard.value !== "?") {
+        const formData = new FormData();
+        formData.append("suit", selectedCard.suit);
+        formData.append("value", selectedCard.value);
+        await currentSelectedCard(formData);
+    }
+};
+
+
   return (
     <div className="h-screen flex justify-center items-center relative">
       <div className="absolute bottom-8" style={{ transform: "rotate(0deg)" }}>
@@ -63,6 +75,11 @@ export default function Home() {
       <div className="absolute right-0" style={{ transform: "rotate(270deg)" }}>
         <Hand cards={opponents} onCardSelect={handleOppSelect}/>
       </div>
+      <form onSubmit={handleSubmit} className="absolute bottom-0 right-0 m-4">
+        <button type="submit" className="p-2 bg-blue-500 text-white rounded hover:bg-blue-700">
+            Submit Selected Card
+        </button>
+        </form>
     </div>
   );
 }

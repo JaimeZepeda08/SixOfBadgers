@@ -35,7 +35,7 @@ export async function getGameRecords() {
 }
 
 export async function createUser(formData: FormData) {
-    "use server"
+    // "use server"
     const url = `http://${localhost}:8080/player/save`;
     const user = {
         userName: formData.get("userName"),
@@ -61,13 +61,13 @@ export async function createUser(formData: FormData) {
 }
 
 export async function currentSelectedCard(formData: FormData) {
-    "use server"
+    // "use server"
     const url = `http://${localhost}:8080/selected_card`;
     const card = {
-        suite: formData.get("suite"),
+        suite: formData.get("suit"),
         value: formData.get("value")
     }
-    console.log(card);
+    console.log(card)
     try {
         const res = await fetch(url, {
             method: 'POST',
@@ -86,7 +86,7 @@ export async function currentSelectedCard(formData: FormData) {
 }
 
 export async function getUser(formData: FormData) {
-    "use server"
+    // "use server"
     const url = `http://${localhost}:8080/player/get`;
     const user = {
         userName: formData.get("userName"),
