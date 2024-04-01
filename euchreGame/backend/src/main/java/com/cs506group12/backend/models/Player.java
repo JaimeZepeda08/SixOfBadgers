@@ -71,7 +71,7 @@ public class Player {
 		ArrayList<Card> list = new ArrayList<Card>();
 
 		for (Card c : hand) {
-			if (c.suit == suit) {
+			if (c.getSuit() == suit) {
 				list.add(c);
 			}
 		}

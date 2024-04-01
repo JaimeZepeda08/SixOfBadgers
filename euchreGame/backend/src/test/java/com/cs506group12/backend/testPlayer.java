@@ -9,6 +9,11 @@ import org.junit.jupiter.api.Test;
 import com.cs506group12.backend.models.Card;
 import com.cs506group12.backend.models.Player;
 
+/**
+ * This class tests the correctness of the Player class.
+ * 
+ * @author kaldan
+ */
 public class testPlayer {
 
 	public void testName() {

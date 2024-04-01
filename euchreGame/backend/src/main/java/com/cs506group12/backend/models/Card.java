@@ -18,8 +18,8 @@ public class Card {
 		SPADES
 	}
 
-	public final SUIT suit;
-	public final int value;
+	private final SUIT suit;
+	private final int value;
 
 	/**
 	 * Constructor for the card class. Takes in a SUIT and a value
@@ -119,7 +119,7 @@ public class Card {
 	}
 
 	/**
-	 * Method to calculate what the other color is that matters for the trump.\
+	 * Method to calculate what the other color is that matters for the trump.
 	 * 
 	 * @param trump The suit that is trump this round
 	 * @return The corresponding suit for the trump
@@ -142,7 +142,6 @@ public class Card {
 				break;
 		}
 		return sameColor;
-
 	}
 
 	/**
