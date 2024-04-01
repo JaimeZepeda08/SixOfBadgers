@@ -9,7 +9,6 @@ public class EuchreGame {
 
     private ArrayList<Player> players;
     private boolean areTurnsTimed;
-    private boolean threePlayers = false; // currently unimplemented
     private String trump; // move to Turn
     private int turn; // = starts at dealer+1%4
     private int dealer; // position of dealer
@@ -17,7 +16,6 @@ public class EuchreGame {
     private int teamTwoScore;
     private int pointsThreshold = 10;
     private Card faceUpCard;
-
 
     public static ArrayList<Integer> ranks = new ArrayList<>();
 
@@ -36,12 +34,12 @@ public class EuchreGame {
      * Initializes the original deck of 24 cards, and shuffles it.
      */
     private static void initializeDeck() {
-        for(int x=9; x<15; x++){
-			deck.add(new Card(Card.SUIT.CLUBS, x));
-			deck.add(new Card(Card.SUIT.DIAMONDS, x));
-			deck.add(new Card(Card.SUIT.HEARTS, x));
-			deck.add(new Card(Card.SUIT.SPADES, x));
-		}
+        for (int x = 9; x < 15; x++) {
+            deck.add(new Card(Card.SUIT.CLUBS, x));
+            deck.add(new Card(Card.SUIT.DIAMONDS, x));
+            deck.add(new Card(Card.SUIT.HEARTS, x));
+            deck.add(new Card(Card.SUIT.SPADES, x));
+        }
 
         Collections.shuffle(deck);
     }
