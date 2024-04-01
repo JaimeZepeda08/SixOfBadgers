@@ -7,8 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 
 import com.cs506group12.backend.models.Card;
-import com.cs506group12.backend.models.Player;
 
+/**
+ * This class tests the correctness of the Card class
+ * 
+ * @author jaime zepeda
+ */
 public class testCard {
 
 	public void main(String[] args){
@@ -18,10 +22,10 @@ public class testCard {
 	}
 
 	/**
-	 * Tests Rank getter/setter
+	 * Tests the Card constructor.
 	 */
-   @Test
-	public void testCard() {
+	@Test
+	public void testCardConstructor() {
 		Card c = new Card(Card.SUIT.CLUBS, 9);
 		assertNotNull(c);
 
@@ -34,22 +38,111 @@ public class testCard {
 	public static void testEqualsObject() {
 		Card c1 = new Card(Card.SUIT.DIAMONDS, 10);
 		Card c2 = new Card(Card.SUIT.DIAMONDS, 10);
-		assertEquals(c1,c2);
-		Card c3 = new Card(Card.SUIT.HEARTS, 9);
-		Card c4 = new Card(Card.SUIT.HEARTS, 9);
-		assertEquals(c3,c4);
-		Card c5 = new Card(Card.SUIT.SPADES, 13);
-		Card c6 = new Card(Card.SUIT.SPADES, 13);
-		assertEquals(c5,c6);
+		assertEquals(c1, c2);
+	}
 
-        // Tests a not equal card value
-		Card c7 = new Card(Card.SUIT.DIAMONDS, 14);
-		Card c8 = new Card(Card.SUIT.DIAMONDS, 13);
-		assertFalse(c7.equals(c8));
+	/**
+	 * Tests the equals() method for inequality in value.
+	 */
+	@Test
+	public void testEqualsObjectInequalityValue() {
+		Card c1 = new Card(Card.SUIT.DIAMONDS, 10);
+		Card c2 = new Card(Card.SUIT.DIAMONDS, 11);
+		assertFalse(c1.equals(c2));
+	}
 
-        //Tests a not equal suit but same value
-        Card c9 = new Card(Card.SUIT.DIAMONDS, 14);
-        Card c10 = new Card(Card.SUIT.SPADES, 14);
-    }
+	/**
+	 * Tests the equals() method for inequality in suit.
+	 */
+	@Test
+	public void testEqualsObjectInequalitySuit() {
+		Card c1 = new Card(Card.SUIT.DIAMONDS, 10);
+		Card c2 = new Card(Card.SUIT.CLUBS, 10);
+		assertFalse(c1.equals(c2));
+	}
 
+	/**
+	 * Tests the toString() method.
+	 */
+	@Test
+	public void testToString() {
+		Card c = new Card(Card.SUIT.HEARTS, 14);
+		assertEquals("Ace of Hearts", c.toString());
+	}
+
+	/**
+	 * Tests the value() method for trump card.
+	 */
+	@Test
+	public void testValueTrump() {
+		Card trumpCard = new Card(Card.SUIT.CLUBS, 10);
+		int value = trumpCard.value(Card.SUIT.CLUBS, Card.SUIT.DIAMONDS);
+		assertEquals(38, value); // 10 + 28 = 38
+	}
+
+	/**
+	 * Tests the value() method for jack of trump suit.
+	 */
+	@Test
+	public void testValueJackOfTrumpSuit() {
+		Card trumpJackCard = new Card(Card.SUIT.HEARTS, 11);
+		int value = trumpJackCard.value(Card.SUIT.HEARTS, Card.SUIT.CLUBS);
+		assertEquals(44, value); // Jack of trump suit
+	}
+
+	/**
+	 * Tests the value() method for jack of same color as trump.
+	 */
+	@Test
+	public void testValueJackOfSameColor() {
+		Card sameColorJackCard = new Card(Card.SUIT.CLUBS, 11);
+		int value = sameColorJackCard.value(Card.SUIT.SPADES, Card.SUIT.DIAMONDS);
+		assertEquals(43, value); // Jack of same color
+	}
+
+	@Test
+	public void testValueTrumpJack() {
+		Card trumpJackCard = new Card(Card.SUIT.SPADES, 11);
+		int value = trumpJackCard.value(Card.SUIT.SPADES, Card.SUIT.DIAMONDS);
+		assertEquals(44, value); // Jack of same color
+	}
+
+	/**
+	 * Tests the value() method for leading card.
+	 */
+	@Test
+	public void testValueLeading() {
+		Card leadingCard = new Card(Card.SUIT.HEARTS, 9);
+		int value = leadingCard.value(Card.SUIT.CLUBS, Card.SUIT.HEARTS);
+		assertEquals(23, value); // 9 + 14 = 23
+	}
+
+	/**
+	 * Tests the twinColor() method with different trump suits.
+	 */
+	@Test
+	public void testTwinColor() {
+		assertEquals(Card.SUIT.SPADES, Card.twinColor(Card.SUIT.CLUBS));
+		assertEquals(Card.SUIT.CLUBS, Card.twinColor(Card.SUIT.SPADES));
+		assertEquals(Card.SUIT.DIAMONDS, Card.twinColor(Card.SUIT.HEARTS));
+		assertEquals(Card.SUIT.HEARTS, Card.twinColor(Card.SUIT.DIAMONDS));
+	}
+
+	/**
+	 * Tests the getSuit() method.
+	 */
+	@Test
+	public void testGetSuit() {
+		Card card = new Card(Card.SUIT.CLUBS, 9);
+		assertEquals(Card.SUIT.CLUBS, card.getSuit());
+	}
+
+	/**
+	 * Tests the getValue() method.
+	 */
+	@Test
+	public void testGetValue() {
+		Card card = new Card(Card.SUIT.CLUBS, 9);
+		assertEquals(9, card.getValue());
+	}
 }

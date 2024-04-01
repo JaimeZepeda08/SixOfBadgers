@@ -11,7 +11,7 @@ public class Turn {
 	// players.get(i).removeAndPlayCard(exCard)
 	// probably return a winner and how many points
 	public Turn(ArrayList<Player> players, boolean isTimed, int dealer) { // maybe pass in turned up card
-		
+
 	}
 
 }
