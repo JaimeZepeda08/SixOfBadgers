@@ -9,9 +9,6 @@ import org.junit.jupiter.api.Test;
 import com.cs506group12.backend.models.Card;
 import com.cs506group12.backend.models.Player;
 
-import net.bytebuddy.description.type.TypeDescription.Generic.Visitor.TypeErasing;
-
-@SuppressWarnings("unused")
 public class testPlayer {
 
 	public void testName() {
@@ -57,11 +54,9 @@ public class testPlayer {
 		p.hand.add(new Card(Card.SUIT.CLUBS, 9));
 		p.hand.add(new Card(Card.SUIT.CLUBS, 9));
 		p.hand.add(new Card(Card.SUIT.SPADES, 9));
-		assertEquals(5,p.getSuit(Card.SUIT.CLUBS).size());
-		assertEquals(0,p.getSuit(Card.SUIT.DIAMONDS).size());
-		assertEquals(2,p.getSuit(Card.SUIT.HEARTS).size());
-		assertEquals(1,p.getSuit(Card.SUIT.SPADES).size());
+		assertEquals(5, p.getSuit(Card.SUIT.CLUBS).size());
+		assertEquals(0, p.getSuit(Card.SUIT.DIAMONDS).size());
+		assertEquals(2, p.getSuit(Card.SUIT.HEARTS).size());
+		assertEquals(1, p.getSuit(Card.SUIT.SPADES).size());
 	}
-
-
 }

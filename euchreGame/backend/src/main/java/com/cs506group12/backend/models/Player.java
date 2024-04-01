@@ -16,6 +16,8 @@ public class Player {
 	 */
 	public Player(String name) {
 		this.userName = name;
+		this.hand = new ArrayList<>();
+		this.points = 0;
 	}
 
 	/*
@@ -60,6 +62,7 @@ public class Player {
 
 	/**
 	 * returns the cards of the parameter suit and returns them as an arraylist
+	 * 
 	 * @param suit The suit to be searched for
 	 * @return The list of the suits.
 	 */
@@ -67,14 +70,11 @@ public class Player {
 
 		ArrayList<Card> list = new ArrayList<Card>();
 
-		for (Card c: hand) {
+		for (Card c : hand) {
 			if (c.suit == suit) {
 				list.add(c);
 			}
 		}
 		return list;
 	}
-
-	
-
 }
