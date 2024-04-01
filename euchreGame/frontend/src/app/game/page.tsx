@@ -1,6 +1,28 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { getPlayerHand } from "@/lib/gameService";
 import Hand from "../../components/Hand";
 
 export default function Home() {
+  const [playerHand, setPlayerHand] = useState<string>("");
+
+  useEffect(() => {
+    async function fetchPlayerHand() {
+      try {
+        const hand = await getPlayerHand();
+        if (hand) {
+          setPlayerHand(hand);
+        } else {
+          console.error("Player hand is undefined");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchPlayerHand();
+  }, []);
+
   const cards = [
     { suit: "hearts", value: "A" },
     { suit: "clubs", value: "Q" },
