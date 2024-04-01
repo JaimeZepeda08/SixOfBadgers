@@ -11,6 +11,12 @@ import com.cs506group12.backend.models.Player;
 
 public class testCard {
 
+	public void main(String[] args){
+		testCard();
+
+		testEqualsObject();
+	}
+
 	/**
 	 * Tests Rank getter/setter
 	 */
@@ -18,8 +24,6 @@ public class testCard {
 	public void testCard() {
 		Card c = new Card(Card.SUIT.CLUBS, 9);
 		assertNotNull(c);
-        
-        Card test = new Card(Card.SUIT.HEARTS,14);
 
     }
 
@@ -27,7 +31,7 @@ public class testCard {
      * Tests the quality operator.
      */
     @Test
-	public void testEqualsObject() {
+	public static void testEqualsObject() {
 		Card c1 = new Card(Card.SUIT.DIAMONDS, 10);
 		Card c2 = new Card(Card.SUIT.DIAMONDS, 10);
 		assertEquals(c1,c2);

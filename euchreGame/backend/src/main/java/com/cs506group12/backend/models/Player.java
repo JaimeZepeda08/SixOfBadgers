@@ -16,6 +16,7 @@ public class Player {
 	 */
 	public Player(String name) {
 		this.userName = name;
+		this.hand = new ArrayList<Card>();
 	}
 
 	/*
