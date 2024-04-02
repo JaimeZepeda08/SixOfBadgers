@@ -29,7 +29,6 @@ export default function Home() {
     { suit: "?", value: "?" },
     { suit: "?", value: "?" },
     { suit: "?", value: "?" },
-    { suit: "?", value: "?" },
   ];
 
   // use state to keep track of currently selected card

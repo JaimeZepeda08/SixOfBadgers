@@ -19,6 +19,8 @@ interface Hand {
  * @param {object} Hand The component's props
  * @param {Card[]} cards An array of cards
  * @returns HTML representation of a hand of cards
+ *
+ * @author jaime zepeda
  */
 const Hand = ({ cards, onCardSelect }: Hand) => {
   const spreadAngle = 5;

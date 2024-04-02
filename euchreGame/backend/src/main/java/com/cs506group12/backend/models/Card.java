@@ -7,7 +7,7 @@ package com.cs506group12.backend.models;
  *
  */
 public class Card {
-	
+
 	/**
 	 * Enumeration for the card class
 	 */
@@ -18,8 +18,8 @@ public class Card {
 		SPADES
 	}
 
-	public final SUIT suit;
-	public final int value;
+	private final SUIT suit;
+	private final int value;
 
 	/**
 	 * Constructor for the card class. Takes in a SUIT and a value
@@ -49,7 +49,6 @@ public class Card {
 		Card otherCard = (Card) obj;
 		return this.value == otherCard.value && this.suit == otherCard.suit;
 	}
-
 
 	/**
 	 * String method for the Card class. Returns the value and the suit as a string.
@@ -90,63 +89,59 @@ public class Card {
 		return ret;
 	}
 
-
 	/**
 	 * Method to calculate the value of the card to compare
 	 * 
-	 * @param trump The trump of the round
+	 * @param trump   The trump of the round
 	 * @param leading The leading card of this round
 	 * @return The value of the card based on the trump and the leading value
 	 */
 	public int value(SUIT trump, SUIT leading) {
 		SUIT sameColor = twinColor(trump);
-	
+
 		if (this.suit == trump) {
-			if (this.value == 11) { /*Jack of trump suit*/
+			if (this.value == 11) { /* Jack of trump suit */
 				return 44;
 			} else {
 				return this.value + 28;
 			}
 		}
-	
-		if (this.suit == sameColor && this.value == 11) { /*Jack of same color*/
+
+		if (this.suit == sameColor && this.value == 11) { /* Jack of same color */
 			return 43;
 		}
-	
+
 		if (this.suit == leading) {
 			return this.value + 14;
 		}
-	
+
 		return this.value;
 	}
-	
 
 	/**
-	 * Method to calculate what the other color is that matters for the trump.\
+	 * Method to calculate what the other color is that matters for the trump.
 	 * 
 	 * @param trump The suit that is trump this round
 	 * @return The corresponding suit for the trump
 	 */
-	public static SUIT twinColor(SUIT trump){
+	public static SUIT twinColor(SUIT trump) {
 
 		SUIT sameColor = null;
-		switch (trump) 
-		{
-		case CLUBS:
-			sameColor = SUIT.SPADES;
-			break;
-		case SPADES:
-			sameColor = SUIT.CLUBS;
-			break;
-		case HEARTS:
-			sameColor = SUIT.DIAMONDS;
-			break;
-		default:
-			sameColor = SUIT.HEARTS;
-			break;
+		switch (trump) {
+			case CLUBS:
+				sameColor = SUIT.SPADES;
+				break;
+			case SPADES:
+				sameColor = SUIT.CLUBS;
+				break;
+			case HEARTS:
+				sameColor = SUIT.DIAMONDS;
+				break;
+			default:
+				sameColor = SUIT.HEARTS;
+				break;
 		}
 		return sameColor;
-	
 	}
 
 	/**
@@ -154,7 +149,7 @@ public class Card {
 	 * 
 	 * @return the suit of the card.
 	 */
-	public SUIT getSuit(){
+	public SUIT getSuit() {
 		return this.suit;
 	}
 
@@ -166,10 +161,4 @@ public class Card {
 	public int getValue() {
 		return this.value;
 	}
-
-
-
-	
-
-
 }

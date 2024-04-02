@@ -13,8 +13,10 @@ interface Card {
  *
  * @param {object} Card The component props
  * @param {string} Card.suit The suit of the card. Expected values: "hearts", "diamonds", "clubs", "spades", or "?" for an opponent's hidden card.
- * @param {string} Card.value The value of the card. Can be "A", "2" through "10", "J", "Q", "K", or "?" for an opponent's hidden card.
+ * @param {string} Card.value The value of the card. Can be "9", "10", "J", "Q", "K", "A" or "?" for an opponent's hidden card.
  * @returns HTML representing a card
+ *
+ * @author jaime zepda
  */
 const Card = ({ suit, value, isSelected }: Card) => {
   // opponent card - denoted by ?, and should not shown
@@ -28,7 +30,7 @@ const Card = ({ suit, value, isSelected }: Card) => {
   const applyHoverStyles = "scale-110 shadow-2xl -translate-y-3 border border-red-700 rounded-lg";
 
   let cardColor = "";
-  if (suit === "hearts" || suit === "diamonds") {
+  if (suit === "HEARTS" || suit === "DIAMONDS") {
     cardColor = "red";
   } else {
     cardColor = "black";
@@ -50,10 +52,10 @@ const Card = ({ suit, value, isSelected }: Card) => {
           transform: `translateY(75%) `,
         }}
       >
-        {suit === "hearts" && "♥"}
-        {suit === "diamonds" && "♦"}
-        {suit === "clubs" && "♣"}
-        {suit === "spades" && "♠"}
+        {suit === "HEARTS" && "♥"}
+        {suit === "DIAMONDS" && "♦"}
+        {suit === "CLUBS" && "♣"}
+        {suit === "SPADES" && "♠"}
       </div>
 
       <div
