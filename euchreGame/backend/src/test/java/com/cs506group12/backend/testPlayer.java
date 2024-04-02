@@ -71,11 +71,12 @@ public class testPlayer {
 	@Test
 	public void testGetHighCardofSuit() {
 		Player p = new Player("TestPlayer");
+		p.hand.add(new Card(Card.SUIT.DIAMONDS, 14));
 		p.hand.add(new Card(Card.SUIT.HEARTS, 10));
-		p.hand.add(new Card(Card.SUIT.DIAMONDS, 11));
 		p.hand.add(new Card(Card.SUIT.CLUBS, 9));
 		p.hand.add(new Card(Card.SUIT.SPADES, 13));
-		p.hand.add(new Card(Card.SUIT.DIAMONDS, 14));
+		p.hand.add(new Card(Card.SUIT.DIAMONDS, 11));
+
 		assertEquals(new Card(Card.SUIT.DIAMONDS,14),p.getHighCardofSuit(Card.SUIT.DIAMONDS));
 	}
 
@@ -85,11 +86,12 @@ public class testPlayer {
 	@Test
 	public void testGetLowCardofSuit() {
 		Player p = new Player("TestPlayer");
-		p.hand.add(new Card(Card.SUIT.HEARTS, 10));
-		p.hand.add(new Card(Card.SUIT.DIAMONDS, 11));
-		p.hand.add(new Card(Card.SUIT.CLUBS, 9));
 		p.hand.add(new Card(Card.SUIT.SPADES, 13));
 		p.hand.add(new Card(Card.SUIT.DIAMONDS, 14));
+		p.hand.add(new Card(Card.SUIT.DIAMONDS, 11));
+		p.hand.add(new Card(Card.SUIT.CLUBS, 9));
+		p.hand.add(new Card(Card.SUIT.HEARTS, 10));
+		
 		assertEquals(new Card(Card.SUIT.CLUBS,9),p.getLowCardOfSuit(Card.SUIT.CLUBS));
 	}
 	
