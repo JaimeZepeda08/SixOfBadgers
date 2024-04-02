@@ -27,7 +27,7 @@ public class Turn {
 		for (int i = 0; i < numPlayers; i++){  // starts at leading player
 			if (cards.get(i).value > max){
 				maxIndex = i;
-				max = cards.get(i).value(tgrum);
+				max = cards.get(i).value;
 			}
 		}
 		return maxIndex;
@@ -58,7 +58,6 @@ public class Turn {
 		this.leadingPlayer = leadingPlayer;
 		this.trump = trump;
 		this.players = players;
-		handleTurn();
 
 	}
 

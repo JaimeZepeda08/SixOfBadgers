@@ -9,15 +9,23 @@ public class EuchreGame {
 
     private ArrayList<Player> players;
     private boolean areTurnsTimed;
-    private boolean threePlayers = false; // currently unimplemented
-    private String trump; // move to Turn
+    private String trump;
     private int dealer; // position of dealer
+    private int leadingPlayer;  // player who plays first card of truck
     private int teamOneScore; // do turns until one of the team scores is over threshhold
     private int teamTwoScore;
     private int pointsThreshold = 10;
-    private Card faceUpCard;
-    private int attackingTeam;
-    private int roundPoints;
+    private Card faceUpCard;  // used to helpo establish trump
+    private int numPlayingCards = 4;  // for if we implement 3 player
+	private int teamThatWonTrick = 0;
+    private int teamThatWonTurn;
+	public int attackingTeam;  // team who establishes trump
+    public int[] teamOverallScores = {0,0};
+	private int[] numTricks = {0,0};
+    private ArrayList<Card> playedCards =  new ArrayList<Card>();
+    private boolean isSoloPlayer;  // if a player goes alone (3 players) - currently unimplemented
+    private int soloPlayerIndex;
+
 
 
     public static ArrayList<Integer> ranks = new ArrayList<>();
@@ -26,14 +34,84 @@ public class EuchreGame {
         initializeDeck();
         dealCards();
         cardsLeft = deck.size();
-        roundPoints = 0;
+
+
+        // game loop - exits once a team wins 
         while (teamOneScore < pointsThreshold && teamTwoScore < pointsThreshold) {
-            Turn turn = new Turn(players, areTurnsTimed, dealer, trump);
-            dealer = (dealer + 1) % 4;
+            for (int i = 0; i < 5; i ++){  // for each trick - TODO terminate early if team wins 
+                handleTrick();            
+            }
+
+            teamThatWonTurn = determineTurnWinner();
+            teamOverallScores[teamThatWonTurn] += handlePoints(teamThatWonTurn); // updates overall point total
+
             Collections.shuffle(deck);
-            dealCards();
-            // need to reassign cards
+            dealCards();  // resets
+            dealer = (dealer + 1) % 4;
+            leadingPlayer = (dealer + 1) % 4; // goes first in first round
+
+
         }
+    }
+
+    /**
+	 * all players play one card then scored
+	 * @return the team number that won the trick
+	 */
+    private void handleTrick(){
+        // TODO if player goes alone (3 players)
+
+		for (int i = 0; i < numPlayingCards; i++){
+			// call a controller and add result to arraylist of played cards then score - starting from leading player
+			teamThatWonTrick = (leadingPlayer + score(playedCards)) % 2;  
+            leadingPlayer = (leadingPlayer + score(playedCards) % 4); // player who won current trick starts of next trick
+            numTricks[teamThatWonTrick]++; // UPDATES
+
+		}
+		playedCards.clear();
+	}
+
+    /**
+     * looks for which team won more tricks
+     * @return the index of the team that won the turn
+     */
+    private int determineTurnWinner(){
+        if (numTricks[0] > numTricks[1])
+            return 0;
+        else {
+            return 1;
+        }
+    }
+
+
+    /**
+     * After all tricks are won, assign points to winning team
+     * @param winningTeam the team that won the turn
+     * @return the number of points the winning team recieves
+     */
+    private int handlePoints(int winningTeam){
+        if (winningTeam != attackingTeam){  // if defenders win
+            return 2;
+        }
+        if (isSoloPlayer){ // if a player goes alone and wins  - only attacking team can go alone so should work
+            if (numTricks[winningTeam] == 5){
+                return 4; // solo player wins 5 tricks
+            }
+            else{
+                return 1; // solo player wins 3 or 4 tricks
+            }
+        }
+        if (numTricks[winningTeam] != 5 && attackingTeam == winningTeam){ // if attacking team wins 3 or 4
+            return 1;
+        }
+        if (numTricks[winningTeam] == 5 && attackingTeam == winningTeam){ // if attacking team wins 5
+            return 2;
+        }
+
+        
+        numTricks[0] = 0;  // reset the numkber of tricks won because turn is over
+        numTricks[1] = 0;
+        return 1;
     }
 
     /**
@@ -75,6 +153,20 @@ public class EuchreGame {
             players.get(i).setHand((ArrayList<Card>) playerHands[i]);
         }
     }
+
+    public int score(ArrayList<Card> cards){
+		int max = 0;
+		int maxIndex = 0;
+
+		for (int i = 0; i < numPlayingCards; i++){  // starts at leading player
+			if (cards.get(i).value(trump, cards.get(i).suit) > max){  // FIX 
+				maxIndex = i;
+				max = cards.get(i).value;
+			}
+		}
+		return maxIndex;
+		
+	}
 
     /**
      * presents all players with option to chose face up card as trumop, if a player chooses, dealer swaps out a card
