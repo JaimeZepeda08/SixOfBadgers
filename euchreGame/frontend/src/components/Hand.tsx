@@ -33,7 +33,7 @@ const Hand = ({ cards }: Hand) => {
         return (
           <div
             key={index}
-            className="absolute hover:z-50"
+            className="absolute"
             style={{
               transform: `rotate(${rotation}deg) translateX(${translateX}px) translateY(-50%)`,
             }}

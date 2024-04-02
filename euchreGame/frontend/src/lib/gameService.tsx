@@ -1,3 +1,5 @@
+"use server";
+
 const localhost: string = "backend";
 
 export async function getPlayerHand() {

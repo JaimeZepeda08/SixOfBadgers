@@ -5,35 +5,25 @@ import { getPlayerHand } from "@/lib/gameService";
 import Hand from "../../components/Hand";
 
 export default function Home() {
-  const [playerHand, setPlayerHand] = useState<string>("");
+  const [playerHand, setPlayerHand] = useState(
+    `[{"suit":"?","value":"?"}, {"suit":"?","value":"?"}, {"suit":"?","value":"?"}, {"suit":"?","value":"?"}, {"suit":"?","value":"?"}]`
+  );
 
   useEffect(() => {
     async function fetchPlayerHand() {
-      try {
-        const hand = await getPlayerHand();
-        if (hand) {
-          setPlayerHand(hand);
-        } else {
-          console.error("Player hand is undefined");
-        }
-      } catch (error) {
-        console.error(error);
+      const hand = await getPlayerHand();
+      if (hand && hand.length > 0) {
+        setPlayerHand(hand);
+      } else {
+        console.error("Player hand is undefined");
       }
     }
     fetchPlayerHand();
   }, []);
 
-  const cards = [
-    { suit: "hearts", value: "A" },
-    { suit: "clubs", value: "Q" },
-    { suit: "spades", value: "J" },
-    { suit: "diamonds", value: "K" },
-    { suit: "clubs", value: "Q" },
-    { suit: "spades", value: "J" },
-  ];
+  const cards = JSON.parse(playerHand);
 
   const opponents = [
-    { suit: "?", value: "?" },
     { suit: "?", value: "?" },
     { suit: "?", value: "?" },
     { suit: "?", value: "?" },

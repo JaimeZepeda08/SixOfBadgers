@@ -23,8 +23,6 @@ services:
       - euchreDatabase
     networks:
       - app_net
-    volumes:
-      - ./backend:/api
 
   euchreDatabase:
     build: ./database
