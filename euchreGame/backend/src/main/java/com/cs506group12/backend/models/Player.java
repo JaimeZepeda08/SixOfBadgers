@@ -4,7 +4,7 @@ import java.util.*;
 import com.cs506group12.backend.models.*;
 
 public class Player {
-	public ArrayList<Card> hand;
+	public ArrayList<Card> hand = new ArrayList<Card>();
 	public String userName;
 	private int points;
 	// maybe a team function - i wpuld prefer for teammates to be 0 and 1 in array
