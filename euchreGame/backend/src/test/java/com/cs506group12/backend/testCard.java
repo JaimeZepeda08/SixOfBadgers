@@ -23,12 +23,12 @@ public class testCard {
 		Card c = new Card(Card.SUIT.CLUBS, 9);
 		assertNotNull(c);
 
-    }
+	}
 
-    /**
-     * Tests the quality operator.
-     */
-    @Test
+	/**
+	 * Tests the quality operator.
+	 */
+	@Test
 	public static void testEqualsObject() {
 		Card c1 = new Card(Card.SUIT.DIAMONDS, 10);
 		Card c2 = new Card(Card.SUIT.DIAMONDS, 10);
