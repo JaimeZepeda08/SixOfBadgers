@@ -5,23 +5,25 @@ services:
     restart: unless-stopped
     container_name: frontend
     ports:
-      - "3000:3000"
-    links:
-      - backend
+      - 3000:3000
+    networks:
+      - app_net
     volumes:
       - ./frontend:/app
+
   backend:
     build: ./backend
     container_name: backend
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - 8080:8080
     environment:
       - SPRING.PROFILES.ACTIVE=default
     depends_on:
       - euchreDatabase
-    volumes:
-      - ./backend:/api
+    networks:
+      - app_net
+
   euchreDatabase:
     build: ./database
     container_name: database
@@ -35,6 +37,12 @@ services:
       - euchredb:/var/lib/mysql
     ports:
       - 5306:3306
+    networks:
+      - app_net
 
 volumes:
   euchredb:
+
+networks:
+  app_net:
+    driver: bridge
