@@ -11,12 +11,13 @@ public class EuchreGame {
     private boolean areTurnsTimed;
     private boolean threePlayers = false; // currently unimplemented
     private String trump; // move to Turn
-    private int turn; // = starts at dealer+1%4
     private int dealer; // position of dealer
     private int teamOneScore; // do turns until one of the team scores is over threshhold
     private int teamTwoScore;
     private int pointsThreshold = 10;
     private Card faceUpCard;
+    private int attackingTeam;
+    private int roundPoints;
 
 
     public static ArrayList<Integer> ranks = new ArrayList<>();
@@ -25,9 +26,12 @@ public class EuchreGame {
         initializeDeck();
         dealCards();
         cardsLeft = deck.size();
-        while (teamOneScore > pointsThreshold && teamTwoScore > pointsThreshold) {
-            Turn turn = new Turn(players, areTurnsTimed, dealer);
+        roundPoints = 0;
+        while (teamOneScore < pointsThreshold && teamTwoScore < pointsThreshold) {
+            Turn turn = new Turn(players, areTurnsTimed, dealer, trump);
             dealer = (dealer + 1) % 4;
+            Collections.shuffle(deck);
+            dealCards();
             // need to reassign cards
         }
     }
@@ -70,6 +74,20 @@ public class EuchreGame {
         for (int i = 0; i < players.size(); i++) {
             players.get(i).setHand((ArrayList<Card>) playerHands[i]);
         }
+    }
+
+    /**
+     * presents all players with option to chose face up card as trumop, if a player chooses, dealer swaps out a card
+     * else, dealer choses trump
+     * @return a string representation of the trump suit
+     */
+    public String establishTrump(){
+        for (int i = 1; i < 4; i++){
+            // controller present player ((dealer+i)%4) with option to choose trumo
+                // if yes, make dealer swap a card, remove card dealer selects from players.get(dealer)'s hand  - use same controller that plays card
+            // else - give dealer option to choose - need a controller and buttons for that 
+        }
+        return trump;
     }
 
     /*
