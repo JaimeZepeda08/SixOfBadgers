@@ -12,29 +12,48 @@ interface Card {
  *
  * @param {object} Card The component props
  * @param {string} Card.suit The suit of the card. Expected values: "hearts", "diamonds", "clubs", "spades", or "?" for an opponent's hidden card.
- * @param {string} Card.value The value of the card. Can be "A", "2" through "10", "J", "Q", "K", or "?" for an opponent's hidden card.
+ * @param {string} Card.value The value of the card. Can be "9", "10", "J", "Q", "K", "A" or "?" for an opponent's hidden card.
  * @returns HTML representing a card
+ *
+ * @author jaime zepda
  */
 const Card = ({ suit, value }: Card) => {
-  // opponent card - denoted by ?, and should not shown
+  // Convert numerical values to their corresponding letters for face cards
+  switch (value.toString()) {
+    case "11":
+      value = "J";
+      break;
+    case "12":
+      value = "Q";
+      break;
+    case "13":
+      value = "K";
+      break;
+    case "14":
+      value = "A";
+      break;
+  }
+
+  // Render an opponent's card with a card back image if suit and value are "?"
   if (suit === "?" && value === "?") {
     return (
       <img
         src="/card_back.png"
-        className="bg-red-900 border border-black rounded-lg h-[7.5rem] w-20 shadow-sm transform transition-transform hover:scale-110 hover:shadow-2xl hover:-translate-y-3"
+        className="bg-red-900 border border-black rounded-lg h-[7.5rem] w-20 shadow-sm"
       />
     );
   }
 
+  // Determine card color based on the suit
   let cardColor = "";
-  if (suit === "hearts" || suit === "diamonds") {
+  if (suit === "HEARTS" || suit === "DIAMONDS") {
     cardColor = "red";
   } else {
     cardColor = "black";
   }
 
   return (
-    <div className="bg-slate-50 border border-black rounded-lg h-[7.5rem] w-20 shadow-sm transform transition-transform hover:scale-110 hover:shadow-2xl hover:-translate-y-3">
+    <div className="bg-slate-50 border border-black rounded-lg h-[7.5rem] w-20 shadow-sm transform transition-transform hover:scale-110 hover:shadow-lg hover:-translate-y-3">
       <div
         className={`absolute top-0 left-0 text-lg font-bold mt ml-1 text-${cardColor}-600`}
       >
@@ -49,10 +68,10 @@ const Card = ({ suit, value }: Card) => {
           transform: `translateY(75%) `,
         }}
       >
-        {suit === "hearts" && "♥"}
-        {suit === "diamonds" && "♦"}
-        {suit === "clubs" && "♣"}
-        {suit === "spades" && "♠"}
+        {suit === "HEARTS" && "♥"}
+        {suit === "DIAMONDS" && "♦"}
+        {suit === "CLUBS" && "♣"}
+        {suit === "SPADES" && "♠"}
       </div>
 
       <div

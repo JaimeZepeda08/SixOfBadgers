@@ -1,17 +1,42 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { getPlayerHand } from "@/lib/gameService";
 import Hand from "../../components/Hand";
 
-export default function Home() {
-  const cards = [
-    { suit: "hearts", value: "A" },
-    { suit: "clubs", value: "Q" },
-    { suit: "spades", value: "J" },
-    { suit: "diamonds", value: "K" },
-    { suit: "clubs", value: "Q" },
-    { suit: "spades", value: "J" },
-  ];
+/**
+ * React component representing the Game page
+ *
+ * @returns JSX element
+ *
+ * @author jaime zepeda
+ */
+export default function Page() {
+  // State variable to hold the player's hand, initialized with dummy data
+  const [playerHand, setPlayerHand] = useState(
+    `[{"suit":"?","value":"?"}, {"suit":"?","value":"?"}, {"suit":"?","value":"?"}, {"suit":"?","value":"?"}, {"suit":"?","value":"?"}]`
+  );
 
+  // Effect hook to fetch player's hand when the component mounts
+  useEffect(() => {
+    async function fetchPlayerHand() {
+      // Fetch player's hand from the server
+      const hand = await getPlayerHand();
+      if (hand && hand.length > 0) {
+        // Update state with the fetched player's hand
+        setPlayerHand(hand);
+      } else {
+        console.error("Player hand is undefined");
+      }
+    }
+    fetchPlayerHand();
+  }, []);
+
+  // Parse the player's hand JSON string into an object
+  const cards = JSON.parse(playerHand);
+
+  // Dummy opponent's hand
   const opponents = [
-    { suit: "?", value: "?" },
     { suit: "?", value: "?" },
     { suit: "?", value: "?" },
     { suit: "?", value: "?" },

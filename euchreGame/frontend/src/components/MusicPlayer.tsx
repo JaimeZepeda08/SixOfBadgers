@@ -4,43 +4,55 @@ import React, { useState, useEffect } from "react";
 import { IoMdVolumeHigh } from "react-icons/io";
 import { IoVolumeMuteSharp } from "react-icons/io5";
 
+/**
+ * The props expected by the MusicPlayer component.
+ */
 interface MusicPlayerProps {
   src: string;
 }
 
+/**
+ * A simple React component for playing audio.
+ */
 const MusicPlayer = ({ src }: MusicPlayerProps) => {
-  const [audio] = useState(new Audio(src));
-  const [isMuted, setIsMuted] = useState(false);
+  // State to manage whether the audio is currently playing or not
+  const [isPlaying, setIsPlaying] = useState(false);
+  // Reference to the audio element
+  const audioRef = React.createRef<HTMLAudioElement>();
 
+  // useEffect hook to handle starting and pausing audio playback
   useEffect(() => {
-    audio.loop = true;
-    audio.play();
-
-    return () => {
-      audio.pause();
-      audio.currentTime = 0;
-    };
-  }, [audio]);
-
-  const toggleSound = () => {
-    if (audio.volume === 0) {
-      audio.volume = 1;
-      setIsMuted(false);
-    } else {
-      audio.volume = 0;
-      setIsMuted(true);
+    const audio = audioRef.current;
+    if (audio) {
+      if (isPlaying) {
+        audio.play(); // If isPlaying is true, play the audio
+      } else {
+        audio.pause(); // If isPlaying is false, pause the audio
+      }
     }
+  }, [isPlaying]); // Run this effect whenever isPlaying changes
+
+  // Function to toggle the playing state
+  const togglePlay = () => {
+    setIsPlaying(!isPlaying);
   };
 
   return (
-    <div
-      onClick={toggleSound}
-      className="w-full h-full cursor-pointer hover:text-white"
-    >
-      {isMuted ? (
-        <IoVolumeMuteSharp className="w-full h-full" />
+    <div className="w-full h-full cursor-pointer hover:text-white">
+      {/* Audio element with source */}
+      <audio ref={audioRef}>
+        <source src={src} />
+        This browser does not support audio.
+      </audio>
+      {/* Button to toggle play/pause */}
+      {isPlaying ? (
+        <button className="w-full h-full" onClick={togglePlay}>
+          <IoMdVolumeHigh />
+        </button>
       ) : (
-        <IoMdVolumeHigh className="w-full h-full" />
+        <button className="w-full h-full" onClick={togglePlay}>
+          <IoVolumeMuteSharp />
+        </button>
       )}
     </div>
   );

@@ -9,16 +9,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import static com.cs506group12.backend.DatabaseConnection.*;
-
 @RestController
 public class SavedGamesController {
     @GetMapping("/getGameRecords")
-    public ArrayList<GameRecord> getRecords(@RequestBody String userName) throws SQLException { 
+    public ArrayList<GameRecord> getRecords(@RequestBody String userName) throws SQLException {
         return null;
     }
-
-
 
     @PostMapping("/saveGameRecord")
     public void postRecord() {
