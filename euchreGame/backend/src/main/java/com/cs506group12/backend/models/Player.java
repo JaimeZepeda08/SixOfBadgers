@@ -40,6 +40,45 @@ public class Player {
 		return points;
 	}
 
+	/**
+	 * returns the highest card of the passed param suit
+	 * 
+	 * @param suit The suit that we want the highest card of.
+	 * @return The card that is the highest of the param's suit in the player's hand
+	 */
+	public Card getHighCardofSuit(Card.SUIT suit) {
+
+		Card high = null;
+
+		for (Card c: hand) {
+			if (c.getSuit() == suit && (high==null || c.getValue() > high.getValue())) {
+				high = c;
+			}
+		}
+
+		return high;
+	}
+
+
+	/**
+	 * returns the lowest card of the passed param suit
+	 * 
+	 * @param suit The suit that we want the lowest card of.
+	 * @return The card that is the lowest of the param's suit in the player's hand
+	 */
+	public Card getLowCardOfSuit(Card.SUIT suit) {
+		Card low = null;
+
+		for (Card c: hand) {
+			if (c.getSuit() == suit && (low==null || c.getValue() < low.getValue())) {
+				low = c;
+			}
+		}
+
+		return low;
+	}
+
+
 	/*
 	 * Adds an integer as paramater to points
 	 */

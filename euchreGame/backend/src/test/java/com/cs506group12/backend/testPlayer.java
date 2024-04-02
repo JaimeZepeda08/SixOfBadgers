@@ -64,4 +64,35 @@ public class testPlayer {
 		assertEquals(2, p.getSuit(Card.SUIT.HEARTS).size());
 		assertEquals(1, p.getSuit(Card.SUIT.SPADES).size());
 	}
+
+	/**
+	 * Tests the high card of suit function
+	 */
+	@Test
+	public void testGetHighCardofSuit() {
+		Player p = new Player("TestPlayer");
+		p.hand.add(new Card(Card.SUIT.DIAMONDS, 14));
+		p.hand.add(new Card(Card.SUIT.HEARTS, 10));
+		p.hand.add(new Card(Card.SUIT.CLUBS, 9));
+		p.hand.add(new Card(Card.SUIT.SPADES, 13));
+		p.hand.add(new Card(Card.SUIT.DIAMONDS, 11));
+
+		assertEquals(new Card(Card.SUIT.DIAMONDS,14),p.getHighCardofSuit(Card.SUIT.DIAMONDS));
+	}
+
+	/**
+	 * Tests the low card of suit function
+	 */
+	@Test
+	public void testGetLowCardofSuit() {
+		Player p = new Player("TestPlayer");
+		p.hand.add(new Card(Card.SUIT.SPADES, 13));
+		p.hand.add(new Card(Card.SUIT.DIAMONDS, 14));
+		p.hand.add(new Card(Card.SUIT.DIAMONDS, 11));
+		p.hand.add(new Card(Card.SUIT.CLUBS, 9));
+		p.hand.add(new Card(Card.SUIT.HEARTS, 10));
+		
+		assertEquals(new Card(Card.SUIT.CLUBS,9),p.getLowCardOfSuit(Card.SUIT.CLUBS));
+	}
+	
 }

@@ -14,6 +14,7 @@ import com.cs506group12.backend.models.Card;
  * @author jaime zepeda
  */
 public class testCard {
+
 	/**
 	 * Tests the Card constructor.
 	 */
