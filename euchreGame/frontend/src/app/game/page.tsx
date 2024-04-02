@@ -35,8 +35,14 @@ export default function Home() {
   // use state to keep track of currently selected card
   const [selectedCard, setSelectedCard] = useState<{ suit: string; value: string } | null>(null);
 
-  const handleCardSelect = (suit: string, value: string) => {
-    setSelectedCard({ suit, value });
+  // selected card will either have values or be null for sending
+  // data to the backend
+  const handleCardSelect = (suit: string | null, value: string | null) => {
+    if (suit === null || value === null) {
+      setSelectedCard(null);
+    } else {
+      setSelectedCard({ suit, value });
+    }
   };
 
   useEffect(() => {
@@ -46,20 +52,20 @@ export default function Home() {
   }, [selectedCard]);
 
   // placeholder for opponents cards
-  const handleOppSelect = (suit: string, value: string) => {
+  const handleOppSelect = (suit: string | null, value: string | null) => {
     console.log("Remove option of touching others cards")
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (selectedCard && selectedCard.suit !== "?" && selectedCard.value !== "?") {
+    // if (selectedCard && selectedCard.suit !== "?" && selectedCard.value !== "?") {
+    if(selectedCard !== null) {
         const formData = new FormData();
         formData.append("suit", selectedCard.suit);
         formData.append("value", selectedCard.value);
         await currentSelectedCard(formData);
     }
 };
-
 
   return (
     <div className="h-screen flex justify-center items-center relative">
@@ -76,10 +82,17 @@ export default function Home() {
         <Hand cards={opponents} onCardSelect={handleOppSelect}/>
       </div>
       <form onSubmit={handleSubmit} className="absolute bottom-0 right-0 m-4">
-        <button type="submit" className="p-2 bg-blue-500 text-white rounded hover:bg-blue-700">
-            Submit Selected Card
+        <button
+          type="submit"
+          className={`px-4 py-2 font-bold text-white rounded ${
+            selectedCard ? 'bg-blue-500 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'
+          }`}
+          disabled={!selectedCard}
+          onClick={() => console.log('Submit action')}
+        >
+          Submit Selected Card
         </button>
-        </form>
+      </form>
     </div>
   );
 }

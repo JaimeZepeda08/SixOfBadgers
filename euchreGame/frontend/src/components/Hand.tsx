@@ -6,7 +6,7 @@ import clsx from "clsx";
 
 interface Hand {
   cards: Card[];
-  onCardSelect: (suit: string, value: string) => void;
+  onCardSelect: (suit: string | null, value: string | null) => void;
 }
 
 /**
@@ -29,9 +29,12 @@ const Hand = ({ cards, onCardSelect }: Hand) => {
   // change selected card when we click on another card
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
+  // selected card will have the values sent to game otherwise when
+  // deselected it will be null values
   const handleCardClick = (index: number) => {
     if(index === selectedCard) {
       setSelectedCard(null);
+      onCardSelect(null, null);
     } else {
       setSelectedCard(index);
       onCardSelect(cards[index].suit, cards[index].value);
