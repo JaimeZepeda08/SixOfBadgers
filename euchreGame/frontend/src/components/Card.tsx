@@ -14,8 +14,11 @@ interface Card {
  * @param {string} Card.suit The suit of the card. Expected values: "hearts", "diamonds", "clubs", "spades", or "?" for an opponent's hidden card.
  * @param {string} Card.value The value of the card. Can be "9", "10", "J", "Q", "K", "A" or "?" for an opponent's hidden card.
  * @returns HTML representing a card
+ *
+ * @author jaime zepda
  */
 const Card = ({ suit, value }: Card) => {
+  // Convert numerical values to their corresponding letters for face cards
   switch (value.toString()) {
     case "11":
       value = "J";
@@ -31,7 +34,7 @@ const Card = ({ suit, value }: Card) => {
       break;
   }
 
-  // opponent card - denoted by ?, and should not shown
+  // Render an opponent's card with a card back image if suit and value are "?"
   if (suit === "?" && value === "?") {
     return (
       <img
@@ -41,6 +44,7 @@ const Card = ({ suit, value }: Card) => {
     );
   }
 
+  // Determine card color based on the suit
   let cardColor = "";
   if (suit === "HEARTS" || suit === "DIAMONDS") {
     cardColor = "red";

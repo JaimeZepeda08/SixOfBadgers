@@ -15,12 +15,14 @@ interface Hand {
  * @param {object} Hand The component's props
  * @param {Card[]} cards An array of cards
  * @returns HTML representation of a hand of cards
+ *
+ * @author jaime zepeda
  */
 const Hand = ({ cards }: Hand) => {
-  const spreadAngle = 5;
-  const spreadOffset = ((cards.length - 1) * spreadAngle) / 2;
-  const padding = 30;
-  const totalWidth = (cards.length - 1) * padding;
+  const spreadAngle = 5; // Angle by which each card is spread out
+  const spreadOffset = ((cards.length - 1) * spreadAngle) / 2; // Offset for centering the spread
+  const padding = 30; // Padding between cards
+  const totalWidth = (cards.length - 1) * padding; // Total width of the hand
 
   return (
     <div
