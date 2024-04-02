@@ -15,12 +15,6 @@ import com.cs506group12.backend.models.Card;
  */
 public class testCard {
 
-	public void main(String[] args){
-		testCard();
-
-		testEqualsObject();
-	}
-
 	/**
 	 * Tests the Card constructor.
 	 */
