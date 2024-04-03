@@ -34,30 +34,6 @@ export async function getGameRecords() {
 }
 
 export async function createUser(formData: FormData) {
-<<<<<<< HEAD
-    // "use server"
-    const url = `http://${localhost}:8080/player/save`;
-    const user = {
-        userName: formData.get("userName"),
-        password: formData.get("password")
-    }
-    console.log(user)
-    try {
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(user)
-        });
-        // checks that the response is valid
-        if (!res.ok) {
-            throw new Error("Failed to save Player");
-        }
-        return res.text();
-    } catch (error) {
-        console.log(error);
-=======
   "use server";
   const url = `http://${localhost}:8080/player/save`;
   const user = {
@@ -76,7 +52,6 @@ export async function createUser(formData: FormData) {
     // checks that the response is valid
     if (!res.ok) {
       throw new Error("Failed to save Player");
->>>>>>> 782f40c6d5e95c00af309ee4c53cdfc3c3309c26
     }
     return res.text();
   } catch (error) {
@@ -110,31 +85,6 @@ export async function currentSelectedCard(formData: FormData) {
 }
 
 export async function getUser(formData: FormData) {
-<<<<<<< HEAD
-    // "use server"
-    const url = `http://${localhost}:8080/player/get`;
-    const user = {
-        userName: formData.get("userName"),
-        password: formData.get("password")
-    }
-    console.log(user)
-    try {
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(user)
-        });
-        // checks that the response is valid
-        if (!res.ok) {
-            throw new Error("Failed to get Player");
-        }
-        return res.json();
-    } catch (error) {
-        console.log(error);
-    }
-=======
   "use server";
   const url = `http://${localhost}:8080/player/get`;
   const user = {
@@ -158,5 +108,4 @@ export async function getUser(formData: FormData) {
   } catch (error) {
     console.log(error);
   }
->>>>>>> 782f40c6d5e95c00af309ee4c53cdfc3c3309c26
 }
