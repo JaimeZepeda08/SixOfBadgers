@@ -31,4 +31,14 @@ public class GameController {
 
         return cards;
     }
+
+    @GetMapping("/getOpponents")
+    public ArrayList<Integer> getOpponents() {
+        ArrayList<Integer> opponents = new ArrayList<>();
+        opponents.add(4);
+        opponents.add(5);
+        opponents.add(4);
+
+        return opponents;
+    }
 }

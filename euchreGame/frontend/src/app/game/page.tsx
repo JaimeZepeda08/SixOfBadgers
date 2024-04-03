@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getPlayerHand } from "@/lib/gameService";
+import { getPlayerHand, getOpponents } from "@/lib/gameService";
 import Hand from "../../components/Hand";
 
 /**
@@ -35,29 +35,46 @@ export default function Page() {
   // Parse the player's hand JSON string into an object
   const cards = JSON.parse(playerHand);
 
-  // Dummy opponent's hand
-  const opponents = [
-    { suit: "?", value: "?" },
-    { suit: "?", value: "?" },
-    { suit: "?", value: "?" },
-    { suit: "?", value: "?" },
-    { suit: "?", value: "?" },
-  ];
+  const [opponentHand, setOpponentHand] = useState(
+    `[{"suit":"?","value":"?"}, {"suit":"?","value":"?"}, {"suit":"?","value":"?"}, {"suit":"?","value":"?"}, {"suit":"?","value":"?"}]`
+  );
+
+  useEffect(() => {
+    async function fetchOpponents() {
+      const hand = await getOpponents();
+      if (hand && hand.length > 0) {
+        setOpponentHand(hand);
+      } else {
+        console.error("Player hand is undefined");
+      }
+    }
+    fetchOpponents();
+  }, []);
+
+  const opponents = JSON.parse(opponentHand);
 
   return (
     <div className="h-screen flex justify-center items-center relative">
       <div className="absolute bottom-8" style={{ transform: "rotate(0deg)" }}>
         <Hand cards={cards} />
       </div>
-      <div className="absolute left-0" style={{ transform: "rotate(90deg)" }}>
-        <Hand cards={opponents} />
-      </div>
-      <div className="absolute top-8" style={{ transform: "rotate(180deg)" }}>
-        <Hand cards={opponents} />
-      </div>
-      <div className="absolute right-0" style={{ transform: "rotate(270deg)" }}>
-        <Hand cards={opponents} />
-      </div>
+      {opponents.map((element: string, index: number) => {
+        const opponentCards = [];
+        for (let i = 0; i < Number(element); i++) {
+          opponentCards.push({ suit: "?", value: "?" });
+        }
+        const rotation = (index + 1) * 90;
+        const dir = ["left-8", "top-8", "right-8"];
+        return (
+          <div
+            key={index}
+            className={`absolute ${dir[index]}`}
+            style={{ transform: `rotate(${rotation}deg)` }}
+          >
+            <Hand cards={opponentCards} />
+          </div>
+        );
+      })}
     </div>
   );
 }

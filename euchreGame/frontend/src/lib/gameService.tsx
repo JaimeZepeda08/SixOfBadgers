@@ -26,3 +26,20 @@ export async function getPlayerHand() {
     console.log(error);
   }
 }
+
+export async function getOpponents() {
+  const url = `http://${localhost}:8080/getOpponents`; // construct URL
+  try {
+    // fetch data from backend
+    const res = await fetch(url, {
+      method: "GET",
+    });
+    // check response status (expected: 200)
+    if (!res.ok) {
+      throw new Error("Failed to opponents");
+    }
+    return await res.text();
+  } catch (error) {
+    console.log(error);
+  }
+}
