@@ -16,6 +16,12 @@ public class EuchreGame {
     private int teamTwoScore;
     private int pointsThreshold = 10;
     private Card faceUpCard;  // used to helpo establish trump
+    private Card trumpSuitCard; // for comparison
+    public Card getTrumpSuitCard() {
+        return trumpSuitCard;
+    }
+
+
     private int numPlayingCards = 4;  // for if we implement 3 player
 	private int teamThatWonTrick = 0;
     private int teamThatWonTurn;
@@ -30,6 +36,10 @@ public class EuchreGame {
     public static ArrayList<Integer> ranks = new ArrayList<>();
 
     public EuchreGame() {
+
+    }
+
+    public void euchreGameLoop(){
         initializeDeck();
         dealCards();
         establishTrump();
@@ -50,8 +60,6 @@ public class EuchreGame {
             dealer = (dealer + 1) % 4;
             leadingPlayer = (dealer + 1) % 4; // goes first in first round
             establishTrump();
-
-
         }
     }
 
@@ -62,7 +70,7 @@ public class EuchreGame {
     private void handleTrick(){
         // TODO if player goes alone (3 players)
 
-		for (int i = 0; i < numPlayingCards; i++){
+		for (int i = 0; i < playedCards.size(); i++){
 			// call a controller and add result to arraylist of played cards then score - starting from leading player
 			teamThatWonTrick = (leadingPlayer + score(playedCards)) % 2;  
             leadingPlayer = (leadingPlayer + score(playedCards) % 4); // player who won current trick starts of next trick
@@ -164,10 +172,10 @@ public class EuchreGame {
 		int max = 0;
 		int maxIndex = 0;
 
-		for (int i = 0; i < numPlayingCards; i++){  // starts at leading player
-			if (cards.get(i).value(trump, cards.get(i).suit) > max){  // FIX 
+		for (int i = 0; i < cards.size(); i++){  // starts at leading player
+			if (cards.get(i).value(trumpSuitCard.getSuit(), cards.get(i).getSuit()) > max){  // temporary - need to assign trump suit
 				maxIndex = i;
-				max = cards.get(i).value;
+				max = cards.get(i).value(trumpSuitCard.getSuit(), cards.get(i).getSuit());
 			}
 		}
 		return maxIndex;
@@ -232,5 +240,86 @@ public class EuchreGame {
     public void setPointsThreshold(int pointsThreshold) {
         this.pointsThreshold = pointsThreshold;
     }
+
+    public int getDealer() {
+        return dealer;
+    }
+
+    public void setDealer(int dealer) {
+        this.dealer = dealer;
+    }
+
+    public int getLeadingPlayer() {
+        return leadingPlayer;
+    }
+
+    public void setLeadingPlayer(int leadingPlayer) {
+        this.leadingPlayer = leadingPlayer;
+    }
+
+    public void setFaceUpCard(Card faceUpCard) {
+        this.faceUpCard = faceUpCard;
+    }
+
+    public int getTeamThatWonTrick() {
+        return teamThatWonTrick;
+    }
+
+    public void setTeamThatWonTrick(int teamThatWonTrick) {
+        this.teamThatWonTrick = teamThatWonTrick;
+    }
+
+    public int getTeamThatWonTurn() {
+        return teamThatWonTurn;
+    }
+
+    public void setTeamThatWonTurn(int teamThatWonTurn) {
+        this.teamThatWonTurn = teamThatWonTurn;
+    }
+
+    public int getAttackingTeam() {
+        return attackingTeam;
+    }
+
+    public void setAttackingTeam(int attackingTeam) {
+        this.attackingTeam = attackingTeam;
+    }
+
+    public int[] getTeamOverallScores() {
+        return teamOverallScores;
+    }
+
+    public void setTeamOverallScores(int[] teamOverallScores) {
+        this.teamOverallScores = teamOverallScores;
+    }
+
+    public int[] getNumTricks() {
+        return numTricks;
+    }
+
+    public void setNumTricks(int[] numTricks) {
+        this.numTricks = numTricks;
+    }
+
+    public ArrayList<Card> getPlayedCards() {
+        return playedCards;
+    }
+
+    public void setPlayedCards(ArrayList<Card> playedCards) {
+        this.playedCards = playedCards;
+    }
+
+    public boolean isSoloPlayer() {
+        return isSoloPlayer;
+    }
+
+    public void setSoloPlayer(boolean isSoloPlayer) {
+        this.isSoloPlayer = isSoloPlayer;
+    }
+
+    public void setTrumpSuitCard(Card trumpSuitCard) {
+        this.trumpSuitCard = trumpSuitCard;
+    }
+    
 
 }

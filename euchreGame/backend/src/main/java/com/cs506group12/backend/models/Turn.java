@@ -2,6 +2,12 @@ package com.cs506group12.backend.models;
 
 import java.util.*;
 
+
+// THIS CLASS IS CURRENTLY NOT IN USE AND HAS OLD VERSION OF METHODS
+
+
+
+
 public class Turn {
 	private String trump;
 	private int numPlayers = 4;
@@ -14,6 +20,8 @@ public class Turn {
 	private int points = 1;
 	public int attackingTeam;
 	public int[] numTricks = {0,0};
+
+
 
 
 	/**
