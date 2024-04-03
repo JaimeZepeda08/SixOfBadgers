@@ -23,7 +23,7 @@ public class EuchreGame {
     public int[] teamOverallScores = {0,0};
 	private int[] numTricks = {0,0};
     private ArrayList<Card> playedCards =  new ArrayList<Card>();
-    private boolean isSoloPlayer;  // if a player goes alone (3 players) - currently unimplemented
+    private boolean isSoloPlayer = false;  // if a player goes alone (3 players) - currently unimplemented
     private int soloPlayerIndex;
 
 
@@ -33,6 +33,7 @@ public class EuchreGame {
     public EuchreGame() {
         initializeDeck();
         dealCards();
+        establishTrump();
         cardsLeft = deck.size();
 
 
@@ -49,6 +50,7 @@ public class EuchreGame {
             dealCards();  // resets
             dealer = (dealer + 1) % 4;
             leadingPlayer = (dealer + 1) % 4; // goes first in first round
+            establishTrump();
 
 
         }
@@ -154,6 +156,11 @@ public class EuchreGame {
         }
     }
 
+    /**
+     * Determines highest value card that wins trick
+     * @param cards - the cards that have been played
+     * @return index of the card with the highest value
+     */
     public int score(ArrayList<Card> cards){
 		int max = 0;
 		int maxIndex = 0;
