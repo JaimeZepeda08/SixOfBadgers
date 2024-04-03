@@ -1,4 +1,6 @@
-package com.cs506group12.backend.models;
+package com.cs506group12.backend;
+
+import com.cs506group12.backend.models.Timer;
 
 public class TimerTest {
 
