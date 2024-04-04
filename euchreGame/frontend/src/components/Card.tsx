@@ -39,7 +39,7 @@ const Card = ({ suit, value }: Card) => {
     return (
       <img
         src="/card_back.png"
-        className="bg-red-900 border border-black rounded-lg h-[7.5rem] w-20 shadow-sm"
+        className="border border-black rounded-lg h-[7.5rem] w-20 shadow-sm"
       />
     );
   }
