@@ -31,4 +31,11 @@ public class GameController {
 
         return cards;
     }
+
+    @PostMapping("/selectedCard")
+    public void playCard(@RequestBody FBUser card) throws SQLException {
+        System.out.println("Suit: " + card.suit + "\nValue: " + card.value);
+        return card;
+    }
+
 }
