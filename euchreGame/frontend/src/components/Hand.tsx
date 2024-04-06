@@ -1,12 +1,8 @@
-'use client';
-
-import React, { use, useState, useEffect } from "react";
+import React from "react";
 import Card from "./Card";
-import clsx from "clsx";
 
 interface Hand {
   cards: Card[];
-  onCardSelect: (suit: string | null, value: string | null) => void;
 }
 
 /**
@@ -22,52 +18,29 @@ interface Hand {
  *
  * @author jaime zepeda
  */
-const Hand = ({ cards, onCardSelect }: Hand) => {
-  const spreadAngle = 5;
-  const spreadOffset = ((cards.length - 1) * spreadAngle) / 2;
-  const padding = 30;
-  const totalWidth = (cards.length - 1) * padding;
-
-  // change selected card when we click on another card
-  const [selectedCard, setSelectedCard] = useState<number | null>(null);
-
-  // selected card will have the values sent to game otherwise when
-  // deselected it will be null values
-  const handleCardClick = (index: number) => {
-    if(index === selectedCard) {
-      setSelectedCard(null);
-      onCardSelect(null, null);
-    } else {
-      setSelectedCard(index);
-      onCardSelect(cards[index].suit, cards[index].value);
-    }
-  };
-
-  useEffect(() => {
-    if (selectedCard !== null) {
-      console.log("Suit: " + cards[selectedCard].suit + " " + "Value: " + cards[selectedCard].value);
-    }
-  }, [selectedCard]);
+const Hand = ({ cards }: Hand) => {
+  const spreadAngle = 5; // Angle by which each card is spread out
+  const spreadOffset = ((cards.length - 1) * spreadAngle) / 2; // Offset for centering the spread
+  const padding = 30; // Padding between cards
+  const totalWidth = (cards.length - 1) * padding; // Total width of the hand
 
   return (
     <div
       className="relative flex justify-center items-center"
       style={{ width: `${totalWidth}px` }}
     >
-      {/* map out all cards and make the card hover if we're over it or we already selected it */}
       {cards.map((card, index) => {
         const rotation = index * spreadAngle - spreadOffset;
         const translateX = padding * index - totalWidth / 2;
         return (
           <div
             key={index}
-            className="absolute cursor-pointer"
-            onClick={() => handleCardClick(index)}
+            className="absolute"
             style={{
-              transform: `rotate(${rotation}deg) translateX(${translateX}px) translateY(-50%)`
+              transform: `rotate(${rotation}deg) translateX(${translateX}px) translateY(-50%)`,
             }}
           >
-            <Card suit={card.suit} value={card.value} isSelected={index === selectedCard} />
+            <Card suit={card.suit} value={card.value} />
           </div>
         );
       })}

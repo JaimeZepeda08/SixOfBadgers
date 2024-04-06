@@ -1,15 +1,9 @@
 import { createUser, getUser } from '@/lib/userService';
 import Link from 'next/link';
 
-/**
- * Page component for user sign-up and retrieval.
- * 
- * @returns {JSX.Element} The Page component.
- */
 export default function Page() {
     return (
         <div className="bg-red-500 h-screen border-2 border-black mt-2">
-            {/* Sign-up form */}
             <h1 className="m-3">Enter a UserName and a Password to sign up!</h1>
             <form action={createUser}>
                 <div className="m-3 block">
@@ -37,7 +31,6 @@ export default function Page() {
                 </div>
             </form>
 
-            {/* User retrieval form */}
             <form action={getUser}>
                 <div className="m-3 block">
                     <label htmlFor="userName" className="mr-2">Username: </label>
