@@ -1,6 +1,7 @@
 interface Card {
   suit: string;
   value: string;
+  isSelected?: boolean;
 }
 
 /**
@@ -17,7 +18,11 @@ interface Card {
  *
  * @author jaime zepda
  */
-const Card = ({ suit, value }: Card) => {
+const Card = ({ suit, value, isSelected }: Card) => {
+
+  // Styles for affecting the card when we are hovering over it
+  const applyHoverStyles = "scale-110 shadow-2xl -translate-y-3 border border-red-700 rounded-lg";
+
   // Convert numerical values to their corresponding letters for face cards
   switch (value.toString()) {
     case "11":
@@ -53,7 +58,7 @@ const Card = ({ suit, value }: Card) => {
   }
 
   return (
-    <div className="bg-slate-50 border border-black rounded-lg h-[7.5rem] w-20 shadow-sm transform transition-transform hover:scale-110 hover:shadow-lg hover:-translate-y-3">
+    <div className={`bg-slate-50 h-32 w-20 shadow-sm transform transition-transform ${isSelected ? applyHoverStyles : 'hover:scale-110 hover:shadow-2xl hover:-translate-y-3 border border-black rounded-lg'}`}>
       <div
         className={`absolute top-0 left-0 text-lg font-bold mt ml-1 text-${cardColor}-600`}
       >
