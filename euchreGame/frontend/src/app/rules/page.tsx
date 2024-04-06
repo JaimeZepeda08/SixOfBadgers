@@ -1,19 +1,10 @@
-
-
-/**
- * Page component providing information on how to play Euchre.
- * 
- * @returns {JSX.Element} The Page component.
- */
 export default function Page() {
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Title */}
       <h1 className="text-3xl font-bold text-center mb-4">
         How to Play Euchre
       </h1>
 
-      {/* What is Euchre? */}
       <h2 className="text-2xl font-semibold mb-2">What is Euchre?</h2>
       <p className="mb-4">
         Euchre is a classNameic trick-taking card game that originated in Europe
@@ -22,7 +13,6 @@ export default function Page() {
         suit.
       </p>
 
-      {/* How to Play */}
       <h2 className="text-2xl font-semibold mb-2">How to Play</h2>
       <p>
         Euchre is traditionally played by four players divided into two teams.
@@ -77,7 +67,6 @@ export default function Page() {
         </li>
       </ol>
 
-      {/* Tips and Strategies */}
       <h2 className="text-2xl font-semibold mb-2">Tips and Strategies</h2>
       <ul className="list-disc ml-4 mb-4">
         <li>Communication with your partner is crucial.</li>
