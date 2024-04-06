@@ -164,12 +164,12 @@ public class EuchreGame {
 		int max = 0;
 		int maxIndex = 0;
 
-		for (int i = 0; i < numPlayingCards; i++){  // starts at leading player
-			if (cards.get(i).value(trump, cards.get(i).suit) > max){  // FIX 
-				maxIndex = i;
-				max = cards.get(i).value;
-			}
-		}
+		//for (int i = 0; i < numPlayingCards; i++){  // starts at leading player
+		//	if (cards.get(i).value(trump, cards.get(i).suit) > max){  // FIX 
+		//		maxIndex = i;
+		//		max = cards.get(i).value;
+		//	}
+		//}
 		return maxIndex;
 		
 	}
