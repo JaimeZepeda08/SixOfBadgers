@@ -9,7 +9,13 @@ interface TopNavProps {
   components?: React.ReactNode[];
 }
 
-// keep list of all pages for the navbar to go through in order
+/**
+ * TopNav component for displaying a horizontal navbar with navigation links.
+ * 
+ * @param {object} props The props object.
+ * @param {React.ReactNode[]} [props.components] Additional components to be added to the navbar.
+ * @returns {JSX.Element} The TopNav component.
+ */
 const TopNav = ({ components }: TopNavProps) => {
   const pathname = usePathname();
 
