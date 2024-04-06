@@ -2,7 +2,7 @@
 
 import React, { use, useState, useEffect } from "react";
 import Hand from "../../components/Hand";
-import { currentSelectedCard } from '@/lib/userService';
+import { submitSelectedCard } from '@/lib/gameService';
 
 /**
  * Home component representing the main page of the game. Each person
@@ -14,12 +14,12 @@ import { currentSelectedCard } from '@/lib/userService';
 export default function Home() {
   // placeholder for user cards
   const cards = [
-    { suit: "hearts", value: "A" },
-    { suit: "clubs", value: "Q" },
-    { suit: "spades", value: "J" },
-    { suit: "diamonds", value: "K" },
-    { suit: "clubs", value: "Q" },
-    { suit: "spades", value: "J" },
+    { suit: "HEARTS", value: "A" },
+    { suit: "CLUBS", value: "Q" },
+    { suit: "SPADES", value: "J" },
+    { suit: "DIAMONDS", value: "K" },
+    { suit: "CLUBS", value: "Q" },
+    { suit: "SPADES", value: "J" },
   ];
 
   // placeholder for opponents cards
@@ -62,12 +62,12 @@ export default function Home() {
         const formData = new FormData();
         formData.append("suit", selectedCard.suit);
         formData.append("value", selectedCard.value);
-        await currentSelectedCard(formData);
+        await submitSelectedCard(formData);
     }
 };
 
   return (
-    <div className="h-screen flex justify-center items-center relative">
+    <div className="h-screen flex justify-center items-center relative" style={{ backgroundColor: 'rgb(74, 160, 74)' }}>
       <div className="absolute bottom-8" style={{ transform: "rotate(0deg)" }}>
         <Hand cards={cards} onCardSelect={handleCardSelect}/>
       </div>
@@ -92,6 +92,7 @@ export default function Home() {
           Submit Selected Card
         </button>
       </form>
+      
     </div>
   );
 }
