@@ -3,6 +3,7 @@
 import React, { use, useState, useEffect } from "react";
 import Hand from "../../components/Hand";
 import { submitSelectedCard } from '@/lib/gameService';
+import './css_files/buttonStyles.css';
 
 /**
  * Home component representing the main page of the game. Each person
@@ -64,10 +65,11 @@ export default function Home() {
         formData.append("value", selectedCard.value);
         await submitSelectedCard(formData);
     }
-};
+  };
 
   return (
     <div className="h-screen flex justify-center items-center relative" style={{ backgroundColor: 'rgb(74, 160, 74)' }}>
+
       <div className="absolute bottom-8" style={{ transform: "rotate(0deg)" }}>
         <Hand cards={cards} onCardSelect={handleCardSelect}/>
       </div>
@@ -80,19 +82,17 @@ export default function Home() {
       <div className="absolute right-0" style={{ transform: "rotate(270deg)" }}>
         <Hand cards={opponents} onCardSelect={handleOppSelect}/>
       </div>
-      <form onSubmit={handleSubmit} className="absolute bottom-0 right-0 m-4">
+
+      <form onSubmit={handleSubmit} className="absolute bottom-0 right-0">
         <button
           type="submit"
-          className={`px-4 py-2 font-bold text-white rounded ${
-            selectedCard ? 'bg-blue-500 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'
-          }`}
+          className={`baseButton ${!selectedCard ? 'disabled' : ''} mb-20 mr-80`}
           disabled={!selectedCard}
           onClick={() => console.log('Submit action')}
         >
-          Submit Selected Card
+          Play Card
         </button>
       </form>
-      
     </div>
   );
 }
