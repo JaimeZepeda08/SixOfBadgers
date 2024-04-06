@@ -1,0 +1,55 @@
+#####################################
+############### Setup ###############
+#####################################
+stages:
+  - lint
+  - static_analysis
+  - unit_test
+  - release
+
+#####################################
+############## Linting ##############
+#####################################
+lint_backend:
+  stage: lint
+  script:
+    - echo placeholder
+  tags:
+    - dind
+
+lint_frontend:
+  stage: lint
+  script:
+    - echo placeholder
+  tags:
+    - dind
+
+#####################################
+########## Static Analysis ##########
+#####################################
+static_analysis_backend:
+  stage: static_analysis
+  script:
+    - echo placeholder
+  tags:
+    - dind
+
+#####################################
+############## Testing ##############
+#####################################
+unit_test_backend:
+  stage: unit_test
+  script:
+    - echo placeholder
+  tags:
+    - dind
+
+#####################################
+########## Build & Release ##########
+#####################################
+release:
+  stage: release
+  script:
+    - echo placeholder
+  tags:
+    - dind

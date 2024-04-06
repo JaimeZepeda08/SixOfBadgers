@@ -3,7 +3,7 @@ export async function getHello() {
     const url = `http://${localhost}:8080/sayhello`;
     try {
         const res = await fetch(url, {
-            cache: "no-store",
+            method: 'GET',
         });
         // checks that the response is valid
         if (!res.ok) {
@@ -20,7 +20,7 @@ export async function getGameRecords() {
     const url = `http://${localhost}:8080/getGameRecords`;
     try {
         const res = await fetch(url, {
-            method: 'GET'
+            method: 'GET',
         });
         // checks that the response is valid
         if (!res.ok) {
