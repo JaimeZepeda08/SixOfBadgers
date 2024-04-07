@@ -1,6 +1,14 @@
 #####################################
 ############### Setup ###############
 #####################################
+image: docker:latest
+services:
+  - docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay
+  SPRING_PROFILES_ACTIVE: gitlab-ci
+
 stages:
   - lint
   - static_analysis
@@ -8,29 +16,28 @@ stages:
   - release
 
 #####################################
-############## Linting ##############
+#Linting and Static Analysis (Backend)
 #####################################
 lint_backend:
   stage: lint
+  image: gradle:latest
+  before_script:
+    - ./gradlew build
   script:
-    - echo placeholder
+    - ./gradlew checkstyleMain
+    - ./gradlew checkstyleTest
+    - ./gradlew pmdMain
+    - ./gradlew spotbugsMain
   tags:
     - dind
 
 lint_frontend:
   stage: lint
+  image: node:latest
+  before_script:
+    - npm install
   script:
-    - echo placeholder
-  tags:
-    - dind
-
-#####################################
-########## Static Analysis ##########
-#####################################
-static_analysis_backend:
-  stage: static_analysis
-  script:
-    - echo placeholder
+    - npm run lint
   tags:
     - dind
 
@@ -39,8 +46,17 @@ static_analysis_backend:
 #####################################
 unit_test_backend:
   stage: unit_test
+  image: gradle:latest
+  before_script:
+    - ./gradlew build
   script:
-    - echo placeholder
+    - ./gradlew test
+    - ./gradlew jacocoTestReport
+  after_script:
+    - echo "Coverage report generated. Check the report at build/reports/jacoco/test/html/index.html"
+  artifacts:
+    paths:
+      - build/reports/jacoco/test/html/
   tags:
     - dind
 
