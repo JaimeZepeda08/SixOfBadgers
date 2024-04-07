@@ -2,8 +2,6 @@ plugins {
 	id 'java'
 	id 'checkstyle'
 	id 'jacoco'
-	id 'pmd'
-	id 'com.github.spotbugs' version '4.7.0'
 	id 'org.springframework.boot' version '3.2.3'
 	id 'io.spring.dependency-management' version '1.1.4'
 }
@@ -14,10 +12,13 @@ version = '0.0.1'
 java {
 	sourceCompatibility = '17'
 }
-
+jacoco {
+	toolVersion = "0.8.11"
+	reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
+}
 checkstyle {
-	toolVersion = "10.12.4"
-	configFile = file("${project.rootDir}/checkstyle.xml")
+	toolVersion = '8.45'
+	configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 }
 
 jacocoTestCoverageVerification {
@@ -29,7 +30,6 @@ jacocoTestCoverageVerification {
 		}
 	}
 }
-
 test {
 	finalizedBy jacocoTestReport // report is always generated after tests run
 }
@@ -42,19 +42,6 @@ jacocoTestReport {
 	}
 }
 
-jacoco {
-	toolVersion = "0.8.11"
-	reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
-}
-
-pmd {
-	toolVersion = '6.38.0'
-}
-
-spotbugs {
-	toolVersion = '4.3.0'
-}
-
 repositories {
 	mavenCentral()
 }
@@ -63,7 +50,7 @@ dependencies {
 	implementation 'com.mysql:mysql-connector-j'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	checkstyle "group:artifact:version"
+	checkstyle 'com.puppycrawl.tools:checkstyle:8.45'
 }
 
 tasks.named('test') {

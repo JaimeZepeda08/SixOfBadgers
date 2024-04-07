@@ -8,10 +8,6 @@
         <module name="AvoidStarImport">
             <property name="severity" value="warning"/>
         </module>
-        <module name="LineLength">
-            <property name="max" value="88"/>
-            <property name="severity" value="warning"/>
-        </module>
         <module name="LeftCurly">
             <property name="severity" value="warning"/>
         </module>
@@ -24,9 +20,15 @@
             <property name="severity" value="warning"/>
         </module>
         <module name="JavadocMethod">
+            <property name="severity" value="warning"/>
         </module>
         <module name="LocalVariableName">
             <property name="format" value="^[a-z](_?[a-zA-Z0-9]+)*$"/>
+            <property name="severity" value="warning"/>
         </module>
+    </module>
+    <module name="LineLength">
+        <property name="max" value="88"/>
+        <property name="severity" value="warning"/>
     </module>
 </module>

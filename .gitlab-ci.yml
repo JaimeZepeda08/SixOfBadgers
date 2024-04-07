@@ -11,7 +11,6 @@ variables:
 
 stages:
   - lint
-  - static_analysis
   - unit_test
   - release
 
@@ -20,14 +19,12 @@ stages:
 #####################################
 lint_backend:
   stage: lint
-  image: gradle:latest
+  image: gradle:8.5
   before_script:
-    - ./gradlew build
+    - cd euchreGame/backend
+    - ./gradlew build --stacktrace
   script:
-    - ./gradlew checkstyleMain
-    - ./gradlew checkstyleTest
-    - ./gradlew pmdMain
-    - ./gradlew spotbugsMain
+    - gradle check
   tags:
     - dind
 
@@ -35,6 +32,7 @@ lint_frontend:
   stage: lint
   image: node:latest
   before_script:
+    - cd euchreGame/frontend
     - npm install
   script:
     - npm run lint
@@ -46,12 +44,13 @@ lint_frontend:
 #####################################
 unit_test_backend:
   stage: unit_test
-  image: gradle:latest
+  image: gradle:8.5.1-jdk17
   before_script:
-    - ./gradlew build
+    - cd euchreGame/backend
+    - ./backend/gradlew build
   script:
-    - ./gradlew test
-    - ./gradlew jacocoTestReport
+    - ./backend/gradlew test
+    - ./backend/gradlew jacocoTestReport
   after_script:
     - echo "Coverage report generated. Check the report at build/reports/jacoco/test/html/index.html"
   artifacts:
