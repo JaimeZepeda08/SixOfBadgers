@@ -3,6 +3,7 @@ package com.cs506group12.backend;
 import com.cs506group12.backend.models.Timer;
 
 public class TimerTest {
+	// will convert over to junit if time - all should pass 
 
     public static boolean testSetTimer(){
         Timer timer = new Timer();
@@ -62,8 +63,8 @@ public class TimerTest {
 		return true;
 
     }
-    public static void main(String args[]){
-        System.out.println("Test : " + allTimerTests());
+    //public static void main(String args[]){
+      //  System.out.println("Test : " + allTimerTests());
   
-    }
+    //}
 }
