@@ -21,7 +21,7 @@ lint_backend:
   stage: lint
   image: gradle:8.5
   before_script:
-    - cd euchreGame/backend
+    - cd /backend
     - ./gradlew build --stacktrace
   script:
     - gradle check
@@ -32,7 +32,7 @@ lint_frontend:
   stage: lint
   image: node:latest
   before_script:
-    - cd euchreGame/frontend
+    - cd /frontend
     - npm install
   script:
     - npm run lint
@@ -46,11 +46,11 @@ unit_test_backend:
   stage: unit_test
   image: gradle:8.5.1-jdk17
   before_script:
-    - cd euchreGame/backend
-    - ./backend/gradlew build
+    - cd /backend
+    - ./gradlew build
   script:
-    - ./backend/gradlew test
-    - ./backend/gradlew jacocoTestReport
+    - ./gradlew test
+    - ./gradlew jacocoTestReport
   after_script:
     - echo "Coverage report generated. Check the report at build/reports/jacoco/test/html/index.html"
   artifacts:
