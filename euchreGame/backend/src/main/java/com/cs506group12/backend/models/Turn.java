@@ -32,15 +32,21 @@ public class Turn {
 		int max = 0;
 		int maxIndex = 0;
 
-		for (int i = 0; i < numPlayers; i++){  // starts at leading player
-			if (cards.get(i).value > max){
-				maxIndex = i;
-				max = cards.get(i).value;
-			}
-		}
+		//for (int i = 0; i < numPlayers; i++){  // starts at leading player
+
+			/** */
+			//COMMENTED OUT HERE
+		//	if (cards.get(i).value() > max){
+		//		maxIndex = i;
+		//		COMMENTED OUT HERE - Kaldan 
+		//		max = cards.get(i).value();
+		//	}
+		//}
 		return maxIndex;
 		
 	}
+
+
 	/**
 	 * 
 	 * @return the team number that won the trick

@@ -26,3 +26,35 @@ export async function getPlayerHand() {
     console.log(error);
   }
 }
+
+/**
+ * Function gives played card from user to the controller 
+ * json inclused suit and value of card
+ * 
+ * @param formData json of card data
+ * @returns confirmation from backend or throws an error if failed to do so
+ */
+export async function submitSelectedCard(formData: FormData) {
+  const url = `http://${localhost}:8080/selectedCard`;
+  const card = {
+      suite: formData.get("suit"),
+      value: formData.get("value")
+  }
+  console.log(card)
+  try {
+      const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(card)
+      });
+      if (!res.ok) {
+          throw new Error("Failed to save selected card")
+      } 
+      return res.text();
+  } catch (error) {
+      console.log(error);
+  }
+}
+
