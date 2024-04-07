@@ -21,7 +21,7 @@ lint_backend:
   stage: lint
   image: gradle:8.5
   before_script:
-    - cd /backend
+    - cd euchreGame/backend
     - ./gradlew build --stacktrace
   script:
     - gradle check
@@ -32,7 +32,7 @@ lint_frontend:
   stage: lint
   image: node:latest
   before_script:
-    - cd /frontend
+    - cd euchreGame/frontend
     - npm install
   script:
     - npm run lint
@@ -46,7 +46,7 @@ unit_test_backend:
   stage: unit_test
   image: gradle:8.5.1-jdk17
   before_script:
-    - cd /backend
+    - cd euchreGame/backend
     - ./gradlew build
   script:
     - ./gradlew test
