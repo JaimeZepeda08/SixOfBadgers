@@ -9,19 +9,14 @@ public class EuchreGame {
 
     private ArrayList<Player> players;
     private boolean areTurnsTimed;
-    private String trump;
-    private int dealer; // position of dealer
-    private int leadingPlayer;  // player who plays first card of truck
+   // private String trump; // not currently used, create a card witb CARD.SUIT.suit , 0  to establish suit 
+    private int dealer = 0; // position of dealer
+    private int leadingPlayer = 1;  // player who plays first card of truck
     private int teamOneScore; // do turns until one of the team scores is over threshhold
     private int teamTwoScore;
     private int pointsThreshold = 10;
     private Card faceUpCard;  // used to helpo establish trump
     private Card trumpSuitCard; // for comparison
-    public Card getTrumpSuitCard() {
-        return trumpSuitCard;
-    }
-
-
     private int numPlayingCards = 4;  // for if we implement 3 player
 	private int teamThatWonTrick = 0;
     private int teamThatWonTurn;
@@ -39,6 +34,10 @@ public class EuchreGame {
 
     }
 
+
+    /**
+     * The function from which the game is run.  Game will run until one team has 10 points
+     */
     public void euchreGameLoop(){
         initializeDeck();
         dealCards();
@@ -58,7 +57,7 @@ public class EuchreGame {
             Collections.shuffle(deck);
             dealCards();  // resets
             dealer = (dealer + 1) % 4;
-            leadingPlayer = (dealer + 1) % 4; // goes first in first round
+            //leadingPlayer = (dealer + 1) % 4; // goes first in first round  MAYBE REMOVE 
             establishTrump();
         }
     }
@@ -67,16 +66,18 @@ public class EuchreGame {
 	 * all players play one card then scored
 	 * @return the team number that won the trick
 	 */
-    private void handleTrick(){
+    public void handleTrick(){
         // TODO if player goes alone (3 players)
-
-		for (int i = 0; i < playedCards.size(); i++){
+		for (int i = 0; i < playedCards.size(); i++){  //TODO - chnage from playedCards.size()
 			// call a controller and add result to arraylist of played cards then score - starting from leading player
-			teamThatWonTrick = (leadingPlayer + score(playedCards)) % 2;  
-            leadingPlayer = (leadingPlayer + score(playedCards) % 4); // player who won current trick starts of next trick
-            numTricks[teamThatWonTrick]++; // UPDATES
+
 
 		}
+
+        // MAYBE IN WRONG SPOT
+        teamThatWonTrick = (leadingPlayer + score(playedCards)) % 2;  
+        leadingPlayer = ((leadingPlayer + score(playedCards)) % 4); // player who won current trick starts of next trick
+        numTricks[teamThatWonTrick] = numTricks[teamThatWonTrick]+1; // UPDATES
 		playedCards.clear();
 	}
 
@@ -98,7 +99,7 @@ public class EuchreGame {
      * @param winningTeam the team that won the turn
      * @return the number of points the winning team recieves
      */
-    private int handlePoints(int winningTeam){
+    public int handlePoints(int winningTeam){
         if (winningTeam != attackingTeam){  // if defenders win
             return 2;
         }
@@ -187,13 +188,12 @@ public class EuchreGame {
      * else, dealer choses trump
      * @return a string representation of the trump suit
      */
-    public String establishTrump(){
+    public void establishTrump(){
         for (int i = 1; i < 4; i++){
             // controller present player ((dealer+i)%4) with option to choose trumo
                 // if yes, make dealer swap a card, remove card dealer selects from players.get(dealer)'s hand  - use same controller that plays card
             // else - give dealer option to choose - need a controller and buttons for that 
         }
-        return trump;
     }
 
     /*
@@ -320,6 +320,8 @@ public class EuchreGame {
     public void setTrumpSuitCard(Card trumpSuitCard) {
         this.trumpSuitCard = trumpSuitCard;
     }
-    
+    public Card getTrumpSuitCard() {
+        return trumpSuitCard;
+    }
 
 }
