@@ -1,7 +1,5 @@
 package com.cs506group12.backend.models;
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-
 /**
  * User object to model an authenticated user logged in to the system.
  * This differs from a player object, which is a representation of one of the
