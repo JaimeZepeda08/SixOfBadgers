@@ -36,14 +36,10 @@ public class GameController {
         return cards;
     }
 
-<<<<<<< HEAD
-  
-=======
     @PostMapping("/selectedCard")
     public void playCard(@RequestBody Card card) throws SQLException {
         System.out.println("Suit: " + card.getSuit() + "\nValue: " + card.getValue());
         //return card;
     }
->>>>>>> main
 
 }
