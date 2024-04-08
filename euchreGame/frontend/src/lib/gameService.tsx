@@ -58,3 +58,27 @@ export async function submitSelectedCard(formData: FormData) {
   }
 }
 
+
+export async function getPlayers() {
+  const url = `http://${localhost}:8080/selectedCard`;
+  const players = {
+
+  }
+  console.log(players)
+  try {
+      const res = await fetch(url, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(players)
+      });
+      if (!res.ok) {
+          throw new Error("Failed to get players")
+      } 
+      return res.text();
+  } catch (error) {
+      console.log(error);
+  }
+}
+
