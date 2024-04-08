@@ -4,12 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 
+import org.junit.jupiter.api.Test;
+
 import com.cs506group12.backend.models.Card;
 import com.cs506group12.backend.models.Player;
 
-import net.bytebuddy.description.type.TypeDescription.Generic.Visitor.TypeErasing;
-
-@SuppressWarnings("unused")
+/**
+ * This class tests the correctness of the Player class.
+ * 
+ * @author kaldan
+ */
 public class testPlayer {
 
 	public void testName() {
@@ -22,9 +26,9 @@ public class testPlayer {
 		Player p = new Player("TestPlayer");
 
 		ArrayList<Card> cards = new ArrayList<Card>();
-		Card card1 = new Card("Clubs", 10);
-		Card card2 = new Card("Clubs", 11);
-		Card card3 = new Card("Clubs", 12);
+		Card card1 = new Card(Card.SUIT.CLUBS, 10);
+		Card card2 = new Card(Card.SUIT.CLUBS, 11);
+		Card card3 = new Card(Card.SUIT.CLUBS, 12);
 
 		cards.add(card1);
 		cards.add(card2);
@@ -36,9 +40,59 @@ public class testPlayer {
 
 		for (int i = 0; i < hand.size(); i++) {
 			assert (hand.get(i).getSuit().equals(cards.get(i).getSuit()));
-			assert (hand.get(i).getRank() == cards.get(i).getRank());
+			assert (hand.get(i).getValue() == cards.get(i).getValue());
 		}
 
 	}
 
+	/**
+	 * Tests the getSuit function.
+	 */
+	@Test
+	public void testGetSuit() {
+		Player p = new Player("TestPlayer");
+		p.hand.add(new Card(Card.SUIT.CLUBS, 9));
+		p.hand.add(new Card(Card.SUIT.HEARTS, 9));
+		p.hand.add(new Card(Card.SUIT.CLUBS, 9));
+		p.hand.add(new Card(Card.SUIT.HEARTS, 9));
+		p.hand.add(new Card(Card.SUIT.CLUBS, 9));
+		p.hand.add(new Card(Card.SUIT.CLUBS, 9));
+		p.hand.add(new Card(Card.SUIT.CLUBS, 9));
+		p.hand.add(new Card(Card.SUIT.SPADES, 9));
+		assertEquals(5, p.getSuit(Card.SUIT.CLUBS).size());
+		assertEquals(0, p.getSuit(Card.SUIT.DIAMONDS).size());
+		assertEquals(2, p.getSuit(Card.SUIT.HEARTS).size());
+		assertEquals(1, p.getSuit(Card.SUIT.SPADES).size());
+	}
+
+	/**
+	 * Tests the high card of suit function
+	 */
+	@Test
+	public void testGetHighCardofSuit() {
+		Player p = new Player("TestPlayer");
+		p.hand.add(new Card(Card.SUIT.DIAMONDS, 14));
+		p.hand.add(new Card(Card.SUIT.HEARTS, 10));
+		p.hand.add(new Card(Card.SUIT.CLUBS, 9));
+		p.hand.add(new Card(Card.SUIT.SPADES, 13));
+		p.hand.add(new Card(Card.SUIT.DIAMONDS, 11));
+
+		assertEquals(new Card(Card.SUIT.DIAMONDS,14),p.getHighCardofSuit(Card.SUIT.DIAMONDS));
+	}
+
+	/**
+	 * Tests the low card of suit function
+	 */
+	@Test
+	public void testGetLowCardofSuit() {
+		Player p = new Player("TestPlayer");
+		p.hand.add(new Card(Card.SUIT.SPADES, 13));
+		p.hand.add(new Card(Card.SUIT.DIAMONDS, 14));
+		p.hand.add(new Card(Card.SUIT.DIAMONDS, 11));
+		p.hand.add(new Card(Card.SUIT.CLUBS, 9));
+		p.hand.add(new Card(Card.SUIT.HEARTS, 10));
+		
+		assertEquals(new Card(Card.SUIT.CLUBS,9),p.getLowCardOfSuit(Card.SUIT.CLUBS));
+	}
+	
 }

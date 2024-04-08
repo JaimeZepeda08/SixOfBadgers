@@ -7,61 +7,158 @@ package com.cs506group12.backend.models;
  *
  */
 public class Card {
-	private final String suit;
-	private final int rank;
 
 	/**
-	 * Constructor to create a card with a String represent suit, and a rank
-	 * represented card
+	 * Enumeration for the card class
 	 */
-	public Card(String suit, int rank) {
-		this.suit = suit;
-		this.rank = rank;
+	public enum SUIT {
+		CLUBS,
+		DIAMONDS,
+		HEARTS,
+		SPADES
+	}
+
+	private final SUIT suit;
+	private final int value;
+
+	/**
+	 * Constructor for the card class. Takes in a SUIT and a value
+	 * 
+	 * @param s
+	 * @param val
+	 */
+	public Card(SUIT s, int val) {
+		this.suit = s;
+		this.value = val;
 	}
 
 	/**
-	 *
+	 * 
+	 * Returns false if the other object is null or if the class is different.
+	 * 
+	 * Returns true if the card and suit are the same.
+	 * 
+	 * @param Object obj The other object that we will be checking equality with.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || obj.getClass() != this.getClass()) {
+			return false;
+		}
+
+		Card otherCard = (Card) obj;
+		return this.value == otherCard.value && this.suit == otherCard.suit;
+	}
+
+	/**
+	 * String method for the Card class. Returns the value and the suit as a string.
 	 */
 	@Override
 	public String toString() {
-		return " " + rank + " of " + suit;
-	}
 
-	public String getSuit() {
-		return suit;
-	}
+		String ret = "";
 
-	public int getRank() {
-		return rank;
+		if (this.value == 9) {
+			ret = "Nine";
+		} else if (this.value == 10) {
+			ret = "Ten";
+		} else if (this.value == 11) {
+			ret = "Jack";
+		} else if (this.value == 12) {
+			ret = "Queen";
+		} else if (this.value == 13) {
+			ret = "King";
+		} else if (this.value == 14) {
+			ret = "Ace";
+		} else {
+			ret = "NOT VALID";
+		}
+
+		ret += " of ";
+
+		if (this.suit == SUIT.CLUBS) {
+			ret += "Clubs";
+		} else if (this.suit == SUIT.DIAMONDS) {
+			ret += "Diamonds";
+		} else if (this.suit == SUIT.HEARTS) {
+			ret += "Hearts";
+		} else {
+			ret += "Spades";
+		}
+
+		return ret;
 	}
 
 	/**
-	 * Compares this card with the specified card for order. Cards are compared
-	 * based on their ranks.
-	 *
-	 * @param other the card to be compared
-	 * @return a negative integer, zero, or a positive integer as this card is less
-	 *         than, equal to, or greater than the specified card.
-	 *
-	@Override
-	public int compareTo(Card other, String leadSuit, String trumpSuit) {
+	 * Method to calculate the value of the card to compare
+	 * 
+	 * @param trump   The trump of the round
+	 * @param leading The leading card of this round
+	 * @return The value of the card based on the trump and the leading value
+	 */
+	public int value(SUIT trump, SUIT leading) {
+		SUIT sameColor = twinColor(trump);
 
-		if (other.suit.equals(leadSuit)) {
-			return this.rank - other.rank;
-		} else if (!this.suit.equals(trumpSuit) && other.suit.equals(trumpSuit)) {
-			return -1;
-		} else if (this.suit.equals(trumpSuit) && !other.suit.equals(trumpSuit)) {
-			return 1;
-		} else {
-			return trumpCompare(other);
+		if (this.suit == trump) {
+			if (this.value == 11) { /* Jack of trump suit */
+				return 44;
+			} else {
+				return this.value + 28;
+			}
 		}
-		return 0;
+
+		if (this.suit == sameColor && this.value == 11) { /* Jack of same color */
+			return 43;
+		}
+
+		if (this.suit == leading) {
+			return this.value + 14;
+		}
+
+		return this.value;
 	}
 
-	*/
-	public int trumpCompare(Card other) {
+	/**
+	 * Method to calculate what the other color is that matters for the trump.
+	 * 
+	 * @param trump The suit that is trump this round
+	 * @return The corresponding suit for the trump
+	 */
+	public static SUIT twinColor(SUIT trump) {
 
-		return 0;
+		SUIT sameColor = null;
+		switch (trump) {
+			case CLUBS:
+				sameColor = SUIT.SPADES;
+				break;
+			case SPADES:
+				sameColor = SUIT.CLUBS;
+				break;
+			case HEARTS:
+				sameColor = SUIT.DIAMONDS;
+				break;
+			default:
+				sameColor = SUIT.HEARTS;
+				break;
+		}
+		return sameColor;
 	}
 
+	/**
+	 * Getter method for the suit of the card class
+	 * 
+	 * @return the suit of the card.
+	 */
+	public SUIT getSuit() {
+		return this.suit;
+	}
+
+	/**
+	 * Getter method for the vlaue of the card class
+	 * 
+	 * @return The value of the card
+	 */
+	public int getValue() {
+		return this.value;
+	}
 }

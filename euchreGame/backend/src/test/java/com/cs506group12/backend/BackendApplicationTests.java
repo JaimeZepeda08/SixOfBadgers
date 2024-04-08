@@ -9,10 +9,6 @@ class BackendApplicationTests {
 	@Test
 	void contextLoads() {
 
-		testCard test = new testCard();
-		test.testAll();
-		test.testRank();
-		test.testSuit();
 	}
 
 }

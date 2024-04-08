@@ -4,7 +4,7 @@ import java.util.*;
 import com.cs506group12.backend.models.*;
 
 public class Player {
-	private ArrayList<Card> hand;
+	public ArrayList<Card> hand = new ArrayList<Card>();
 	public String userName;
 	private int points;
 	// maybe a team function - i wpuld prefer for teammates to be 0 and 1 in array
@@ -16,6 +16,7 @@ public class Player {
 	 */
 	public Player(String name) {
 		this.userName = name;
+		this.hand = new ArrayList<Card>();
 	}
 
 	/*
@@ -39,6 +40,45 @@ public class Player {
 		return points;
 	}
 
+	/**
+	 * returns the highest card of the passed param suit
+	 * 
+	 * @param suit The suit that we want the highest card of.
+	 * @return The card that is the highest of the param's suit in the player's hand
+	 */
+	public Card getHighCardofSuit(Card.SUIT suit) {
+
+		Card high = null;
+
+		for (Card c: hand) {
+			if (c.getSuit() == suit && (high==null || c.getValue() > high.getValue())) {
+				high = c;
+			}
+		}
+
+		return high;
+	}
+
+
+	/**
+	 * returns the lowest card of the passed param suit
+	 * 
+	 * @param suit The suit that we want the lowest card of.
+	 * @return The card that is the lowest of the param's suit in the player's hand
+	 */
+	public Card getLowCardOfSuit(Card.SUIT suit) {
+		Card low = null;
+
+		for (Card c: hand) {
+			if (c.getSuit() == suit && (low==null || c.getValue() < low.getValue())) {
+				low = c;
+			}
+		}
+
+		return low;
+	}
+
+
 	/*
 	 * Adds an integer as paramater to points
 	 */
@@ -58,4 +98,21 @@ public class Player {
 		return null;
 	}
 
+	/**
+	 * returns the cards of the parameter suit and returns them as an arraylist
+	 * 
+	 * @param suit The suit to be searched for
+	 * @return The list of the suits.
+	 */
+	public ArrayList<Card> getSuit(Card.SUIT suit) {
+
+		ArrayList<Card> list = new ArrayList<Card>();
+
+		for (Card c : hand) {
+			if (c.getSuit() == suit) {
+				list.add(c);
+			}
+		}
+		return list;
+	}
 }
