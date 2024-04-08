@@ -58,3 +58,47 @@ export async function submitSelectedCard(formData: FormData) {
   }
 }
 
+/**
+ * Retrives players and their data to display in the game
+ * 
+ * @returns confirmation from backend or throws an error if failed to do so
+ */
+export async function getPlayers() {
+  const url = `http://${localhost}:8080/`;
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+    });
+    // checks that the response is valid
+    if (!res.ok) {
+      throw new Error("Failed to get players");
+    }
+    // creates and maps an array of Test Objects
+    return await res.json();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Retrives the current trump suit for the 
+ * trick
+ * 
+ * @returns confirmation from backend or throws an error if failed to do so
+ */
+export async function getTrumpSuit() {
+  const url = `http://${localhost}:8080/`;
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+    });
+    // checks that the response is valid
+    if (!res.ok) {
+      throw new Error("Failed to get records");
+    }
+    // creates and maps an array of Test Objects
+    return await res.json();
+  } catch (error) {
+    console.log(error);
+  }
+}

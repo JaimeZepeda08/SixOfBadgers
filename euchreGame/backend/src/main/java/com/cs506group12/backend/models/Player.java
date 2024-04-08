@@ -117,6 +117,13 @@ public class Player {
 		return list;
 	}
 
+
+	/**
+	 * Checks if the players hands has tghe param suit
+	 * 
+	 * @param suit The suit that will be checked to see if there is a player hand
+	 * @return
+	 */
 	public boolean hasSuitCard(Card.SUIT suit) {
 		for (Card c: hand) {
 			if (c.getSuit() == suit) {
@@ -126,6 +133,13 @@ public class Player {
 		return false;
 	}
 
+	/**
+	 * Method to get the playable cards for the round
+	 * 
+	 * @param leadingSuit The leading suit of the trick
+	 * @param trumpSuit The trump suit of the tricm
+	 * @return Returns an array of boolean for the player cards.
+	 */
 	public boolean[] getPlayableCards(Card.SUIT leadingSuit, Card.SUIT trumpSuit) {
 		boolean[] toReturn = new boolean[hand.size()];
 		boolean hasAtLeastOneOfSuit = false;

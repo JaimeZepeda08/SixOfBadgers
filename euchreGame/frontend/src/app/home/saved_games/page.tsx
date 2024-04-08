@@ -14,8 +14,7 @@ import { getGameRecords } from "@/lib/userService";
  *
  * @returns {JSX.Element} The component renders a grid of saved games, with each row
  * representing a game. It includes a header row for labels and multiple game rows, each displaying
- * the game's details. Currently, there is no interaction logic implemented for accessing more
- * detailed data about each game.
+ * the game's details.
  */
 export default function Page() {
   // saved games data that will eventually be grabbed from the backend
