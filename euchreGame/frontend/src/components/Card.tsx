@@ -58,6 +58,7 @@ const Card = ({ suit, value, isSelected }: Card) => {
   }
 
   return (
+    // card will have certain effect when cursor is hovering over it
     <div className={`bg-slate-50 h-32 w-20 shadow-sm transform transition-transform ${isSelected ? applyHoverStyles : 'hover:scale-110 hover:shadow-2xl hover:-translate-y-3 border border-black rounded-lg'}`}>
       <div
         className={`absolute top-0 left-0 text-lg font-bold mt ml-1 text-${cardColor}-600`}
@@ -73,6 +74,7 @@ const Card = ({ suit, value, isSelected }: Card) => {
           transform: `translateY(75%) `,
         }}
       >
+        {/* card is chosen with icon */}
         {suit === "HEARTS" && "♥"}
         {suit === "DIAMONDS" && "♦"}
         {suit === "CLUBS" && "♣"}
