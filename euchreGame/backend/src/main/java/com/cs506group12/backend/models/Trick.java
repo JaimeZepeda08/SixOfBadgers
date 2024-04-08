@@ -20,7 +20,7 @@ class Trick {
 	
 	public void playCardForCurrentPlayer(Card c)
 	{
-		if (currentPlayer == leadingPlay
+		if (currentPlayer == leadingPlayer)
 		{
 			leadingSuit = c.getSuit();
 			currentWinner = currentPlayer;
@@ -55,4 +55,5 @@ class Trick {
 	{
 		return new Trick(currentWinner,trump);
 	}
+
 }
