@@ -86,6 +86,7 @@ public class Player {
 		this.points += points;
 	}
 
+
 	/*
 	 * takes a Card element and removes it from the hand. Returns the same element
 	 */
@@ -115,4 +116,55 @@ public class Player {
 		}
 		return list;
 	}
+
+
+	/**
+	 * Checks if the players hands has tghe param suit
+	 * 
+	 * @param suit The suit that will be checked to see if there is a player hand
+	 * @return
+	 */
+	public boolean hasSuitCard(Card.SUIT suit) {
+		for (Card c: hand) {
+			if (c.getSuit() == suit) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Method to get the playable cards for the round
+	 * 
+	 * @param leadingSuit The leading suit of the trick
+	 * @param trumpSuit The trump suit of the tricm
+	 * @return Returns an array of boolean for the player cards.
+	 */
+	public boolean[] getPlayableCards(Card.SUIT leadingSuit, Card.SUIT trumpSuit) {
+		boolean[] toReturn = new boolean[hand.size()];
+		boolean hasAtLeastOneOfSuit = false;
+		Card.SUIT sameColorAsTrump = Card.twinColor(trumpSuit);
+		Card c;
+		
+		for (int i = 0; i < hand.size(); i++) {
+			c = hand.get(i);
+			if ((c.getSuit() == leadingSuit && !(c.getSuit() == sameColorAsTrump && c.getValue() == 11)) ||
+				(leadingSuit == trumpSuit && c.getSuit() == sameColorAsTrump && c.getValue() == 11)) {
+				hasAtLeastOneOfSuit = true;
+				toReturn[i] = true;
+			} else {
+				toReturn[i] = false;
+			}
+		}
+		
+		if (!hasAtLeastOneOfSuit) {
+			for (int i = 0; i < hand.size(); i++) {
+				toReturn[i] = true;
+			}
+		}
+		
+		return toReturn;
+	}
+	
+
 }
