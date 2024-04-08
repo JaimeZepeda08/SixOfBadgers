@@ -3,6 +3,8 @@ import Link from 'next/link';
 
 /**
  * Page component for user sign-up and retrieval.
+ * This component renders a sign-up form and a user retrieval form, allowing users to create new accounts
+ * and retrieve existing user information. It includes input fields for username and password for both forms.
  * 
  * @returns {JSX.Element} The Page component.
  */

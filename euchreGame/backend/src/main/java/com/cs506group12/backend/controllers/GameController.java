@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import com.cs506group12.backend.frontendToBackend.FBUser;
 import com.cs506group12.backend.models.Card;
 
 /**
