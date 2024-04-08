@@ -161,4 +161,16 @@ public class Card {
 	public int getValue() {
 		return this.value;
 	}
+
+	/**
+	 * 
+	 * @param other
+	 * @param trump
+	 * @param leading
+	 * @return
+	 */
+	public boolean greater(Card other, SUIT trump, SUIT leading)
+	{
+		return this.value(trump,leading) > other.value(trump, leading);	
+	}
 }

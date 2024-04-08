@@ -67,12 +67,10 @@ public class EuchreGame {
 	 * @return the team number that won the trick
 	 */
     public void handleTrick(){
-        // TODO if player goes alone (3 players)
-		for (int i = 0; i < playedCards.size(); i++){  //TODO - chnage from playedCards.size()
-			// call a controller and add result to arraylist of played cards then score - starting from leading player
+        //who's playering is  alone
+        for (Player p: players) {
 
-
-		}
+        }
 
         // MAYBE IN WRONG SPOT
         teamThatWonTrick = (leadingPlayer + score(playedCards)) % 2;  
