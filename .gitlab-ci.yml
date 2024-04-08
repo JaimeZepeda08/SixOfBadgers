@@ -51,11 +51,17 @@ unit_test_backend:
   script:
     - ./gradlew test
     - ./gradlew jacocoTestReport
+    - ./gradlew jacocoTestCoverageVerification
   after_script:
     - echo "Coverage report generated. Check the report at build/reports/jacoco/test/html/index.html"
   artifacts:
+    reports:
+      junit:
+       - build/test-results/test/*.xml
+       - build/reports/jacoco/test/jacocoTestReport.xml
     paths:
       - build/reports/jacoco/test/html/
+  coverage: /(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/ # regex to match the coverage percentage
   tags:
     - dind
 
