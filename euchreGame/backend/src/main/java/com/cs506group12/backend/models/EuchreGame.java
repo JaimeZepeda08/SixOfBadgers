@@ -9,13 +9,14 @@ public class EuchreGame {
 
     private ArrayList<Player> players;
     private boolean areTurnsTimed;
-    private String trump;
-    private int dealer; // position of dealer
-    private int leadingPlayer;  // player who plays first card of truck
+   // private String trump; // not currently used, create a card witb CARD.SUIT.suit , 0  to establish suit 
+    private int dealer = 0; // position of dealer
+    private int leadingPlayer = 1;  // player who plays first card of truck
     private int teamOneScore; // do turns until one of the team scores is over threshhold
     private int teamTwoScore;
     private int pointsThreshold = 10;
     private Card faceUpCard;  // used to helpo establish trump
+    private Card trumpSuitCard; // for comparison
     private int numPlayingCards = 4;  // for if we implement 3 player
 	private int teamThatWonTrick = 0;
     private int teamThatWonTurn;
@@ -30,6 +31,14 @@ public class EuchreGame {
     public static ArrayList<Integer> ranks = new ArrayList<>();
 
     public EuchreGame() {
+
+    }
+
+
+    /**
+     * The function from which the game is run.  Game will run until one team has 10 points
+     */
+    public void euchreGameLoop(){
         initializeDeck();
         dealCards();
         establishTrump();
@@ -48,10 +57,8 @@ public class EuchreGame {
             Collections.shuffle(deck);
             dealCards();  // resets
             dealer = (dealer + 1) % 4;
-            leadingPlayer = (dealer + 1) % 4; // goes first in first round
+            //leadingPlayer = (dealer + 1) % 4; // goes first in first round  MAYBE REMOVE 
             establishTrump();
-
-
         }
     }
 
@@ -59,16 +66,18 @@ public class EuchreGame {
 	 * all players play one card then scored
 	 * @return the team number that won the trick
 	 */
-    private void handleTrick(){
+    public void handleTrick(){
         // TODO if player goes alone (3 players)
-
-		for (int i = 0; i < numPlayingCards; i++){
+		for (int i = 0; i < playedCards.size(); i++){  //TODO - chnage from playedCards.size()
 			// call a controller and add result to arraylist of played cards then score - starting from leading player
-			teamThatWonTrick = (leadingPlayer + score(playedCards)) % 2;  
-            leadingPlayer = (leadingPlayer + score(playedCards) % 4); // player who won current trick starts of next trick
-            numTricks[teamThatWonTrick]++; // UPDATES
+
 
 		}
+
+        // MAYBE IN WRONG SPOT
+        teamThatWonTrick = (leadingPlayer + score(playedCards)) % 2;  
+        leadingPlayer = ((leadingPlayer + score(playedCards)) % 4); // player who won current trick starts of next trick
+        numTricks[teamThatWonTrick] = numTricks[teamThatWonTrick]+1; // UPDATES
 		playedCards.clear();
 	}
 
@@ -90,7 +99,7 @@ public class EuchreGame {
      * @param winningTeam the team that won the turn
      * @return the number of points the winning team recieves
      */
-    private int handlePoints(int winningTeam){
+    public int handlePoints(int winningTeam){
         if (winningTeam != attackingTeam){  // if defenders win
             return 2;
         }
@@ -164,10 +173,10 @@ public class EuchreGame {
 		int max = 0;
 		int maxIndex = 0;
 
-		for (int i = 0; i < numPlayingCards; i++){  // starts at leading player
-			if (cards.get(i).value(trump, cards.get(i).suit) > max){  // FIX 
+		for (int i = 0; i < cards.size(); i++){  // starts at leading player
+			if (cards.get(i).value(trumpSuitCard.getSuit(), cards.get(i).getSuit()) > max){  // temporary - need to assign trump suit
 				maxIndex = i;
-				max = cards.get(i).value;
+				max = cards.get(i).value(trumpSuitCard.getSuit(), cards.get(i).getSuit());
 			}
 		}
 		return maxIndex;
@@ -179,13 +188,12 @@ public class EuchreGame {
      * else, dealer choses trump
      * @return a string representation of the trump suit
      */
-    public String establishTrump(){
+    public void establishTrump(){
         for (int i = 1; i < 4; i++){
             // controller present player ((dealer+i)%4) with option to choose trumo
                 // if yes, make dealer swap a card, remove card dealer selects from players.get(dealer)'s hand  - use same controller that plays card
             // else - give dealer option to choose - need a controller and buttons for that 
         }
-        return trump;
     }
 
     /*
@@ -231,6 +239,89 @@ public class EuchreGame {
 
     public void setPointsThreshold(int pointsThreshold) {
         this.pointsThreshold = pointsThreshold;
+    }
+
+    public int getDealer() {
+        return dealer;
+    }
+
+    public void setDealer(int dealer) {
+        this.dealer = dealer;
+    }
+
+    public int getLeadingPlayer() {
+        return leadingPlayer;
+    }
+
+    public void setLeadingPlayer(int leadingPlayer) {
+        this.leadingPlayer = leadingPlayer;
+    }
+
+    public void setFaceUpCard(Card faceUpCard) {
+        this.faceUpCard = faceUpCard;
+    }
+
+    public int getTeamThatWonTrick() {
+        return teamThatWonTrick;
+    }
+
+    public void setTeamThatWonTrick(int teamThatWonTrick) {
+        this.teamThatWonTrick = teamThatWonTrick;
+    }
+
+    public int getTeamThatWonTurn() {
+        return teamThatWonTurn;
+    }
+
+    public void setTeamThatWonTurn(int teamThatWonTurn) {
+        this.teamThatWonTurn = teamThatWonTurn;
+    }
+
+    public int getAttackingTeam() {
+        return attackingTeam;
+    }
+
+    public void setAttackingTeam(int attackingTeam) {
+        this.attackingTeam = attackingTeam;
+    }
+
+    public int[] getTeamOverallScores() {
+        return teamOverallScores;
+    }
+
+    public void setTeamOverallScores(int[] teamOverallScores) {
+        this.teamOverallScores = teamOverallScores;
+    }
+
+    public int[] getNumTricks() {
+        return numTricks;
+    }
+
+    public void setNumTricks(int[] numTricks) {
+        this.numTricks = numTricks;
+    }
+
+    public ArrayList<Card> getPlayedCards() {
+        return playedCards;
+    }
+
+    public void setPlayedCards(ArrayList<Card> playedCards) {
+        this.playedCards = playedCards;
+    }
+
+    public boolean isSoloPlayer() {
+        return isSoloPlayer;
+    }
+
+    public void setSoloPlayer(boolean isSoloPlayer) {
+        this.isSoloPlayer = isSoloPlayer;
+    }
+
+    public void setTrumpSuitCard(Card trumpSuitCard) {
+        this.trumpSuitCard = trumpSuitCard;
+    }
+    public Card getTrumpSuitCard() {
+        return trumpSuitCard;
     }
 
 }
