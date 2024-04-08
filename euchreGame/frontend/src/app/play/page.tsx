@@ -103,6 +103,7 @@ export default function Page() {
           4 Players
         </label>
       </div>
+
       {/* setting for number of points a player needs to win */}
       <div className="m-3 block">
         <label htmlFor="timePerTurn1" className="mr-2">Time Per Turn(Seconds):</label>
@@ -114,6 +115,7 @@ export default function Page() {
           className="border border-black rounded-md px-2 py-1"
         />
       </div>
+
       {/* setting for number of points a player needs to win */}
       <div className="m-3 block">
         <label htmlFor="pointsToWin" className="mr-2">Points To Win:</label>
@@ -125,6 +127,7 @@ export default function Page() {
           className="border border-black rounded-md px-2 py-1"
         />
       </div>
+
       {/* setting for number of rounds the game will go for */}
       <div className="m-3 block">
         <label htmlFor="roundsToWin" className="mr-2">Number Of Rounds:</label>
@@ -136,6 +139,7 @@ export default function Page() {
           className="border border-black rounded-md px-2 py-1"
         />
       </div>
+      
       {/* button that will save the set settings for the game and send the user to the game */}
       <div className="ml-5 mt-10">
         <button className="bg-white rounded-lg py-2 px-4">
