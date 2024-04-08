@@ -68,11 +68,11 @@ unit_test_backend:
     - ./gradlew jacocoTestReport
     - ./gradlew jacocoTestCoverageVerification
   after_script:
-    - echo "Coverage report generated. Check the report at build/reports/jacoco/test/html/index.html"
-    - cat build/reports/jacoco/test/html/index.html | grep -o 'Total[^%]*%' | sed 's/<.*>/ /; s/Total/Jacoco Coverage Total:/'
+    - echo "Coverage report generated. Check the report at build/jacocoHtml/index.html"
+    - cat build/jacocoHtml/index.html | grep -o 'Total[^%]*%' | sed 's/<.*>/ /; s/Total/Jacoco Coverage Total:/'
   artifacts:
     paths:
-      - build/reports/jacoco/test/html/
+      - build/jacocoHtml/index.html
     reports:
       junit:
        - build/test-results/test/*.xml
