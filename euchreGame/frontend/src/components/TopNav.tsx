@@ -15,7 +15,6 @@ const TopNav = ({ components }: TopNavProps) => {
 
   const links = [
     { name: "Home", href: "/home" },
-    { name: "Play", href: "/play" },
     { name: "Rules", href: "/rules" },
     { name: "Stats", href: "/stats" },
   ];
