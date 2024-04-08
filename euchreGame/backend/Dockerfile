@@ -10,7 +10,8 @@ RUN apt-get update && \
 WORKDIR /api
 
 # Copy Gradle wrapper and necessary files for building
-COPY gradlew .
+COPY ./gradlew /api/
+
 COPY gradle ./gradle
 COPY build.gradle .
 COPY settings.gradle .

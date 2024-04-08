@@ -11,6 +11,7 @@ public class GameRecord {
     private Timestamp endTime;
     private String[] players;
     private int[] score;
+    private int gameUID;
 
     /**
      * Creates a GameRecord object.
@@ -23,11 +24,12 @@ public class GameRecord {
      *                  and 2. Team 1 consists of players 1 and 3, and team 2
      *                  consists of players 2 and 4
      */
-    public GameRecord(Timestamp startTime, Timestamp endTime, String players[], int score[]) {
+    public GameRecord(int gameUID, Timestamp startTime, Timestamp endTime, String players[], int score[]) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.players = players;
         this.score = score;
+        this.gameUID = gameUID;
     }
 
     /**
@@ -67,7 +69,7 @@ public class GameRecord {
         int team = -1;
         for (int i = 0; i < 4; i++) {
             if (players[i].equals(playerName)) {
-                team = (i + 1) % 2;
+                team = (i % 2) + 1;
             }
         }
         return team;
@@ -89,6 +91,15 @@ public class GameRecord {
      */
     public Timestamp getEndTime() {
         return this.endTime;
+    }
+    
+    /**
+     * Gets the unique identifier for the game in the SQL database
+     * 
+     * @return The UID of the game record.
+     */
+    public int getGameUID(){
+        return this.gameUID;
     }
 
 }
