@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <TopNav
-          components={[<Profile />, <MusicPlayer src="/pokerFace.mp3" />]}
+          components={[<Profile key="profileComponent"/>, <MusicPlayer key="musicPlayerComponent" src="/pokerFace.mp3" />]}
         />
         {children}
       </body>
