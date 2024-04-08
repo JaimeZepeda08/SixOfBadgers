@@ -10,9 +10,24 @@ variables:
   SPRING_PROFILES_ACTIVE: gitlab-ci
 
 stages:
+  - build
   - lint
   - unit_test
   - release
+
+#####################################
+############### Build ###############
+#####################################
+build:
+    stage: build
+    image: gradle:8.5
+    before_script:
+        - cd $CI_PROJECT_DIR/euchreGame/backend
+        - ./gradlew clean
+    script:
+        - ./gradlew build
+    tags:
+        - dind
 
 #####################################
 #Linting and Static Analysis (Backend)
@@ -21,7 +36,7 @@ lint_backend:
   stage: lint
   image: gradle:8.5
   before_script:
-    - cd euchreGame/backend
+    - cd $CI_PROJECT_DIR/euchreGame/backend
     - ./gradlew build --stacktrace
   script:
     - gradle check
@@ -32,7 +47,7 @@ lint_frontend:
   stage: lint
   image: node:latest
   before_script:
-    - cd euchreGame/frontend
+    - cd $CI_PROJECT_DIR/euchreGame/frontend
     - npm install
   script:
     - npm run lint
@@ -46,22 +61,22 @@ unit_test_backend:
   stage: unit_test
   image: gradle:8.5
   before_script:
-    - cd euchreGame/backend
+    - cd $CI_PROJECT_DIR/euchreGame/backend
     - ./gradlew build
   script:
     - ./gradlew test
     - ./gradlew jacocoTestReport
     - ./gradlew jacocoTestCoverageVerification
   after_script:
-    - echo "Coverage report generated. Check the report at build/reports/jacoco/test/html/index.html"
+    - echo "Coverage report generated. Check the report at build/jacocoHtml/index.html"
+    - cat euchreGame/backend/build/jacocoHtml/index.html | grep -o 'Total[^%]*%' | sed 's/<.*>/ /; s/Total/Jacoco Coverage Total:/'
   artifacts:
+    paths:
+      - $CI_PROJECT_DIR/euchreGame/backend/build/jacocoHtml/index.html
     reports:
       junit:
-       - build/test-results/test/*.xml
-       - build/reports/jacoco/test/jacocoTestReport.xml
-    paths:
-      - build/reports/jacoco/test/html/
-  coverage: /(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/ # regex to match the coverage percentage
+       - $CI_PROJECT_DIR/euchreGame/backend/build/test-results/test/*.xml
+  coverage: /Total.*?([0-9]{1,3})%/ # regex to match the coverage percentage
   tags:
     - dind
 
