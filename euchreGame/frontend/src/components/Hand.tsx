@@ -48,6 +48,7 @@ const Hand = ({ cards, onCardSelect }: Hand) => {
      }
    };
  
+   // hook to correctly display current values of the selected card
    useEffect(() => {
      if (selectedCard !== null) {
        console.log("Suit: " + cards[selectedCard].suit + " " + "Value: " + cards[selectedCard].value);
@@ -65,6 +66,7 @@ const Hand = ({ cards, onCardSelect }: Hand) => {
         const rotation = index * spreadAngle - spreadOffset;
         const translateX = padding * index - totalWidth / 2;
         return (
+          // when we click on this card it will be handled as a selected card
           <div
             key={index}
             className="absolute cursor-pointer"
