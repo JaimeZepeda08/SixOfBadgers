@@ -50,7 +50,7 @@ public class testPlayer {
 	 */
 	@Test
 	public void testGetSuit() {
-		Player p = new Player("TestPlayer");
+		Player p = new Player("TEST");
 		p.hand.add(new Card(Card.SUIT.CLUBS, 9));
 		p.hand.add(new Card(Card.SUIT.HEARTS, 9));
 		p.hand.add(new Card(Card.SUIT.CLUBS, 9));
@@ -70,7 +70,7 @@ public class testPlayer {
 	 */
 	@Test
 	public void testGetHighCardofSuit() {
-		Player p = new Player("TestPlayer");
+		Player p = new Player("TEST");
 		p.hand.add(new Card(Card.SUIT.DIAMONDS, 14));
 		p.hand.add(new Card(Card.SUIT.HEARTS, 10));
 		p.hand.add(new Card(Card.SUIT.CLUBS, 9));
@@ -85,7 +85,7 @@ public class testPlayer {
 	 */
 	@Test
 	public void testGetLowCardofSuit() {
-		Player p = new Player("TestPlayer");
+		Player p = new Player("TEST");
 		p.hand.add(new Card(Card.SUIT.SPADES, 13));
 		p.hand.add(new Card(Card.SUIT.DIAMONDS, 14));
 		p.hand.add(new Card(Card.SUIT.DIAMONDS, 11));
@@ -94,5 +94,61 @@ public class testPlayer {
 		
 		assertEquals(new Card(Card.SUIT.CLUBS,9),p.getLowCardOfSuit(Card.SUIT.CLUBS));
 	}
+
+
+	@Test
+	public void testGetPlayableCardsAllLeadingSuit()
+	{
+		Player test = new Player("TEST");
+		test.hand.add(new Card(Card.SUIT.HEARTS,9));
+		test.hand.add(new Card(Card.SUIT.HEARTS,10));
+		test.hand.add(new Card(Card.SUIT.HEARTS,11));
+		test.hand.add(new Card(Card.SUIT.HEARTS,12));
+		test.hand.add(new Card(Card.SUIT.HEARTS,13));
+		
+		boolean[] playable = test.getPlayableCards(Card.SUIT.HEARTS, Card.SUIT.CLUBS);
+		
+		assertEquals(true,playable[0]);
+		assertEquals(true,playable[1]);
+		assertEquals(true,playable[2]);
+		assertEquals(true,playable[3]);
+		assertEquals(true,playable[4]);
+	}
+	
+	@Test
+	public void testGetPlayableCardsNoneLeadingSuit()
+	{
+		Player test = new Player("TEST");
+		test.hand.add(new Card(Card.SUIT.HEARTS,9));
+		test.hand.add(new Card(Card.SUIT.HEARTS,10));
+		test.hand.add(new Card(Card.SUIT.HEARTS,11));
+		test.hand.add(new Card(Card.SUIT.HEARTS,12));
+		test.hand.add(new Card(Card.SUIT.HEARTS,13));
+		
+		boolean[] playable = test.getPlayableCards(Card.SUIT.DIAMONDS, Card.SUIT.CLUBS);
+		
+		assertEquals(true,playable[0]);
+		assertEquals(true,playable[1]);
+		assertEquals(true,playable[2]);
+		assertEquals(true,playable[3]);
+		assertEquals(true,playable[4]);
+	}
+
+	@Test
+	public void testHasCardOfSuit() {
+		Player p = new Player("TEST");
+		p.hand.add(new Card(Card.SUIT.SPADES, 13));
+		p.hand.add(new Card(Card.SUIT.DIAMONDS, 14));
+		p.hand.add(new Card(Card.SUIT.DIAMONDS, 11));
+		p.hand.add(new Card(Card.SUIT.SPADES, 9));
+		p.hand.add(new Card(Card.SUIT.HEARTS, 10));
+		
+		assertEquals(true, p.hasSuitCard(Card.SUIT.DIAMONDS));
+		assertEquals(true, p.hasSuitCard(Card.SUIT.HEARTS));
+		assertEquals(true, p.hasSuitCard(Card.SUIT.SPADES));
+		assertEquals(false, p.hasSuitCard(Card.SUIT.CLUBS));
+	}
+
+	
 	
 }

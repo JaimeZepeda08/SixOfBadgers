@@ -56,37 +56,37 @@ public class Card {
 	@Override
 	public String toString() {
 
-		String ret = "";
+		String toReturn = "";
 
 		if (this.value == 9) {
-			ret = "Nine";
+			toReturn = "Nine";
 		} else if (this.value == 10) {
-			ret = "Ten";
+			toReturn = "Ten";
 		} else if (this.value == 11) {
-			ret = "Jack";
+			toReturn = "Jack";
 		} else if (this.value == 12) {
-			ret = "Queen";
+			toReturn = "Queen";
 		} else if (this.value == 13) {
-			ret = "King";
+			toReturn = "King";
 		} else if (this.value == 14) {
-			ret = "Ace";
+			toReturn = "Ace";
 		} else {
-			ret = "NOT VALID";
+			toReturn = "NOT VALID";
 		}
 
-		ret += " of ";
+		toReturn += " of ";
 
 		if (this.suit == SUIT.CLUBS) {
-			ret += "Clubs";
+			toReturn += "Clubs";
 		} else if (this.suit == SUIT.DIAMONDS) {
-			ret += "Diamonds";
+			toReturn += "Diamonds";
 		} else if (this.suit == SUIT.HEARTS) {
-			ret += "Hearts";
+			toReturn += "Hearts";
 		} else {
-			ret += "Spades";
+			toReturn += "Spades";
 		}
 
-		return ret;
+		return toReturn;
 	}
 
 	/**
@@ -100,14 +100,14 @@ public class Card {
 		SUIT sameColor = twinColor(trump);
 
 		if (this.suit == trump) {
-			if (this.value == 11) { /* Jack of trump suit */
+			if (this.value == 11) { // Jack of trump suit
 				return 44;
 			} else {
 				return this.value + 28;
 			}
 		}
 
-		if (this.suit == sameColor && this.value == 11) { /* Jack of same color */
+		if (this.suit == sameColor && this.value == 11) { //Jack of same color
 			return 43;
 		}
 
