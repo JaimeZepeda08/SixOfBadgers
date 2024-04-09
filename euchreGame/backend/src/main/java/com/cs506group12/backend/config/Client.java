@@ -50,8 +50,8 @@ public class Client {
      * @throws IOException If an I/O error occurs.
      */
     @SuppressWarnings("null")
-    public void sendMessage(String type, String content) throws IOException {
-        Message message = new Message(type, content);
+    public void sendMessage(String header, String content) throws IOException {
+        Message message = new Message(header, content);
         this.getSession().sendMessage(new TextMessage(message.toString()));
     }
 }

@@ -97,9 +97,9 @@ public class GameSession {
      * @param content content of message
      * @throws IOException If an I/O error occurs.
      */
-    public void sendMessageToAllClients(String type, String content) throws IOException {
+    public void sendMessageToAllClients(String header, String content) throws IOException {
         for (Client player : players) {
-            player.sendMessage(type, content);
+            player.sendMessage(header, content);
         }
     }
 

@@ -4,33 +4,34 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Represents a message object with a type and content.
+ * Represents a message object with a header and content.
  * 
  * @author jaime zepeda
  */
 @SuppressWarnings("unused")
 public class Message {
-    private String type; // The type of the message
+
+    private String header; // The header of the message
     private String content; // The content of the message
 
     /**
-     * Constructs a new Message object with the given type and content.
+     * Constructs a new Message object with the given header and content.
      *
-     * @param type    The type of the message.
+     * @param header  The header of the message.
      * @param content The content of the message.
      */
-    public Message(String type, String content) {
-        this.type = type;
+    public Message(String header, String content) {
+        this.header = header;
         this.content = content;
     }
 
     /**
-     * Sets the type of the message.
+     * Sets the header of the message.
      *
-     * @param type The type of the message.
+     * @param header The header of the message.
      */
-    public void setType(String type) {
-        this.type = type;
+    public void setheader(String header) {
+        this.header = header;
     }
 
     /**
@@ -49,6 +50,6 @@ public class Message {
      */
     @Override
     public String toString() {
-        return "{\"type\" : " + "\"" + type + "\"" + ", \"content\" : " + "\"" + content + "\"" + "}";
+        return "{\"header\" : " + "\"" + header + "\"" + ", \"content\" : " + "\"" + content + "\"" + "}";
     }
 }

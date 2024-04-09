@@ -16,19 +16,22 @@ export default function Page() {
 
   const onMessage = useCallback((message: MessageEvent) => {
     const json_response = JSON.parse(message.data);
-    if (json_response.type === "id") {
+    if (json_response.header === "id") {
       setGameID(json_response.content);
     }
-    if (json_response.type === "players") {
+    if (json_response.header === "players") {
       let players = json_response.content;
       players = players.substring(1, players.length - 1).split(",");
       setPlayers(players);
     }
-    if (json_response.type === "error") {
+    if (json_response.header === "error") {
       setMessage(json_response.content);
       setTimeout(() => {
         setMessage("");
       }, errorWaitTime);
+    }
+    if (json_response.header === "started") {
+      console.log(json_response.content);
     }
   }, []);
 
@@ -51,7 +54,7 @@ export default function Page() {
         <SimpleButtonRed
           text="Create New Game"
           onClick={() => {
-            socket.send(JSON.stringify({ type: "create" }));
+            socket.send(JSON.stringify({ header: "create" }));
           }}
         />
         <div className="flex justify-center items-center my-8">
@@ -65,7 +68,7 @@ export default function Page() {
           <SimpleButtonRed
             text="Join Game"
             onClick={() => {
-              socket.send(JSON.stringify({ type: "join", gameID: joinID }));
+              socket.send(JSON.stringify({ header: "join", gameID: joinID }));
             }}
           />
         </div>
@@ -91,7 +94,7 @@ export default function Page() {
           text="Start Game"
           onClick={() => {
             if (players.length === 4) {
-              socket.send(JSON.stringify({ type: "start", gameID: gameID }));
+              socket.send(JSON.stringify({ header: "start", gameID: gameID }));
             } else {
               setMessage("Not enough players to start the game");
               setTimeout(() => {

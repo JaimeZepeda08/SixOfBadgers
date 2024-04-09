@@ -71,11 +71,11 @@ public class WebSocketConfig implements WebSocketConfigurer {
                 JsonNode jsonNode = mapper.readTree(payload.toString());
 
                 // manages different types of messages from the client
-                // message has to be in the format: {"type" : type, "content" : content}
-                if (jsonNode.has("type")) {
-                    String messageType = jsonNode.get("type").asText();
+                // message has to be in the format: {"header" : header, "content" : content}
+                if (jsonNode.has("header")) {
+                    String messageHeader = jsonNode.get("header").asText();
 
-                    switch (messageType) {
+                    switch (messageHeader) {
                         case "create":
                             handleCreateMessage(session);
                             break;
@@ -169,12 +169,14 @@ public class WebSocketConfig implements WebSocketConfigurer {
      * Handles starting a game session.
      *
      * @param game The GameSession to start.
+     * @throws IOException If an I/O error occurs.
      */
-    private void startGame(GameSession game) {
+    private void startGame(GameSession game) throws IOException {
         System.out.println("Started game: " + game.getGameId()); // debug
 
-        // TODO send reply to clients
-
         // TODO start game
+
+        // let players know that the game has started
+        game.sendMessageToAllClients("started", "Game " + game.getGameId() + " has started");
     }
 }
