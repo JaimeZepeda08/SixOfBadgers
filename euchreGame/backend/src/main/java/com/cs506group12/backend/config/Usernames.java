@@ -4,7 +4,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Generates random usernames from a predefined list.
+ * 
+ * @author jaime zepeda
+ */
 public class Usernames {
+    // Predefined list of usernames
     private static List<String> usernames = Arrays.asList(
             "Lion", "Tiger", "Bear", "Elephant", "Giraffe",
             "Zebra", "Hippo", "Kangaroo", "Rhino", "Penguin",
@@ -27,10 +33,14 @@ public class Usernames {
             "Rattlesnake", "Mongoose", "Meerkat", "Ferret", "Otter",
             "Beaver", "Hedgehog", "Porcupine", "Armadillo", "Squirrel");
 
+    /**
+     * Generates a random username from the predefined list.
+     *
+     * @return A randomly selected username.
+     */
     public static String getRandomUsername() {
         Random random = new Random();
         int randomIndex = random.nextInt(usernames.size());
-        String username = usernames.get(randomIndex);
-        return username;
+        return usernames.get(randomIndex);
     }
 }
