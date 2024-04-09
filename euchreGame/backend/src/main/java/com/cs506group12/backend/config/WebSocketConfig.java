@@ -1,6 +1,7 @@
 package com.cs506group12.backend.config;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -95,28 +96,33 @@ public class WebSocketConfig implements WebSocketConfigurer {
         Client client = sessions.get(session);
         GameSession game = new GameSession(client);
         games.put(game.getGameId(), game);
-        client.getSession().sendMessage(new TextMessage(game.getGameId()));
+        Message message = new Message("id", game.getGameId());
+        client.getSession().sendMessage(new TextMessage(message.toString()));
+        sendSessionIdsToClients(game.getGameId());
     }
 
-    private void handleJoinMessage(WebSocketSession session, JsonNode jsonNode) {
+    @SuppressWarnings("null")
+    private void handleJoinMessage(WebSocketSession session, JsonNode jsonNode) throws IOException {
         String id = jsonNode.get("gameID").asText();
         if (games.containsKey(id)) {
             GameSession game = games.get(id);
-            if (!game.addPlayer(sessions.get(session))) {
-            } else {
-                // report error
-            }
+            game.addPlayer(sessions.get(session));
+            Message message = new Message("id", game.getGameId());
+            session.sendMessage(new TextMessage(message.toString()));
+            sendSessionIdsToClients(id);
         } else {
-            // report error
+            System.out.println("This game does not exist");
         }
     }
 
     // Method to send session IDs to all clients
-    private void sendSessionIdsToClients() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        String sessionIdsJson = mapper.writeValueAsString(sessions.values());
-        for (WebSocketSession session : sessions.keySet()) {
-            session.sendMessage(new TextMessage(sessionIdsJson));
+    @SuppressWarnings("null")
+    private void sendSessionIdsToClients(String id) throws IOException {
+        GameSession game = games.get(id);
+        Message message = new Message("players", game.getPlayerIdsString());
+        ArrayList<Client> gameClients = game.getPlayers();
+        for (Client client : gameClients) {
+            client.getSession().sendMessage(new TextMessage(message.toString()));
         }
     }
 }

@@ -1,32 +1,65 @@
 "use client";
 
-import React, { useState } from "react";
-import WebSocketComponent from "@/lib/WebSocketComponent";
+import { useSocket } from "@/lib/useSocket";
+import { Message } from "postcss";
+import React, { useCallback, useEffect, useState } from "react";
 
 export default function Page() {
-  const socket = new WebSocket("ws://localhost:8080/ws");
+  const socket = useSocket();
 
-  function handleCreateGame() {
-    socket.send(JSON.stringify({ type: "create" }));
-  }
+  const [gameID, setGameID] = useState("");
+  const [joinID, setJoinID] = useState("");
+  const [players, setPlayers] = useState("");
+
+  const onMessage = useCallback((message: MessageEvent) => {
+    const json_response = JSON.parse(message.data);
+    if (json_response.type === "id") {
+      setGameID(json_response.content);
+    }
+    if (json_response.type === "players") {
+      setPlayers(json_response.content);
+    }
+  }, []);
+
+  useEffect(() => {
+    socket.addEventListener("message", onMessage);
+    return () => {
+      socket.removeEventListener("message", onMessage);
+    };
+  }, [socket, onMessage]);
 
   return (
-    <div className="flex flex-col items-center justify-center mt-10">
+    <div className="flex flex-col items-center justify-center mt-5">
       <div className="bg-red-500 text-white text-4xl p-4 rounded-md mb-4">
         <h1>Multiplayer</h1>
       </div>
-      <WebSocketComponent socket={socket} />
-      <div className="flex flex-col justify-center items-center mt-10">
+      <div className="text-2xl font-bold my-5">{gameID}</div>
+      <div className="flex flex-col justify-center items-center">
         <div
-          onClick={handleCreateGame}
+          onClick={() => {
+            socket.send(JSON.stringify({ type: "create" }));
+          }}
           className="mr-4 p-2 bg-red-500 text-white text-xl rounded-md mb-2 bottom-0"
         >
           Create New Game
         </div>
-        <div className="p-2 bg-red-500 text-white text-xl rounded-md bottom-0">
+        <input
+          type="text"
+          value={joinID}
+          onChange={(e) => setJoinID(e.target.value)}
+          placeholder="Enter Game ID"
+          style={{ margin: "20px" }}
+        />
+        <div
+          onClick={() => {
+            socket.send(JSON.stringify({ type: "join", gameID: joinID }));
+          }}
+          className="p-2 bg-red-500 text-white text-xl rounded-md bottom-0"
+        >
           Join Game
         </div>
       </div>
+      <div>{players}</div>
     </div>
   );
 }
