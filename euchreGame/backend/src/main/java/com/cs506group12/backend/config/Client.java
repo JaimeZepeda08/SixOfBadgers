@@ -1,7 +1,5 @@
 package com.cs506group12.backend.config;
 
-import java.util.UUID;
-
 import org.springframework.web.socket.WebSocketSession;
 
 public class Client {
@@ -10,7 +8,7 @@ public class Client {
 
     public Client(WebSocketSession session) {
         this.session = session;
-        this.playerId = "Player_" + UUID.randomUUID().toString().replaceAll("[^a-zA-Z0-9]", "").substring(0, 3);
+        this.playerId = "Anonymous" + Usernames.getRandomUsername();
     }
 
     public WebSocketSession getSession() {

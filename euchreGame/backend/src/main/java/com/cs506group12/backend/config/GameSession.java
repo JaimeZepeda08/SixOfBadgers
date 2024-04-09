@@ -22,6 +22,13 @@ public class GameSession {
         return players;
     }
 
+    public boolean hasPlayer(Client player) {
+        if (players.contains(player)) {
+            return true;
+        }
+        return false;
+    }
+
     public String getPlayerIdsString() {
         String ids = "[";
         for (Client player : players) {
@@ -31,9 +38,13 @@ public class GameSession {
         return ids;
     }
 
-    public void addPlayer(Client player) {
-        if (!players.contains(player)) {
-            players.add(player);
+    public boolean addPlayer(Client player) {
+        if (players.size() < 4) {
+            if (!players.contains(player)) {
+                players.add(player);
+                return true;
+            }
         }
+        return false;
     }
 }

@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
-    // Map to keep track of WebSocket sessions
     private final Map<WebSocketSession, Client> sessions = new ConcurrentHashMap<>();
     private final Map<String, GameSession> games = new ConcurrentHashMap<>();
 
@@ -63,6 +62,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
                         case "join":
                             handleJoinMessage(session, jsonNode);
                             break;
+                        case "start":
+                            startGame(games.get(jsonNode.get("gameID")));
                         default:
                             break;
                     }
@@ -91,8 +92,12 @@ public class WebSocketConfig implements WebSocketConfigurer {
         };
     }
 
+    private void startGame(GameSession game) {
+        System.out.println("Started game: " + game.getGameId());
+    }
+
     @SuppressWarnings("null")
-    protected void handleCreateMessage(WebSocketSession session) throws IOException {
+    private void handleCreateMessage(WebSocketSession session) throws IOException {
         Client client = sessions.get(session);
         GameSession game = new GameSession(client);
         games.put(game.getGameId(), game);
@@ -104,18 +109,28 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @SuppressWarnings("null")
     private void handleJoinMessage(WebSocketSession session, JsonNode jsonNode) throws IOException {
         String id = jsonNode.get("gameID").asText();
+        Client player = sessions.get(session);
         if (games.containsKey(id)) {
             GameSession game = games.get(id);
-            game.addPlayer(sessions.get(session));
-            Message message = new Message("id", game.getGameId());
-            session.sendMessage(new TextMessage(message.toString()));
-            sendSessionIdsToClients(id);
+            if (!game.hasPlayer(player)) {
+                if (game.addPlayer(player)) {
+                    Message message = new Message("id", game.getGameId());
+                    session.sendMessage(new TextMessage(message.toString()));
+                    sendSessionIdsToClients(id);
+                } else {
+                    Message message = new Message("error", "Game " + id + " is already full");
+                    session.sendMessage(new TextMessage(message.toString()));
+                }
+            } else {
+                Message message = new Message("error", "You are already in game " + id);
+                session.sendMessage(new TextMessage(message.toString()));
+            }
         } else {
-            System.out.println("This game does not exist");
+            Message message = new Message("error", "Game " + id + " does not exist");
+            session.sendMessage(new TextMessage(message.toString()));
         }
     }
 
-    // Method to send session IDs to all clients
     @SuppressWarnings("null")
     private void sendSessionIdsToClients(String id) throws IOException {
         GameSession game = games.get(id);
