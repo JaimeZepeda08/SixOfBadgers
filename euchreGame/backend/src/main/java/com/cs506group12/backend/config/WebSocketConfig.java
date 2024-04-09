@@ -63,7 +63,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
                             handleJoinMessage(session, jsonNode);
                             break;
                         case "start":
-                            startGame(games.get(jsonNode.get("gameID")));
+                            startGame(games.get(jsonNode.get("gameID").asText()));
                         default:
                             break;
                     }

@@ -18,15 +18,4 @@ public class Client {
     public String getPlayerId() {
         return playerId;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Client) {
-            Client other = (Client) obj;
-            if (this.getPlayerId().equals(other.getPlayerId())) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
