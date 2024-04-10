@@ -11,15 +11,15 @@ import com.cs506group12.backend.models.Card;
 /**
  * This class tests the correctness of the Card class
  * 
- * @author jaime zepeda
+ * @author jaime zepeda & kaldan kopp
  */
-public class testCard {
+class testCard {
 
 	/**
 	 * Tests the Card constructor.
 	 */
 	@Test
-	public void testCardConstructor() {
+	void testCardConstructor() {
 		Card c = new Card(Card.SUIT.CLUBS, 9);
 		assertNotNull(c);
 
@@ -29,7 +29,7 @@ public class testCard {
 	 * Tests the quality operator.
 	 */
 	@Test
-	public static void testEqualsObject() {
+	void testEqualsObject() {
 		Card c1 = new Card(Card.SUIT.DIAMONDS, 10);
 		Card c2 = new Card(Card.SUIT.DIAMONDS, 10);
 		assertEquals(c1, c2);
@@ -70,7 +70,7 @@ public class testCard {
 	@Test
 	public void testValueTrump() {
 		Card trumpCard = new Card(Card.SUIT.CLUBS, 10);
-		int value = trumpCard.value(Card.SUIT.CLUBS, Card.SUIT.DIAMONDS);
+		int value = trumpCard.value(new Card(Card.SUIT.CLUBS, 1), Card.SUIT.DIAMONDS);
 		assertEquals(38, value); // 10 + 28 = 38
 	}
 
@@ -80,7 +80,7 @@ public class testCard {
 	@Test
 	public void testValueJackOfTrumpSuit() {
 		Card trumpJackCard = new Card(Card.SUIT.HEARTS, 11);
-		int value = trumpJackCard.value(Card.SUIT.HEARTS, Card.SUIT.CLUBS);
+		int value = trumpJackCard.value(new Card(Card.SUIT.HEARTS, 1), Card.SUIT.CLUBS);
 		assertEquals(44, value); // Jack of trump suit
 	}
 
@@ -90,14 +90,14 @@ public class testCard {
 	@Test
 	public void testValueJackOfSameColor() {
 		Card sameColorJackCard = new Card(Card.SUIT.CLUBS, 11);
-		int value = sameColorJackCard.value(Card.SUIT.SPADES, Card.SUIT.DIAMONDS);
+		int value = sameColorJackCard.value(new Card(Card.SUIT.SPADES, 1), Card.SUIT.DIAMONDS);
 		assertEquals(43, value); // Jack of same color
 	}
 
 	@Test
 	public void testValueTrumpJack() {
 		Card trumpJackCard = new Card(Card.SUIT.SPADES, 11);
-		int value = trumpJackCard.value(Card.SUIT.SPADES, Card.SUIT.DIAMONDS);
+		int value = trumpJackCard.value(new Card(Card.SUIT.SPADES, 1), Card.SUIT.DIAMONDS);
 		assertEquals(44, value); // Jack of same color
 	}
 
@@ -107,7 +107,7 @@ public class testCard {
 	@Test
 	public void testValueLeading() {
 		Card leadingCard = new Card(Card.SUIT.HEARTS, 9);
-		int value = leadingCard.value(Card.SUIT.CLUBS, Card.SUIT.HEARTS);
+		int value = leadingCard.value(new Card(Card.SUIT.CLUBS, 1), Card.SUIT.HEARTS);
 		assertEquals(23, value); // 9 + 14 = 23
 	}
 
@@ -116,10 +116,10 @@ public class testCard {
 	 */
 	@Test
 	public void testTwinColor() {
-		assertEquals(Card.SUIT.SPADES, Card.twinColor(Card.SUIT.CLUBS));
-		assertEquals(Card.SUIT.CLUBS, Card.twinColor(Card.SUIT.SPADES));
-		assertEquals(Card.SUIT.DIAMONDS, Card.twinColor(Card.SUIT.HEARTS));
-		assertEquals(Card.SUIT.HEARTS, Card.twinColor(Card.SUIT.DIAMONDS));
+		assertEquals(Card.SUIT.SPADES, Card.twinColorSuit(Card.SUIT.CLUBS));
+		assertEquals(Card.SUIT.CLUBS, Card.twinColorSuit(Card.SUIT.SPADES));
+		assertEquals(Card.SUIT.DIAMONDS, Card.twinColorSuit(Card.SUIT.HEARTS));
+		assertEquals(Card.SUIT.HEARTS, Card.twinColorSuit(Card.SUIT.DIAMONDS));
 	}
 
 	/**

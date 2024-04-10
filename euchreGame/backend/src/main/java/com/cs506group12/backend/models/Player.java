@@ -143,7 +143,7 @@ public class Player {
 	public boolean[] getPlayableCards(Card.SUIT leadingSuit, Card.SUIT trumpSuit) {
 		boolean[] toReturn = new boolean[hand.size()];
 		boolean hasAtLeastOneOfSuit = false;
-		Card.SUIT sameColorAsTrump = Card.twinColor(trumpSuit);
+		Card.SUIT sameColorAsTrump = Card.twinColorSuit(trumpSuit);
 		Card c;
 		
 		for (int i = 0; i < hand.size(); i++) {
@@ -164,6 +164,21 @@ public class Player {
 		}
 		
 		return toReturn;
+	}
+
+	/**
+	 * Class to choose the trump for the round
+	 * TODO: implement with frotnend
+	 * @return Card.SUIT enum of the chosen suit, null if none picked
+	 */
+	public Card.SUIT chooseTrump() {
+		Card.SUIT trump = null;
+		for (Card c : this.hand) {
+			trump = c.getSuit();
+			
+		}
+		
+		return null;
 	}
 	
 
