@@ -2,6 +2,8 @@ package com.cs506group12.backend.models;
 
 import java.util.*;
 
+import com.cs506group12.backend.models.Card.SUIT;
+
 public class EuchreGame {
     private static ArrayList<Card> deck;
     private List<Card>[] playerHands;
@@ -31,7 +33,6 @@ public class EuchreGame {
     public static ArrayList<Integer> ranks = new ArrayList<>();
 
     public EuchreGame() {
-
     }
 
 
@@ -39,15 +40,22 @@ public class EuchreGame {
      * The function from which the game is run.  Game will run until one team has 10 points
      */
     public void euchreGameLoop(){
+        this.deck = new ArrayList<>();
         initializeDeck();
         dealCards();
-        establishTrump();
-        cardsLeft = deck.size();
+        players = new ArrayList<>();
+        for(int i = 0;i < 4; i ++) {
+            players.add(new Player("Name" + i));
+        }
+        
+        cardsLeft = deck.size();        
 
+        Card.SUIT trump = null;
 
         // game loop - exits once a team wins 
         while (teamOneScore < pointsThreshold && teamTwoScore < pointsThreshold) {
-            for (int i = 0; i < 5; i ++){  // for each trick - TODO terminate early if team wins 
+            trump = establishTrump();
+            for (int i = 0; i < 5; i ++){                
                 handleTrick();            
             }
 
@@ -58,26 +66,40 @@ public class EuchreGame {
             dealCards();  // resets
             dealer = (dealer + 1) % 4;
             //leadingPlayer = (dealer + 1) % 4; // goes first in first round  MAYBE REMOVE 
-            establishTrump();
+            
         }
     }
 
     /**
-	 * all players play one card then scored
-	 * @return the team number that won the trick
-	 */
-    public void handleTrick(){
-        //who's playering is  alone
-        for (Player p: players) {
+     * Handles one trick where each player plays one card.
+     */
+    public void handleTrick() {
+        Card.SUIT leadingSuit = null; // Leading suit of the trick
+        Card currentWinningCard = null; // Highest card played in the trick
+        int currentWinner = -1; // Index of the player who played the current winning card
 
+        // Loop through each player playing one card
+        for (int i = 0; i < 4; i++) {
+            Player currentPlayer = players.get((leadingPlayer + i) % 4); // Get current player
+            Card playedCard = currentPlayer.playAndRemoveCard(null); // Player plays a card
+            playedCards.add(playedCard); // Add the played card to the list
+
+            if (i == 0) {
+                leadingSuit = playedCard.getSuit(); // Set the leading suit for this trick
+                currentWinningCard = playedCard; // Set the current winning card initially
+                currentWinner = leadingPlayer; // The leading player is currently the winner
+            } else if (playedCard.greater(currentWinningCard, trumpSuitCard, leadingSuit)) {
+                // If the played card is greater than the current winning card, update the winner and winning card
+                currentWinner = (leadingPlayer + i) % 4;
+                currentWinningCard = playedCard;
+            }
         }
 
-        // MAYBE IN WRONG SPOT
-        teamThatWonTrick = (leadingPlayer + score(playedCards)) % 2;  
-        leadingPlayer = ((leadingPlayer + score(playedCards)) % 4); // player who won current trick starts of next trick
-        numTricks[teamThatWonTrick] = numTricks[teamThatWonTrick]+1; // UPDATES
-		playedCards.clear();
-	}
+        // Update the team that won the trick and the leading player for the next trick
+        teamThatWonTrick = currentWinner % 2;
+        leadingPlayer = currentWinner;
+        numTricks[teamThatWonTrick]++; // Increment the number of tricks won by the winning team
+    }
 
     /**
      * looks for which team won more tricks
@@ -172,9 +194,9 @@ public class EuchreGame {
 		int maxIndex = 0;
 
 		for (int i = 0; i < cards.size(); i++){  // starts at leading player
-			if (cards.get(i).value(trumpSuitCard.getSuit(), cards.get(i).getSuit()) > max){  // temporary - need to assign trump suit
+			if (cards.get(i).value(trumpSuitCard, cards.get(i).getSuit()) > max){  // temporary - need to assign trump suit
 				maxIndex = i;
-				max = cards.get(i).value(trumpSuitCard.getSuit(), cards.get(i).getSuit());
+				max = cards.get(i).value(trumpSuitCard, cards.get(i).getSuit());
 			}
 		}
 		return maxIndex;
@@ -184,14 +206,23 @@ public class EuchreGame {
     /**
      * presents all players with option to chose face up card as trumop, if a player chooses, dealer swaps out a card
      * else, dealer choses trump
-     * @return a string representation of the trump suit
+     * @return Card.SUIT of the trump suit
      */
-    public void establishTrump(){
+    public Card.SUIT establishTrump(){
+        Card.SUIT trump = null;
         for (int i = 1; i < 4; i++){
             // controller present player ((dealer+i)%4) with option to choose trumo
+            Player present = players.get((dealer+i)%4);
+
+            if (present.chooseTrump() != null) {
+                trump = present.chooseTrump();
+                present.playAndRemoveCard(null);
+            }
                 // if yes, make dealer swap a card, remove card dealer selects from players.get(dealer)'s hand  - use same controller that plays card
             // else - give dealer option to choose - need a controller and buttons for that 
         }
+        return trump;
+
     }
 
     /*
@@ -315,8 +346,8 @@ public class EuchreGame {
         this.isSoloPlayer = isSoloPlayer;
     }
 
-    public void setTrumpSuitCard(Card trumpSuitCard) {
-        this.trumpSuitCard = trumpSuitCard;
+    public void setTrumpSuitCard(Card card) {
+        this.trumpSuitCard = card;
     }
     public Card getTrumpSuitCard() {
         return trumpSuitCard;
