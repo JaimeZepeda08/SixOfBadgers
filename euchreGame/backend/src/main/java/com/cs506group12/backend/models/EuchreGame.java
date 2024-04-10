@@ -199,9 +199,9 @@ public class EuchreGame {
 		int maxIndex = 0;
 
 		for (int i = 0; i < cards.size(); i++){  // starts at leading player
-			if (cards.get(i).value(trumpSuitCard.getSuit(), cards.get(i).getSuit()) > max){  
+			if (cards.get(i).value(trumpSuitCard, cards.get(i).getSuit()) > max){  
 				maxIndex = i;
-				max = cards.get(i).value(trumpSuitCard.getSuit(), cards.get(i).getSuit());
+				max = cards.get(i).value(trumpSuitCard, cards.get(i).getSuit());
 			}
 		}
 		return maxIndex;
