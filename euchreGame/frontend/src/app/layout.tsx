@@ -22,7 +22,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <SocketProvider>
           <TopNav
-            components={[<Profile />, <MusicPlayer src="/pokerFace.mp3" />]}
+            components={[<MusicPlayer src="/pokerFace.mp3" />, <Profile />]}
           />
           {children}
         </SocketProvider>
