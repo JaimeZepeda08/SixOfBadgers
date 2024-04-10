@@ -1,36 +1,38 @@
 const localhost: string = "backend";
 export async function getHello() {
-  const url = `http://${localhost}:8080/sayhello`;
-  try {
-    const res = await fetch(url, {
-      cache: "no-store",
-    });
-    // checks that the response is valid
-    if (!res.ok) {
-      throw new Error("Failed to get tests");
+    const url = `http://${localhost}:8080/sayhello`;
+    try {
+        const res = await fetch(url, {
+            method: 'GET',
+        });
+        // checks that the response is valid
+        if (!res.ok) {
+            throw new Error("Failed to get tests");
+        }
+        // creates and maps an array of Test Objects
+        return await res.text();
+
+    } catch (error) {
+        console.log(error);
     }
-    // creates and maps an array of Test Objects
-    return await res.text();
-  } catch (error) {
-    console.log(error);
-  }
 }
 
 export async function getGameRecords() {
-  const url = `http://${localhost}:8080/getGameRecords`;
-  try {
-    const res = await fetch(url, {
-      method: "GET",
-    });
-    // checks that the response is valid
-    if (!res.ok) {
-      throw new Error("Failed to get records");
+    const url = `http://${localhost}:8080/getGameRecords`;
+    try {
+        const res = await fetch(url, {
+            method: 'GET',
+        });
+        // checks that the response is valid
+        if (!res.ok) {
+            throw new Error("Failed to get records");
+        }
+        // creates and maps an array of Test Objects
+        return await res.json();
+
+    } catch (error) {
+        console.log(error);
     }
-    // creates and maps an array of Test Objects
-    return await res.json();
-  } catch (error) {
-    console.log(error);
-  }
 }
 
 export async function createUser(formData: FormData) {

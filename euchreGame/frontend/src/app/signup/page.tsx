@@ -1,9 +1,17 @@
 import { createUser, getUser } from '@/lib/userService';
 import Link from 'next/link';
 
+/**
+ * Page component for user sign-up and retrieval.
+ * This component renders a sign-up form and a user retrieval form, allowing users to create new accounts
+ * and retrieve existing user information. It includes input fields for username and password for both forms.
+ * 
+ * @returns {JSX.Element} The Page component.
+ */
 export default function Page() {
     return (
         <div className="bg-red-500 h-screen border-2 border-black mt-2">
+            {/* Sign-up form */}
             <h1 className="m-3">Enter a UserName and a Password to sign up!</h1>
             <form action={createUser}>
                 <div className="m-3 block">
@@ -31,6 +39,7 @@ export default function Page() {
                 </div>
             </form>
 
+            {/* User retrieval form */}
             <form action={getUser}>
                 <div className="m-3 block">
                     <label htmlFor="userName" className="mr-2">Username: </label>

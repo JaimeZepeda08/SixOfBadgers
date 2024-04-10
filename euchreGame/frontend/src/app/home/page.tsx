@@ -1,6 +1,11 @@
 import React from "react";
 import { SimpleButtonLink } from "@/components/SimpleButton";
 
+/**
+ * Page component representing a page with a link to navigate to saved games.
+ * 
+ * @returns {JSX.Element} The page component.
+ */
 export default function Page() {
   return (
     <div className="flex flex-col justify-center items-center">

@@ -39,6 +39,80 @@ export async function getOpponents() {
       throw new Error("Failed to opponents");
     }
     return await res.text();
+  }
+}
+
+/**
+ * Function gives played card from user to the controller 
+ * json inclused suit and value of card
+ * 
+ * @param formData json of card data
+ * @returns confirmation from backend or throws an error if failed to do so
+ */
+export async function submitSelectedCard(formData: FormData) {
+  const url = `http://${localhost}:8080/selectedCard`;
+  const card = {
+      suite: formData.get("suit"),
+      value: formData.get("value")
+  }
+  console.log(card)
+  try {
+      const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(card)
+      });
+      if (!res.ok) {
+          throw new Error("Failed to save selected card")
+      } 
+      return res.text();
+  } catch (error) {
+      console.log(error);
+  }
+}
+
+/**
+ * Retrives players and their data to display in the game
+ * 
+ * @returns confirmation from backend or throws an error if failed to do so
+ */
+export async function getPlayers() {
+  const url = `http://${localhost}:8080/`;
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+    });
+    // checks that the response is valid
+    if (!res.ok) {
+      throw new Error("Failed to get players");
+    }
+    // creates and maps an array of Test Objects
+    return await res.json();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Retrives the current trump suit for the 
+ * trick
+ * 
+ * @returns confirmation from backend or throws an error if failed to do so
+ */
+export async function getTrumpSuit() {
+  const url = `http://${localhost}:8080/`;
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+    });
+    // checks that the response is valid
+    if (!res.ok) {
+      throw new Error("Failed to get records");
+    }
+    // creates and maps an array of Test Objects
+    return await res.json();
   } catch (error) {
     console.log(error);
   }

@@ -5,3 +5,8 @@ package.json
 package-lock.json
 
 \backend\Dockerfile
+
+.DS_Store
+.idea
+.vscode
+.project

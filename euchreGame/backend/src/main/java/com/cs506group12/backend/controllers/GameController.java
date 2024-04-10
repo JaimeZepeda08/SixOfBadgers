@@ -1,9 +1,13 @@
 package com.cs506group12.backend.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+
 import com.cs506group12.backend.models.Card;
 
 /**
@@ -41,4 +45,11 @@ public class GameController {
 
         return opponents;
     }
+
+    @PostMapping("/selectedCard")
+    public void playCard(@RequestBody Card card) throws SQLException {
+        System.out.println("Suit: " + card.getSuit() + "\nValue: " + card.getValue());
+        // return card;
+    }
+
 }

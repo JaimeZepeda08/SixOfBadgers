@@ -3,6 +3,8 @@ package com.cs506group12.backend;
 import java.sql.*;
 import java.util.ArrayList;
 
+import javax.sql.DataSource;
+
 import com.cs506group12.backend.models.User;
 import com.cs506group12.backend.models.GameRecord;
 
@@ -18,7 +20,12 @@ import com.cs506group12.backend.models.GameRecord;
  */
 public class DatabaseConnection {
 
-    private static Connection databaseConnection;
+    private DataSource dataSource;
+    private Connection databaseConnection;
+
+    public DatabaseConnection(DataSource dataSource){
+        this.dataSource = dataSource;
+    }
 
     /**
      * This method creates a connection to the database. If there is an error in
@@ -27,11 +34,10 @@ public class DatabaseConnection {
      * 
      * @return Whether the connection was created successfully.
      */
-    public static Boolean createConnection() {
+    public Boolean createConnection() {
         try {
             if (databaseConnection == null || databaseConnection.isClosed()) { // lazy evaluation to avoid null ref
-                databaseConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/euchre", "root",
-                        "supersecure");
+                databaseConnection = dataSource.getConnection();
                 return true;
             } else {
                 return true;
@@ -54,7 +60,7 @@ public class DatabaseConnection {
      * @throws SQLException Throws an exception if a connection to the database
      *                      cannot be created.
      */
-    public static User getUser(String userName, String userPassword) throws SQLException {
+    public  User getUser(String userName, String userPassword) throws SQLException {
         if (!createConnection()) {
             throw new SQLException("Unable to create database connection.");
         }
@@ -78,8 +84,6 @@ public class DatabaseConnection {
 
     }
 
-    //
-    //
     /**
      * Creates a new user record in the database with the given name and password.
      * Throws an exception if it cannot connect
@@ -90,11 +94,11 @@ public class DatabaseConnection {
      * @throws SQLException Throws an exception if the databse connection cannot be
      *                      created or if there is a problem with the query.
      */
-    public static Boolean storeUser(String userName, String userPassword) throws SQLException {
+    public  Boolean storeUser(String userName, String userPassword) throws SQLException {
         if (!createConnection()) {
             throw new SQLException("Unable to create database connection.");
         }
-
+        
         Statement storeUser = databaseConnection.createStatement();
         ResultSet rsUserCheck = storeUser
                 .executeQuery("SELECT UserUID FROM Users WHERE UserName = '" + userName + "';");
@@ -121,7 +125,7 @@ public class DatabaseConnection {
      *                      cannot be created or if there is an error with the sql
      *                      query.
      */
-    public static void storeGameRecord(String[] players, int[] scores, Timestamp startTime, Timestamp endTime)
+    public  void storeGameRecord(String[] players, int[] scores, Timestamp startTime, Timestamp endTime)
             throws SQLException {
         if (!createConnection()) {
             throw new SQLException("Unable to create database connection.");
@@ -164,7 +168,7 @@ public class DatabaseConnection {
      * @throws SQLException Throws an exception if a connection to the database
      *                      cannot be made or if there is an error in the sql query.
      */
-    public static ArrayList<GameRecord> getGameRecords(int userUID) throws SQLException {
+    public ArrayList<GameRecord> getGameRecords(int userUID) throws SQLException {
 
         if (!createConnection()) {
             throw new SQLException("Unable to create database connection.");
@@ -174,7 +178,7 @@ public class DatabaseConnection {
 
         Statement getRecords = databaseConnection.createStatement();
         ResultSet rsGameRecords = getRecords.executeQuery(
-                "select GameStartTime, GameEndTime, u1.UserName, u2.UserName, u3.UserName, u4.UserName, Team1Score, Team2Score"
+                "select GameUID, GameStartTime, GameEndTime, u1.UserName, u2.UserName, u3.UserName, u4.UserName, Team1Score, Team2Score"
                         + " FROM Games left join Users AS u1 on Games.Player1=u1.UserUID"
                         + " left join Users AS u2 on Games.Player2=u1.UserUID"
                         + " left join Users AS u3 on Games.Player3=u3.UserUID"
@@ -182,19 +186,21 @@ public class DatabaseConnection {
                         + " WHERE Player1=" + userUID + " OR Player2= " + userUID + " OR Player3=" + userUID
                         + "OR Player4=" + userUID + ";");
 
-        String players[] = new String[4];
-        int scores[] = new int[2];
+        String[] players;
+        int[] scores;
 
         while (rsGameRecords.next()) {
+            players = new String[4];
+            scores = new int[2];
 
             for (int i = 0; i < 4; i++) {
-                players[i] = rsGameRecords.getString(i + 3);
+                players[i] = rsGameRecords.getString(i + 4);
             }
-            scores[0] = rsGameRecords.getInt(7);
-            scores[1] = rsGameRecords.getInt(8);
+            scores[0] = rsGameRecords.getInt(8);
+            scores[1] = rsGameRecords.getInt(9);
 
             gameRecords
-                    .add(new GameRecord(rsGameRecords.getTimestamp(1), rsGameRecords.getTimestamp(2), players, scores));
+                    .add(new GameRecord(rsGameRecords.getInt(1), rsGameRecords.getTimestamp(2), rsGameRecords.getTimestamp(3), players, scores));
         }
 
         return gameRecords;
