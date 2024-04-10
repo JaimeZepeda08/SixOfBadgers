@@ -1,9 +1,9 @@
 import React from "react";
-import { SimpleButtonLink } from "@/components/SimpleButton";
+import { SimpleButtonLinkRed } from "@/components/SimpleButton";
 
 /**
  * Page component representing a page with a link to navigate to saved games.
- * 
+ *
  * @returns {JSX.Element} The page component.
  */
 export default function Page() {
@@ -12,17 +12,17 @@ export default function Page() {
       <h1 className="text-6xl font-bold text-red-900 mb-40 mt-36">
         Euchre With Friends
       </h1>
-      <SimpleButtonLink
+      <SimpleButtonLinkRed
         text="Singleplayer"
         href="home/singleplayer"
         className="my-6"
       />
-      <SimpleButtonLink
+      <SimpleButtonLinkRed
         text="Multiplayer"
         href="home/multiplayer"
         className="my-6"
       />
-      <SimpleButtonLink
+      <SimpleButtonLinkRed
         text="Go to Saved Games"
         href="home/saved_games"
         className="my-6"

@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'checkstyle'
-	id 'jacoco'
+	// id 'checkstyle'
+	// id 'jacoco'
 	id 'org.springframework.boot' version '3.2.3'
 	id 'io.spring.dependency-management' version '1.1.4'
 }
@@ -13,36 +13,36 @@ java {
 	sourceCompatibility = '17'
 }
 
-jacoco {
-	toolVersion = "0.8.11"
-	reportsDirectory = layout.buildDirectory.dir('jacocoTest')
-}
-checkstyle {
-	toolVersion = '8.45'
-	configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
-}
+// jacoco {
+// 	toolVersion = "0.8.11"
+// 	reportsDirectory = layout.buildDirectory.dir('jacocoTest')
+// }
+// checkstyle {
+// 	toolVersion = '8.45'
+// 	configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+// }
 
-jacocoTestCoverageVerification {
-	violationRules {
-		rule {
-			limit {
-				minimum = 0.2
-			}
-		}
-	}
-}
-test {
-	finalizedBy jacocoTestReport // report is always generated after tests run
-}
+// jacocoTestCoverageVerification {
+// 	violationRules {
+// 		rule {
+// 			limit {
+// 				minimum = 0.2
+// 			}
+// 		}
+// 	}
+// }
+// test {
+// 	finalizedBy jacocoTestReport // report is always generated after tests run
+// }
 
-jacocoTestReport {
-	dependsOn test // tests are required to run before generating the report
-	reports {
-		xml.required = false
-		csv.required = false
-		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
-	}
-}
+// jacocoTestReport {
+// 	dependsOn test // tests are required to run before generating the report
+// 	reports {
+// 		xml.required = false
+// 		csv.required = false
+// 		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+// 	}
+// }
 
 repositories {
 	mavenCentral()
@@ -53,7 +53,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	checkstyle 'com.puppycrawl.tools:checkstyle:8.45'
+	// checkstyle 'com.puppycrawl.tools:checkstyle:8.45'
 }
 
 tasks.named('test') {

@@ -107,7 +107,7 @@ public class Card {
 			}
 		}
 
-		if (this.suit == sameColor && this.value == 11) { //Jack of same color
+		if (this.suit == sameColor && this.value == 11) { // Jack of same color
 			return 43;
 		}
 

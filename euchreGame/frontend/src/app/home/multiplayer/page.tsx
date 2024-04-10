@@ -3,9 +3,11 @@
 import { useSocket } from "@/lib/useSocket";
 import React, { useCallback, useEffect, useState } from "react";
 import { SimpleButtonRed, SimpleButtonGreen } from "@/components/SimpleButton";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const socket = useSocket();
+  const router = useRouter();
 
   const [gameID, setGameID] = useState("");
   const [joinID, setJoinID] = useState("");
@@ -14,26 +16,30 @@ export default function Page() {
 
   const errorWaitTime = 3000;
 
-  const onMessage = useCallback((message: MessageEvent) => {
-    const json_response = JSON.parse(message.data);
-    if (json_response.header === "id") {
-      setGameID(json_response.content);
-    }
-    if (json_response.header === "players") {
-      let players = json_response.content;
-      players = players.substring(1, players.length - 1).split(",");
-      setPlayers(players);
-    }
-    if (json_response.header === "error") {
-      setMessage(json_response.content);
-      setTimeout(() => {
-        setMessage("");
-      }, errorWaitTime);
-    }
-    if (json_response.header === "started") {
-      console.log(json_response.content);
-    }
-  }, []);
+  const onMessage = useCallback(
+    (message: MessageEvent) => {
+      const json_response = JSON.parse(message.data);
+      if (json_response.header === "id") {
+        setGameID(json_response.content);
+      }
+      if (json_response.header === "players") {
+        let players = json_response.content;
+        players = players.substring(1, players.length - 1).split(",");
+        setPlayers(players);
+      }
+      if (json_response.header === "error") {
+        setMessage(json_response.content);
+        setTimeout(() => {
+          setMessage("");
+        }, errorWaitTime);
+      }
+      if (json_response.header === "started") {
+        console.log(json_response.content);
+        router.push("/game");
+      }
+    },
+    [router]
+  );
 
   useEffect(() => {
     socket.addEventListener("message", onMessage);
