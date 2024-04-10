@@ -64,6 +64,9 @@ public class WebSocketConfig implements WebSocketConfigurer {
             public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
                 System.out.println("Received message: " + message.getPayload()); // debug
 
+                // get client sending the message
+                Client client = sessions.get(session);
+
                 Object payload = message.getPayload();
 
                 // Assuming the message is in JSON format
@@ -83,7 +86,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
                             handleJoinMessage(session, jsonNode);
                             break;
                         case "start":
-                            startGame(games.get(jsonNode.get("gameID").asText()));
+                            GameSession game = games.get(jsonNode.get("gameID").asText());
+                            handleStartGame(game, client);
                         default:
                             break;
                     }
@@ -168,15 +172,19 @@ public class WebSocketConfig implements WebSocketConfigurer {
     /**
      * Handles starting a game session.
      *
-     * @param game The GameSession to start.
+     * @param game   The GameSession to start.
+     * @param client the client that started the game
      * @throws IOException If an I/O error occurs.
      */
-    private void startGame(GameSession game) throws IOException {
-        System.out.println("Started game: " + game.getGameId()); // debug
-
-        // TODO start game
-
-        // let players know that the game has started
-        game.sendMessageToAllClients("started", "Game " + game.getGameId() + " has started");
+    private void handleStartGame(GameSession game, Client client) throws IOException {
+        if (game != null) {
+            if (game.isHost(client)) {
+                game.startGame();
+            } else {
+                client.sendMessage("error", "Only the host can start the game");
+            }
+        } else {
+            client.sendMessage("error", "Please create or join a game first");
+        }
     }
 }

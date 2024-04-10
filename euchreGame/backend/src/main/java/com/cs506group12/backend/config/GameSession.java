@@ -15,6 +15,8 @@ public class GameSession {
     private String gameId;
     // players connected to this game
     private ArrayList<Client> players;
+    // client that started the game sessio
+    private Client host;
 
     /**
      * Creates a new instance of GameSession
@@ -24,7 +26,8 @@ public class GameSession {
     public GameSession(Client host) {
         this.gameId = UUID.randomUUID().toString().replaceAll("[^a-zA-Z0-9]", "").substring(0, 5);
         this.players = new ArrayList<>();
-        this.players.add(host);
+        this.host = host;
+        this.players.add(this.host);
     }
 
     /**
@@ -90,6 +93,13 @@ public class GameSession {
         return false;
     }
 
+    public boolean isHost(Client client) {
+        if (this.host.equals(client)) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Sends a WebSocket message to all the players connected to the game
      * 
@@ -114,5 +124,18 @@ public class GameSession {
         newClient.sendMessage("id", getGameId());
         // send ids of connected players to all clients in the game
         sendMessageToAllClients("players", getPlayerIdsString());
+    }
+
+    public void startGame() throws IOException {
+        if (getPlayers().size() == 4) {
+            System.out.println("Started game: " + getGameId()); // debug
+
+            // TODO start game
+
+            // let players know that the game has started
+            sendMessageToAllClients("started", "Game " + getGameId() + " has started");
+        } else {
+            host.sendMessage("error", "Not enough players to start the game");
+        }
     }
 }

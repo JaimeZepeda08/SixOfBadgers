@@ -54,4 +54,15 @@ public class Client {
         Message message = new Message(header, content);
         this.getSession().sendMessage(new TextMessage(message.toString()));
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Client) {
+            Client other = (Client) obj;
+            if (playerId.equals(other.getPlayerId())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -34,8 +34,8 @@ export default function Page() {
         }, errorWaitTime);
       }
       if (json_response.header === "started") {
-        console.log(json_response.content);
         router.push("/game");
+        console.log(json_response.content);
       }
     },
     [router]
@@ -99,14 +99,7 @@ export default function Page() {
         <SimpleButtonGreen
           text="Start Game"
           onClick={() => {
-            if (players.length === 4) {
-              socket.send(JSON.stringify({ header: "start", gameID: gameID }));
-            } else {
-              setMessage("Not enough players to start the game");
-              setTimeout(() => {
-                setMessage("");
-              }, errorWaitTime);
-            }
+            socket.send(JSON.stringify({ header: "start", gameID: gameID }));
           }}
         />
       </div>
