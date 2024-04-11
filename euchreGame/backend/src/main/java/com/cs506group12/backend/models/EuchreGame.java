@@ -5,11 +5,11 @@ import java.util.*;
 import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
 public class EuchreGame {
-    private static ArrayList<Card> deck = new ArrayList<Card>();
+    public static ArrayList<Card> deck = new ArrayList<Card>();
     private List<Card>[] playerHands;
     private int cardsLeft;
 
-    private ArrayList<Player> players = new ArrayList<Player>();
+    public ArrayList<Player> players = new ArrayList<Player>();
     private boolean areTurnsTimed;   
     private int dealer = 0; // position of dealer
     private int leadingPlayer = 1;  // player who plays first card of truck
@@ -110,7 +110,7 @@ public class EuchreGame {
      * looks for which team won more tricks
      * @return the index of the team that won the turn
      */
-    private int determineTurnWinner(){
+    public int determineTurnWinner(){
         if (numTricks[0] > numTricks[1])
             return 0;
         else {
@@ -152,7 +152,8 @@ public class EuchreGame {
     /**
      * Initializes the original deck of 24 cards, and shuffles it.
      */
-    private static void initializeDeck() {
+    public static void initializeDeck() {
+        deck = new ArrayList<Card>();
         for (int x = 9; x < 15; x++) {
             deck.add(new Card(Card.SUIT.CLUBS, x));
             deck.add(new Card(Card.SUIT.DIAMONDS, x));
@@ -166,7 +167,7 @@ public class EuchreGame {
     /**
      * Deals out 4 cards to each person
      */
-    private void dealCards() {
+    public void dealCards() {
         playerHands = new List[4];
         for (int i = 0; i < 4; i++) {
             playerHands[i] = new ArrayList<>();
