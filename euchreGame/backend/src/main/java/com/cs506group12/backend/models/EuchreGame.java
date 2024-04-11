@@ -34,7 +34,6 @@ public class EuchreGame {
 
     private boolean isSoloPlayer = false;  // if a player goes alone (3 players) - currently unimplemented
     private int soloPlayerIndex;
-    // GameSession session; 
 
 
     public static ArrayList<Integer> ranks = new ArrayList<>();
@@ -50,11 +49,10 @@ public class EuchreGame {
     public void euchreGameLoop(){
         initializeDeck();
         dealCards();
-        players = new ArrayList<>();
-
-        for(int i = 0;i < 4; i ++) {
-            //players.addAll(session.getAllPlayers().getID());
-            players.add(new Player("Name" + i));
+        establishTrump();
+        cardsLeft = deck.size();
+        for (int i = 0; i < 4; i++){
+            players.add(new Player("placeholder"));  //TODO this will be done by controller
         }
 
         // game loop - exits once a team wins 
@@ -219,17 +217,14 @@ public class EuchreGame {
         trumpSuitCard = null;
         int index = dealer + 1; // who is presented with option of establishing trump (starts to left of dealer)
 
+        while (trumpSuitCard == null && index < 4){  // first pass - if anyone choses to establish initial turmp option
 
-            //iterate through session.clients()
-            //client.sendMessage("chooseTrump", "Choose a trump. Or pass to pass")
-            //
-            if (present.chooseTrump() != null) {
-                trump = present.chooseTrump();
-                present.playAndRemoveCard(null);
-            }
-                // if yes, make dealer swap a card, remove card dealer selects from players.get(dealer)'s hand  - use same controller that plays card
-            // else - give dealer option to choose - need a controller and buttons for that 
-        
+        //    if (controllerPlaceholder(index) == true)  // if a player choses faceupcard as trump - should set trump and terminate loop
+                trumpSuitCard = faceUpCard;
+
+
+            index = (index+1) % 4;
+        }
         if (trumpSuitCard != null){  // if someone choses to establish trump as faceupcard, dealer gets that card
 
             ArrayList<Card> dealerHand = players.get(dealer).getHand();
@@ -257,7 +252,6 @@ public class EuchreGame {
             dealerHand.add(faceUpCard);            
             players.get(dealer).setHand(dealerHand);
         }
-    }
     }
 
     /*
