@@ -5,9 +5,6 @@ import java.util.*;
 
 // THIS CLASS IS CURRENTLY NOT IN USE AND HAS OLD VERSION OF METHODS
 
-
-
-
 public class Turn {
 	private String trump;
 	private int numPlayers = 4;
@@ -74,7 +71,4 @@ public class Turn {
 		this.players = players;
 
 	}
-
-
-
 }

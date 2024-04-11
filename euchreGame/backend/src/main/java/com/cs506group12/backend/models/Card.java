@@ -167,6 +167,7 @@ public class Card {
 	}
 
 	/**
+	 * Compares the valeus of the the two cards
 	 * 
 	 * @param other
 	 * @param trumpSuitCard
