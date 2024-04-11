@@ -1,7 +1,6 @@
 package com.cs506group12.backend.models;
 
 import java.util.*;
-import com.cs506group12.backend.models.*;
 
 public class Player {
 	public ArrayList<Card> hand = new ArrayList<Card>();
@@ -148,8 +147,11 @@ public class Player {
 		
 		for (int i = 0; i < hand.size(); i++) {
 			c = hand.get(i);
+
+			// suit is the leading suit and not the same color as trump and a jack
+			// OR leading is trump and card is same color as the trump and a jack
 			if ((c.getSuit() == leadingSuit && !(c.getSuit() == sameColorAsTrump && c.getValue() == 11)) ||
-				(leadingSuit == trumpSuit && c.getSuit() == sameColorAsTrump && c.getValue() == 11)) {
+				(leadingSuit == trumpSuit && c.getSuit() == sameColorAsTrump && c.getValue() == 11)) { 
 				hasAtLeastOneOfSuit = true;
 				toReturn[i] = true;
 			} else {

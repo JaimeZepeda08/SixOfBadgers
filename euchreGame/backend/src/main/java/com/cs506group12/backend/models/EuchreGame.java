@@ -28,6 +28,7 @@ public class EuchreGame {
     private ArrayList<Card> playedCards =  new ArrayList<Card>();
     private boolean isSoloPlayer = false;  // if a player goes alone (3 players) - currently unimplemented
     private int soloPlayerIndex;
+    // GameSession session; 
 
 
     public static ArrayList<Integer> ranks = new ArrayList<>();
@@ -44,7 +45,9 @@ public class EuchreGame {
         initializeDeck();
         dealCards();
         players = new ArrayList<>();
+
         for(int i = 0;i < 4; i ++) {
+            //players.addAll(session.getAllPlayers().getID());
             players.add(new Player("Name" + i));
         }
         
@@ -214,6 +217,10 @@ public class EuchreGame {
             // controller present player ((dealer+i)%4) with option to choose trumo
             Player present = players.get((dealer+i)%4);
 
+
+            //iterate through session.clients()
+            //client.sendMessage("chooseTrump", "Choose a trump. Or pass to pass")
+            //
             if (present.chooseTrump() != null) {
                 trump = present.chooseTrump();
                 present.playAndRemoveCard(null);
