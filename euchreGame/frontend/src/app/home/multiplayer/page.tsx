@@ -95,15 +95,20 @@ export default function Page() {
           </div>
         ))}
       </div>
-      <div className="absolute right-[15rem] bottom-20">
+      <div className="w-full flex justify-end">
         <SimpleButtonGreen
           text="Start Game"
+          className="my-10"
           onClick={() => {
             socket.send(JSON.stringify({ header: "start", gameID: gameID }));
           }}
         />
       </div>
-      <h2 className="absolute bottom-10 text-red-400 font-medium text-lg">
+      <h2
+        className={`absolute bottom-10 text-white font-medium text-lg bg-orange-500/50 shadow-md rounded-md ${
+          message !== "" ? "py-2 px-3" : ""
+        }`}
+      >
         {message}
       </h2>
     </div>
