@@ -269,12 +269,16 @@ public class EuchreGame {
           + "trump_suit" + betwweenKeyValues + trumpSuitCard.getSuit() + betweenLines + "leading_card" + betwweenKeyValues + leadingCard + betweenLines
         + "attacking_team" + betwweenKeyValues + attackingTeam + betweenLines + "is_solo_player" + betwweenKeyValues + isSoloPlayer
          + betweenLines + "solo_player_index" + betwweenKeyValues + soloPlayerIndex + betweenLines + "team_that_won_trick" + betwweenKeyValues +betweenLines;
-        String scores = "team_one_score" + betwweenKeyValues + teamOverallScores[0] + betweenLines
+        String scoreInfo = "team_one_score" + betwweenKeyValues + teamOverallScores[0] + betweenLines
          + "team_two_score" + betwweenKeyValues + teamOverallScores[1] + betweenLines
         + "team_one_tricks" + betwweenKeyValues + numTricks[0] + betweenLines + "team_two_tricks" + betwweenKeyValues + numTricks[1] + betweenLines;
-         String players = "";
-         String cards ="";
-        return trickInfo+players+cards + scores;
+         String playersJson = "all_players\": []";
+         for (int i = 0; i < players.size(); i++){
+
+         }
+         playersJson += "\n],";
+         String cardsInfo = "";
+        return "{\n + " + trickInfo + scoreInfo + playersJson + cardsInfo + "}";
     }
 
     /*
