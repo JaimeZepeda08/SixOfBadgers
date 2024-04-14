@@ -22,7 +22,7 @@ import com.cs506group12.backend.models.Player;
 
 /**
  * Tests the euchreGame class
- * @author Casey
+ * @author Kaldan Kopp
  */
 public class testEuchreGame {
 	/**
