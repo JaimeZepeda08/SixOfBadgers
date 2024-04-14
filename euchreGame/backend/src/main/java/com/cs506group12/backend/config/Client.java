@@ -13,6 +13,7 @@ public class Client {
 
     private WebSocketSession session;
     private String playerId;
+    private GameSession game;
 
     /**
      * Creates a new instance of Client
@@ -22,6 +23,7 @@ public class Client {
     public Client(WebSocketSession session) {
         this.session = session;
         this.playerId = "Anonymous" + Usernames.getRandomUsername();
+        this.game = null;
     }
 
     /**
@@ -40,6 +42,40 @@ public class Client {
      */
     public String getPlayerId() {
         return playerId;
+    }
+
+    /**
+     * Getter method for this client's game
+     * 
+     * @return the game the client is currently in
+     */
+    public GameSession getGame() {
+        return game;
+    }
+
+    /**
+     * Handles client leaving a game session
+     * 
+     * @throws IOException if an error occurs
+     */
+    public void leaveGame() throws IOException {
+        game.removePlayer(this);
+        game = null;
+    }
+
+    /**
+     * Handles client joining game sessions
+     * 
+     * @param newGame the game to be joined
+     * @throws IOException if an error occurs
+     */
+    public void joinGame(GameSession newGame) throws IOException {
+        if (game != null) {
+            // leave previous game
+            leaveGame();
+        }
+        // join new game
+        game = newGame;
     }
 
     /**

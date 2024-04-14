@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className} style={{ zoom: 0.8 }}>
+      <body className={inter.className}>
         <SocketProvider>
           <TopNav
             components={[<MusicPlayer src="/pokerFace.mp3" />, <Profile />]}

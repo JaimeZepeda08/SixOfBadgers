@@ -8,7 +8,10 @@ import { SimpleButtonLinkRed } from "@/components/SimpleButton";
  */
 export default function Page() {
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div
+      className="flex flex-col justify-center items-center"
+      style={{ zoom: 0.8 }}
+    >
       <h1 className="text-6xl font-bold text-red-900 mb-40 mt-36">
         Euchre With Friends
       </h1>

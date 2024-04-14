@@ -27,7 +27,7 @@ const TopNav = ({ components }: TopNavProps) => {
   ];
 
   return (
-    <nav className="bg-red-600 border border-black">
+    <nav className="bg-red-600 border border-black" style={{ zoom: 0.8 }}>
       <ul className="flex items-center justify-between">
         <li className="flex items-center">
           <Image

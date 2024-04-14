@@ -66,28 +66,42 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
                 // get client sending the message
                 Client client = sessions.get(session);
-
-                Object payload = message.getPayload();
+                GameSession game = client.getGame();
 
                 // Assuming the message is in JSON format
                 ObjectMapper mapper = new ObjectMapper();
+                Object payload = message.getPayload();
                 JsonNode jsonNode = mapper.readTree(payload.toString());
 
-                // manages different types of messages from the client
-                // message has to be in the format: {"header" : header, "content" : content}
+                // manages different types of messages from clients
                 if (jsonNode.has("header")) {
                     String messageHeader = jsonNode.get("header").asText();
 
                     switch (messageHeader) {
+                        // called when a player creates a new game
                         case "create":
-                            handleCreateMessage(session);
+                            handleCreateMessage(client);
                             break;
+                        // called when a players joins a game
                         case "join":
-                            handleJoinMessage(session, jsonNode);
+                            handleJoinMessage(client, jsonNode.get("gameID").asText());
                             break;
+                        // called when a player attempts to start a game
                         case "start":
-                            GameSession game = games.get(jsonNode.get("gameID").asText());
                             handleStartGame(game, client);
+                            break;
+                        // called at the start of a game
+                        case "getGameID":
+                            game.sendGameIdToClients();
+                            break;
+                        // called at the start of a game
+                        case "getGamePlayers":
+                            game.sendPlayerIdsToClients();
+                            break;
+                        // called whenever a players sends a message in the chat
+                        case "message":
+                            game.processMessage(client, jsonNode.get("message").asText());
+                            break;
                         default:
                             break;
                     }
@@ -98,6 +112,9 @@ public class WebSocketConfig implements WebSocketConfigurer {
             @Override
             public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
                 System.out.println("Error in WebSocket session with session id: " + session.getId()); // debug
+
+                // some error happened in a client session
+                handleErrorInSession(session);
             }
 
             @SuppressWarnings("null")
@@ -105,10 +122,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
             public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
                 System.out.println("Connection closed with session id: " + session.getId()); // debug
 
-                // Remove session from the sessions map
-                sessions.remove(session);
-
-                // TODO close games started by this client
+                // a client closes the browser
+                handleErrorInSession(session);
             }
 
             @Override
@@ -119,14 +134,32 @@ public class WebSocketConfig implements WebSocketConfigurer {
     }
 
     /**
+     * This function handles clients closing sessions. It will remove them from
+     * their current game and alert other players
+     * 
+     * @param session the client session that was lost
+     * @throws IOException if an error occurs
+     */
+    private void handleErrorInSession(WebSocketSession session) throws IOException {
+        // Remove session from the sessions map
+        Client client = sessions.get(session);
+        sessions.remove(session);
+
+        // remove from current game
+        GameSession game = client.getGame();
+        game.removePlayer(client);
+
+        // alert players
+        game.sendPlayerIdsToClients();
+    }
+
+    /**
      * Handles the creation of a new game session.
      *
-     * @param session The WebSocketSession sending the message.
+     * @param client The client creating the game.
      * @throws IOException If an I/O error occurs.
      */
-    private void handleCreateMessage(WebSocketSession session) throws IOException {
-        // get client from connected sessions
-        Client client = sessions.get(session);
+    private void handleCreateMessage(Client client) throws IOException {
         // create a new game session with the client as the host
         GameSession game = new GameSession(client);
         // store game session
@@ -138,16 +171,10 @@ public class WebSocketConfig implements WebSocketConfigurer {
     /**
      * Handles new clients joining an existing game session.
      *
-     * @param session  The WebSocketSession sending the message.
-     * @param jsonNode The JsonNode containing the message data.
+     * @param client client that is trying to join a game
      * @throws IOException If an I/O error occurs.
      */
-    private void handleJoinMessage(WebSocketSession session, JsonNode jsonNode) throws IOException {
-        // get id from JSON
-        String id = jsonNode.get("gameID").asText();
-        // get client object of session sending the message
-        Client client = sessions.get(session);
-
+    private void handleJoinMessage(Client client, String id) throws IOException {
         // check that the game with the id sent by the client exists
         if (games.containsKey(id)) {
             // get game with corresponding id

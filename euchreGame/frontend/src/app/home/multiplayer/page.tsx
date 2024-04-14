@@ -49,7 +49,10 @@ export default function Page() {
   }, [socket, onMessage]);
 
   return (
-    <div className="flex flex-col items-center justify-center mt-5">
+    <div
+      className="flex flex-col items-center justify-center mt-5"
+      style={{ zoom: 0.8 }}
+    >
       <div className="bg-red-500 text-white text-4xl p-4 rounded-md mb-4">
         <h1>Multiplayer</h1>
       </div>
@@ -100,7 +103,7 @@ export default function Page() {
           text="Start Game"
           className="my-10"
           onClick={() => {
-            socket.send(JSON.stringify({ header: "start", gameID: gameID }));
+            socket.send(JSON.stringify({ header: "start" }));
           }}
         />
       </div>

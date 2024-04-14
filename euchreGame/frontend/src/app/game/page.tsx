@@ -10,6 +10,7 @@ import {
 import Hand from "../../components/Hand";
 import Card from "../../components/Card";
 import "./css_files_game/buttonStyles.css";
+import MessagePanel from "@/components/MessagePanel";
 
 /**
  * Game component representing the main page of the game. Each person
@@ -181,10 +182,11 @@ export default function Page() {
       <div
         className="flex justify-center items-center relative rounded-2xl"
         style={{
-          width: "90%",
+          width: "80%",
           height: "85%",
           backgroundColor: "rgba(74, 160, 74)",
           border: "3px solid #c0c0c0",
+          zoom: 0.8,
         }}
       >
         {/* Render player 1 */}
@@ -336,6 +338,7 @@ export default function Page() {
           <Card suit="HEARTS" value="4" isSelected={false} />
         </div>
       </div>
+      <MessagePanel />
     </div>
   );
 }
