@@ -53,6 +53,13 @@ public class Client {
         return game;
     }
 
+    public boolean isInGame() {
+        if (game != null) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Handles client leaving a game session
      * 

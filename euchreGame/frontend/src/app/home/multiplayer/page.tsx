@@ -27,6 +27,10 @@ export default function Page() {
         players = players.substring(1, players.length - 1).split(",");
         setPlayers(players);
       }
+      if (json_response.header === "leave") {
+        setPlayers([]);
+        setGameID("");
+      }
       if (json_response.header === "error") {
         setMessage(json_response.content);
         setTimeout(() => {
@@ -99,9 +103,16 @@ export default function Page() {
         ))}
       </div>
       <div className="w-full flex justify-end">
+        <SimpleButtonRed
+          text="Leave Game"
+          className="my-10 mx-2"
+          onClick={() => {
+            socket.send(JSON.stringify({ header: "leave" }));
+          }}
+        />
         <SimpleButtonGreen
           text="Start Game"
-          className="my-10"
+          className="my-10 mx-2"
           onClick={() => {
             socket.send(JSON.stringify({ header: "start" }));
           }}

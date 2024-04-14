@@ -86,6 +86,9 @@ public class WebSocketConfig implements WebSocketConfigurer {
                         case "join":
                             handleJoinMessage(client, jsonNode.get("gameID").asText());
                             break;
+                        case "leave":
+                            handleLeaveMessage(client);
+                            break;
                         // called when a player attempts to start a game
                         case "start":
                             handleStartGame(game, client);
@@ -193,6 +196,22 @@ public class WebSocketConfig implements WebSocketConfigurer {
             }
         } else {
             client.sendMessage("error", "Game " + id + " does not exist");
+        }
+    }
+
+    private void handleLeaveMessage(Client client) throws IOException {
+        if (client.isInGame()) {
+            // remove from current game
+            GameSession game = client.getGame();
+            game.removePlayer(client);
+
+            // alert players
+            game.sendPlayerIdsToClients();
+
+            // alert client that they can leave the session
+            client.sendMessage("leave", "You can now leave the game");
+        } else {
+            client.sendMessage("error", "You are currently not in a game");
         }
     }
 
