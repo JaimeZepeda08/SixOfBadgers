@@ -15,7 +15,11 @@ public class Card {
 		CLUBS,
 		DIAMONDS,
 		HEARTS,
-		SPADES
+		SPADES;
+
+		SUIT getSuit() {
+			return (this.getSuit());
+		}
 	}
 
 	private final SUIT suit;
@@ -92,23 +96,23 @@ public class Card {
 	/**
 	 * Method to calculate the value of the card to compare
 	 * 
-	 * @param trump   The trump of the round
-	 * @param leading The leading card of this round
+	 * @param trumpSuitCard The trump of the round
+	 * @param leading       The leading card of this round
 	 * @return The value of the card based on the trump and the leading value
 	 */
-	public int value(SUIT trump, SUIT leading) {
-		SUIT sameColor = twinColor(trump);
+	public int value(Card trumpSuitCard, SUIT leading) {
+		SUIT sameColor = twinColor(trumpSuitCard);
 
-		if (this.suit == trump) {
+		if (this.suit == trumpSuitCard.getSuit()) {
 			if (this.value == 11) { // Jack of trump suit
 				return 44;
 			} else {
-				return this.value + 28;
+				return this.value + 28; // face + 28 (max is 42)
 			}
 		}
 
 		if (this.suit == sameColor && this.value == 11) { // Jack of same color
-			return 43;
+			return 43; // one less than jack of trump, one more than max other value
 		}
 
 		if (this.suit == leading) {
@@ -121,13 +125,13 @@ public class Card {
 	/**
 	 * Method to calculate what the other color is that matters for the trump.
 	 * 
-	 * @param trump The suit that is trump this round
+	 * @param trumpSuitCard The suit that is trump this round
 	 * @return The corresponding suit for the trump
 	 */
-	public static SUIT twinColor(SUIT trump) {
-
+	public static SUIT twinColor(Card trumpSuitCard) {
+		Card.SUIT suit = trumpSuitCard.getSuit();
 		SUIT sameColor = null;
-		switch (trump) {
+		switch (suit) {
 			case CLUBS:
 				sameColor = SUIT.SPADES;
 				break;
@@ -160,5 +164,36 @@ public class Card {
 	 */
 	public int getValue() {
 		return this.value;
+	}
+
+	/**
+	 * Compares the valeus of the the two cards
+	 * 
+	 * @param other
+	 * @param trumpSuitCard
+	 * @param leading
+	 * @return
+	 */
+	public boolean greater(Card other, Card trumpSuitCard, SUIT leading) {
+		return this.value(trumpSuitCard, leading) > other.value(trumpSuitCard, leading);
+	}
+
+	public static SUIT twinColorSuit(SUIT trumpSuit) {
+		SUIT sameColor = null;
+		switch (trumpSuit) {
+			case CLUBS:
+				sameColor = SUIT.SPADES;
+				break;
+			case SPADES:
+				sameColor = SUIT.CLUBS;
+				break;
+			case HEARTS:
+				sameColor = SUIT.DIAMONDS;
+				break;
+			default:
+				sameColor = SUIT.HEARTS;
+				break;
+		}
+		return sameColor;
 	}
 }

@@ -68,5 +68,4 @@ public class Turn {
 		this.players = players;
 
 	}
-
 }

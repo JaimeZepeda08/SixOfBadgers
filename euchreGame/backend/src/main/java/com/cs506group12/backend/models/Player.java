@@ -1,7 +1,6 @@
 package com.cs506group12.backend.models;
 
 import java.util.*;
-import com.cs506group12.backend.models.*;
 
 public class Player {
 	public ArrayList<Card> hand = new ArrayList<Card>();
@@ -139,11 +138,14 @@ public class Player {
 	public boolean[] getPlayableCards(Card.SUIT leadingSuit, Card.SUIT trumpSuit) {
 		boolean[] toReturn = new boolean[hand.size()];
 		boolean hasAtLeastOneOfSuit = false;
-		Card.SUIT sameColorAsTrump = Card.twinColor(trumpSuit);
+		Card.SUIT sameColorAsTrump = Card.twinColorSuit(trumpSuit);
 		Card c;
 
 		for (int i = 0; i < hand.size(); i++) {
 			c = hand.get(i);
+
+			// suit is the leading suit and not the same color as trump and a jack
+			// OR leading is trump and card is same color as the trump and a jack
 			if ((c.getSuit() == leadingSuit && !(c.getSuit() == sameColorAsTrump && c.getValue() == 11)) ||
 					(leadingSuit == trumpSuit && c.getSuit() == sameColorAsTrump && c.getValue() == 11)) {
 				hasAtLeastOneOfSuit = true;
@@ -160,6 +162,22 @@ public class Player {
 		}
 
 		return toReturn;
+	}
+
+	/**
+	 * Class to choose the trump for the round
+	 * TODO: implement with frotnend
+	 * 
+	 * @return Card.SUIT enum of the chosen suit, null if none picked
+	 */
+	public Card.SUIT chooseTrump() {
+		Card.SUIT trump = null;
+		for (Card c : this.hand) {
+			trump = c.getSuit();
+
+		}
+
+		return null;
 	}
 
 }
