@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import com.cs506group12.backend.models.EuchreGame;
+
 /**
  * This class represents a euchre game session that clients can join
  * 

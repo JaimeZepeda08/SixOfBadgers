@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   getPlayerHand,
   submitSelectedCard,
@@ -11,6 +11,7 @@ import Hand from "../../components/Hand";
 import Card from "../../components/Card";
 import "./css_files_game/buttonStyles.css";
 import MessagePanel from "@/components/MessagePanel";
+import { useSocket } from "@/lib/useSocket";
 
 /**
  * Game component representing the main page of the game. Each person
@@ -24,6 +25,21 @@ import MessagePanel from "@/components/MessagePanel";
  * @returns {JSX.Element} The Game component, which includes player hands, trump suit, and other game elements.
  */
 export default function Page() {
+  const socket = useSocket();
+
+  const onMessage = useCallback((message: MessageEvent) => {
+    const json_response = JSON.parse(message.data);
+    if (json_response.header === "") {
+    }
+  }, []);
+
+  useEffect(() => {
+    socket.addEventListener("message", onMessage);
+    return () => {
+      socket.removeEventListener("message", onMessage);
+    };
+  }, [socket, onMessage]);
+
   // State variable to hold the player's hand, initialized with dummy data
   const [playerHand, setPlayerHand] = useState(
     JSON.stringify([
