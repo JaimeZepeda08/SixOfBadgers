@@ -9,13 +9,17 @@ const MessagePanel = () => {
 
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [chat, setChat] = useState("");
-  const [unreadMessage, setUnreadMessage] = useState(true);
+  const [chat, setChat] = useState<String[]>([]);
+  const [unreadMessage, setUnreadMessage] = useState(false);
 
   const onMessage = useCallback((message: MessageEvent) => {
     const json_response = JSON.parse(message.data);
     if (json_response.header === "chat") {
-      console.log(json_response.content);
+      const messages: string[] = json_response.content
+        .split(",")
+        .map((message: string) => message.replace(/\[|\]/g, ""));
+      setChat(messages);
+      setUnreadMessage(true);
     }
   }, []);
 
@@ -28,6 +32,7 @@ const MessagePanel = () => {
 
   const togglePanel = () => {
     setIsPanelOpen(!isPanelOpen);
+    setUnreadMessage(false);
   };
 
   const sendMessage = () => {
@@ -47,6 +52,14 @@ const MessagePanel = () => {
           isPanelOpen ? "translate-x-0" : "translate-x-full hidden"
         }`}
       >
+        <div>
+          {/*Add messages here*/}
+          {chat.map((message, index) => (
+            <p key={index} className="text-white p-2">
+              {message}
+            </p>
+          ))}
+        </div>
         <div className="absolute bottom-0 w-[100%] px-3 py-3">
           <div className="flex items-center justify-center">
             <input
