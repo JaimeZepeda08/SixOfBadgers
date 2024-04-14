@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getPlayerHand, submitSelectedCard, getPlayers, getTrumpSuit } from "@/lib/gameService";
+import { getPlayerHand, submitSelectedCard, getPlayers, getTrumpSuit, getCurrentPlayer } from "@/lib/gameService";
 import Hand from "../../components/Hand";
 import Card from "../../components/Card";
 import './css_files_game/buttonStyles.css';
@@ -66,6 +66,12 @@ export default function Page() {
     }
   )
 
+  // state to for current player (who is playing their card)
+  const [currentPlayerTurn, setCurrentPlayerTurn] = useState("player1");
+
+  // state to handle who recieves the notification
+  const [turnNotification, setTurnNotification] = useState({ show: false, player: "player3" });
+
   // state for which tooltip is active for a player
   const [tooltipVisible, setTooltipVisible] = useState({ player1: false, player2: false, player3: false, player4: false });
 
@@ -83,6 +89,37 @@ export default function Page() {
 
   // Parse the player's hand JSON string into an object
   const cards = JSON.parse(playerHand);
+
+  useEffect(() => {
+    async function fetchCurrentPlayer() {
+      const currPlayer = await getCurrentPlayer();
+      if (currPlayer) {
+        setCurrentPlayerTurn(currPlayer);
+        showTurnNotification(currPlayer);
+      } else {
+        console.error("Current player is undefined");
+      }
+    }
+    fetchCurrentPlayer();
+  }, []);
+
+  const showTurnNotification = (player: PlayerIdentifier) => {
+    setTurnNotification({ show: true, player });
+    setTimeout(() => setTurnNotification({ show: false, player: "" }), 1000);  // Hide the popup after 1 second
+  };
+  
+  //
+  useEffect(() => {
+    async function fetchCurrentPlayer() {
+      const currPlayer = await getCurrentPlayer();
+      if (currPlayer != null) {
+        setCurrentPlayerTurn(currPlayer);
+      } else {
+        console.error("Current player is undefined");
+      }
+    }
+    getCurrentPlayer();
+  }, []);
 
   // useEffect hooks to fetch player's hand, trump suit, and players' information when the component mounts
   useEffect(() => {
@@ -164,6 +201,16 @@ export default function Page() {
 
   return (
     <div className="h-screen flex justify-center items-center relative bg-cover bg-center" style={{ backgroundImage: 'url("/textures/wood3.jpg")' }}>
+
+        {/* Conditional rendering for turn notification */}
+        {turnNotification.show && (
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+            <div className="p-6 text-lg text-black bg-red-500 rounded-lg" role="alert">
+              It's {turnNotification.player}'s turn!
+            </div>
+          </div>
+        )}
+
       <div className="flex justify-center items-center relative rounded-2xl" style={{ width: '90%', height: '85%', backgroundColor: 'rgba(74, 160, 74)', border: '3px solid #c0c0c0' }}>
 
         {/* Render player 1 */}
