@@ -275,6 +275,7 @@ public class EuchreGame {
          String playersJson = "all_players\": []";
          for (int i = 0; i < players.size(); i++){
 
+
          }
          playersJson += "\n],";
          String cardsInfo = "";
