@@ -55,7 +55,7 @@ const MessagePanel = () => {
         <div>
           {/*Add messages here*/}
           {chat.map((message, index) => (
-            <p key={index} className="text-white p-2">
+            <p key={index} className="text-white p-2 overflow-hidden">
               {message}
             </p>
           ))}

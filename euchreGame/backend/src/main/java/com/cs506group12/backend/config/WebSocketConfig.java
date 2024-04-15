@@ -1,6 +1,5 @@
 package com.cs506group12.backend.config;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -86,6 +85,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
                         case "join":
                             handleJoinMessage(client, jsonNode.get("gameID").asText());
                             break;
+                        // called when a player leaves a game
                         case "leave":
                             handleLeaveMessage(client);
                             break;
@@ -94,8 +94,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
                             handleStartGame(game, client);
                             break;
                         // called at the start of a game
-                        case "getGameID":
-                            game.sendGameIdToClients();
+                        case "getUsername":
+                            client.sendMessage("username", client.getPlayerId());
                             break;
                         // called at the start of a game
                         case "getGamePlayers":
@@ -141,9 +141,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
      * their current game and alert other players
      * 
      * @param session the client session that was lost
-     * @throws IOException if an error occurs
      */
-    private void handleErrorInSession(WebSocketSession session) throws IOException {
+    private void handleErrorInSession(WebSocketSession session) {
         // Remove session from the sessions map
         Client client = sessions.get(session);
         sessions.remove(session);
@@ -160,9 +159,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
      * Handles the creation of a new game session.
      *
      * @param client The client creating the game.
-     * @throws IOException If an I/O error occurs.
      */
-    private void handleCreateMessage(Client client) throws IOException {
+    private void handleCreateMessage(Client client) {
         // create a new game session with the client as the host
         GameSession game = new GameSession(client);
         // store game session
@@ -175,9 +173,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
      * Handles new clients joining an existing game session.
      *
      * @param client client that is trying to join a game
-     * @throws IOException If an I/O error occurs.
      */
-    private void handleJoinMessage(Client client, String id) throws IOException {
+    private void handleJoinMessage(Client client, String id) {
         // check that the game with the id sent by the client exists
         if (games.containsKey(id)) {
             // get game with corresponding id
@@ -199,7 +196,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
         }
     }
 
-    private void handleLeaveMessage(Client client) throws IOException {
+    private void handleLeaveMessage(Client client) {
         if (client.isInGame()) {
             // remove from current game
             GameSession game = client.getGame();
@@ -220,9 +217,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
      *
      * @param game   The GameSession to start.
      * @param client the client that started the game
-     * @throws IOException If an I/O error occurs.
      */
-    private void handleStartGame(GameSession game, Client client) throws IOException {
+    private void handleStartGame(GameSession game, Client client) {
         if (game != null) {
             if (game.isHost(client)) {
                 game.startGame();

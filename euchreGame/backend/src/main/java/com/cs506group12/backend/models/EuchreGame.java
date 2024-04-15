@@ -1,10 +1,13 @@
 package com.cs506group12.backend.models;
 
 import java.util.*;
-
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
+import com.cs506group12.backend.config.GameSession;
+import com.cs506group12.backend.config.Client;
 
 public class EuchreGame {
+    private GameSession session;
+    private ArrayList<Client> clients;
+
     public static ArrayList<Card> deck = new ArrayList<Card>();
     private List<Card>[] playerHands;
     private int cardsLeft;
@@ -38,7 +41,11 @@ public class EuchreGame {
     public static ArrayList<Integer> ranks = new ArrayList<>();
 
     public EuchreGame() {
+    }
 
+    public EuchreGame(GameSession session) {
+        this.session = session;
+        clients = session.getPlayers();
     }
 
     /**
@@ -46,13 +53,11 @@ public class EuchreGame {
      * points
      */
     public void euchreGameLoop() {
-        initializeDeck();
-        dealCards();
+        System.out.println("in euchreGameLoop"); // debug
+
+        initializeGame(); // creates players, deck, and assigns cards
         establishTrump();
         cardsLeft = deck.size();
-        for (int i = 0; i < 4; i++) {
-            players.add(new Player("placeholder")); // TODO this will be done by controller
-        }
 
         // game loop - exits once a team wins
         while (teamOverallScores[0] < pointsThreshold && teamOverallScores[1] < pointsThreshold) {
@@ -75,8 +80,10 @@ public class EuchreGame {
      * used for testing purposes - initializes player array, deck, and assigns cards
      */
     public void initializeGame() { // used for games
+        System.out.println("in initializeGame"); // debug
         for (int i = 0; i < 4; i++) {
-            players.add(new Player("placeholder")); // TODO this will be done by controller
+            String username = clients.get(i).getPlayerId();
+            players.add(new Player(username));
         }
         initializeDeck();
         dealCards();
@@ -168,6 +175,7 @@ public class EuchreGame {
      * Deals out 4 cards to each person
      */
     public void dealCards() {
+        System.out.println("in dealCards"); // debug
         playerHands = new List[4];
         for (int i = 0; i < 4; i++) {
             playerHands[i] = new ArrayList<>();
@@ -186,7 +194,10 @@ public class EuchreGame {
 
         // sets it in players object.
         for (int i = 0; i < players.size(); i++) {
-            players.get(i).setHand((ArrayList<Card>) playerHands[i]);
+            Player player = players.get(i);
+            player.setHand((ArrayList<Card>) playerHands[i]);
+            System.out.println("sending cards..."); // debug
+            clients.get(i).sendMessage("hand", playerHandToJSON(player));
         }
     }
 
@@ -207,7 +218,6 @@ public class EuchreGame {
             }
         }
         return maxIndex;
-
     }
 
     /**
@@ -218,6 +228,7 @@ public class EuchreGame {
      * @return a string representation of the trump suit
      */
     public void establishTrump() {
+        session.sendMessageToAllClients("trump", trumpToJSON());
         trumpSuitCard = null;
         int index = dealer + 1; // who is presented with option of establishing trump (starts to left of dealer)
 
@@ -288,6 +299,18 @@ public class EuchreGame {
         playersJson += "\n],";
         String cardsInfo = "";
         return "{\n + " + trickInfo + scoreInfo + playersJson + cardsInfo + "}";
+    }
+
+    // TODO: implement
+    private String playerHandToJSON(Player player) {
+        // '["suit": suit, "value": value]'
+        return player.userName + "test player cards";
+    }
+
+    // TODO: implement
+    private String trumpToJSON() {
+        // '["suit": suit, "value": value]'
+        return "test trump";
     }
 
     /*

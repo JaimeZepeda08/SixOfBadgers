@@ -27,9 +27,19 @@ import { useSocket } from "@/lib/useSocket";
 export default function Page() {
   const socket = useSocket();
 
+  // fetch initial data
+  useEffect(() => {
+    socket.send(JSON.stringify({ header: "getUsername" }));
+    socket.send(JSON.stringify({ header: "getGamePlayers" }));
+  }, [socket]);
+
   const onMessage = useCallback((message: MessageEvent) => {
     const json_response = JSON.parse(message.data);
-    if (json_response.header === "") {
+    if (json_response.header === "username") {
+      console.log(json_response.content);
+    }
+    if (json_response.header === "players") {
+      console.log(json_response.content);
     }
   }, []);
 

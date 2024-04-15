@@ -62,10 +62,8 @@ public class Client {
 
     /**
      * Handles client leaving a game session
-     * 
-     * @throws IOException if an error occurs
      */
-    public void leaveGame() throws IOException {
+    public void leaveGame() {
         game.removePlayer(this);
         game = null;
     }
@@ -74,9 +72,8 @@ public class Client {
      * Handles client joining game sessions
      * 
      * @param newGame the game to be joined
-     * @throws IOException if an error occurs
      */
-    public void joinGame(GameSession newGame) throws IOException {
+    public void joinGame(GameSession newGame) {
         if (game != null) {
             // leave previous game
             leaveGame();
@@ -90,12 +87,15 @@ public class Client {
      * 
      * @param type    type of message to be sent
      * @param content content of message
-     * @throws IOException If an I/O error occurs.
      */
     @SuppressWarnings("null")
-    public void sendMessage(String header, String content) throws IOException {
+    public void sendMessage(String header, String content) {
         Message message = new Message(header, content);
-        this.getSession().sendMessage(new TextMessage(message.toString()));
+        try {
+            this.getSession().sendMessage(new TextMessage(message.toString()));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
