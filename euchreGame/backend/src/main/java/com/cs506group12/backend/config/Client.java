@@ -98,6 +98,22 @@ public class Client {
         }
     }
 
+    /**
+     * Sends an error socket message to the client
+     * 
+     * @param error the message to be sent
+     */
+    public void reportError(String error) {
+        sendMessage("error", error);
+    }
+
+    /**
+     * Sends this client's id
+     */
+    public void sendPlayerID() {
+        sendMessage("username", getPlayerId());
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Client) {

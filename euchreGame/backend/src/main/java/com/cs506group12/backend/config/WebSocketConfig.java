@@ -77,6 +77,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
                     String messageHeader = jsonNode.get("header").asText();
 
                     switch (messageHeader) {
+                        /************** Game Lobby Messages **************/
+
                         // called when a player creates a new game
                         case "create":
                             handleCreateMessage(client);
@@ -93,13 +95,16 @@ public class WebSocketConfig implements WebSocketConfigurer {
                         case "start":
                             handleStartGame(game, client);
                             break;
+
+                        /************** In Game Messages **************/
+
                         // called at the start of a game
                         case "getUsername":
-                            client.sendMessage("username", client.getPlayerId());
+                            client.sendPlayerID();
                             break;
                         // called at the start of a game
                         case "getGamePlayers":
-                            game.sendPlayerIdsToClients();
+                            game.sendPlayerIdsToAllClients();
                             break;
                         // called whenever a players sends a message in the chat
                         case "message":
@@ -152,7 +157,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
         game.removePlayer(client);
 
         // alert players
-        game.sendPlayerIdsToClients();
+        game.sendPlayerIdsToAllClients();
     }
 
     /**
@@ -186,13 +191,13 @@ public class WebSocketConfig implements WebSocketConfigurer {
                     // send message to all players in game that a new client has joined
                     game.notifyPlayersNewClient(client);
                 } else {
-                    client.sendMessage("error", "Game " + id + " is already full");
+                    client.reportError("Game " + id + " is already full");
                 }
             } else {
-                client.sendMessage("error", "You are already in game " + id);
+                client.reportError("You are already in game " + id);
             }
         } else {
-            client.sendMessage("error", "Game " + id + " does not exist");
+            client.reportError("Game " + id + " does not exist");
         }
     }
 
@@ -208,12 +213,12 @@ public class WebSocketConfig implements WebSocketConfigurer {
             game.removePlayer(client);
 
             // alert players
-            game.sendPlayerIdsToClients();
+            game.sendPlayerIdsToAllClients();
 
             // alert client that they can leave the session
             client.sendMessage("leave", "You can now leave the game");
         } else {
-            client.sendMessage("error", "You are currently not in a game");
+            client.reportError("You are currently not in a game");
         }
     }
 
@@ -228,10 +233,10 @@ public class WebSocketConfig implements WebSocketConfigurer {
             if (game.isHost(client)) {
                 game.startGame();
             } else {
-                client.sendMessage("error", "Only the host can start the game");
+                client.reportError("Only the host can start the game");
             }
         } else {
-            client.sendMessage("error", "Please create or join a game first");
+            client.reportError("Please create or join a game first");
         }
     }
 }

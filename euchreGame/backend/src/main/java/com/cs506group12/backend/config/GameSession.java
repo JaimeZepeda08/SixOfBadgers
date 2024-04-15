@@ -122,7 +122,7 @@ public class GameSession {
     public void removePlayer(Client player) {
         players.remove(player);
         // notify other players in game
-        sendPlayerIdsToClients();
+        sendPlayerIdsToAllClients();
     }
 
     /**
@@ -140,7 +140,7 @@ public class GameSession {
     /**
      * Sends the IDs of players in the game to all clients. Used to initialize game
      */
-    public void sendPlayerIdsToClients() {
+    public void sendPlayerIdsToAllClients() {
         // send ids of connected players to all clients in the game
         sendMessageToAllClients("players", getPlayerIdsString());
     }
@@ -148,7 +148,7 @@ public class GameSession {
     /**
      * Sends the ID of the game to all clients. Used to initialize game
      */
-    public void sendGameIdToClients() {
+    public void sendGameIdToAllClients() {
         sendMessageToAllClients("gameId", gameId);
     }
 
@@ -161,7 +161,7 @@ public class GameSession {
         // send game id back to client
         newClient.sendMessage("id", getGameId());
         // send ids of connected players to all clients in the game
-        sendPlayerIdsToClients();
+        sendPlayerIdsToAllClients();
     }
 
     /**
