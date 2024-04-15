@@ -56,7 +56,7 @@ public class EuchreGame {
         }
 
         // game loop - exits once a team wins 
-        while (teamOneScore < pointsThreshold && teamTwoScore < pointsThreshold) {
+        while (teamOverallScores[0] < pointsThreshold && teamOverallScores[1] < pointsThreshold) {
             for (int i = 0; i < 5; i ++){  // for each trick - TODO terminate early if team wins 
                 handleTrick();            
             }
@@ -253,6 +253,33 @@ public class EuchreGame {
             dealerHand.add(faceUpCard);            
             players.get(dealer).setHand(dealerHand);
         }
+    }
+
+    /**
+     * 
+     * @return a json formatted string of the euchregame object
+     */
+    public String toJson(){
+        String betweenLines = "\",\n\t\"";
+        String betwweenKeyValues = "\": \"";
+        
+
+        String trickInfo = "dealer" + betwweenKeyValues + dealer + betweenLines
+         + "leading_player" + betwweenKeyValues + leadingPlayer + betweenLines
+          + "trump_suit" + betwweenKeyValues + trumpSuitCard.getSuit() + betweenLines + "leading_card" + betwweenKeyValues + leadingCard + betweenLines
+        + "attacking_team" + betwweenKeyValues + attackingTeam + betweenLines + "is_solo_player" + betwweenKeyValues + isSoloPlayer
+         + betweenLines + "solo_player_index" + betwweenKeyValues + soloPlayerIndex + betweenLines + "team_that_won_trick" + betwweenKeyValues +betweenLines;
+        String scoreInfo = "team_one_score" + betwweenKeyValues + teamOverallScores[0] + betweenLines
+         + "team_two_score" + betwweenKeyValues + teamOverallScores[1] + betweenLines
+        + "team_one_tricks" + betwweenKeyValues + numTricks[0] + betweenLines + "team_two_tricks" + betwweenKeyValues + numTricks[1] + betweenLines;
+         String playersJson = "all_players\": []";
+         for (int i = 0; i < players.size(); i++){
+
+
+         }
+         playersJson += "\n],";
+         String cardsInfo = "";
+        return "{\n + " + trickInfo + scoreInfo + playersJson + cardsInfo + "}";
     }
 
     /*

@@ -197,4 +197,20 @@ public class Card {
 		}
 		return sameColor;
     }
+
+	/**
+	 * 
+	 * @return  a json formatted string of a card - meant to be used in an array
+	 */
+	public String cardToJson(){
+		return "{\n\t\"card_rank\": " + value + ",\n\t\"card_suit\": \"" + toString().split(" ")[2] + "\"\n}";
+	}
+	
+	/**
+	 * returns suit of a card a json - used for trump probably
+	 * @returna json formatted string
+	 */
+	public String suitAsJson(){
+		return "{\n\t\"card_suit\": \"" + toString().split(" ")[2] + "\"\n}";
+	}
 }
