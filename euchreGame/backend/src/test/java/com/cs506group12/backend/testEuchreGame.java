@@ -179,6 +179,70 @@ public class testEuchreGame {
         assertEquals(trumpSuitCard, euchreGame.getTrumpSuitCard());
     }
 
+    @Test
+    public void testHandlePointsSpecialCases() {
+        EuchreGame euchreGame = new EuchreGame();
+        // Test case 1: Defenders win
+        euchreGame.setAttackingTeam(0);
+        assertEquals(2, euchreGame.handlePoints(1));
+
+        // Test case 2: Solo player wins 5 tricks
+        euchreGame.setAttackingTeam(0);
+        euchreGame.setSoloPlayer(true);
+        euchreGame.setNumTricks(new int[] {5, 0});
+        assertEquals(4, euchreGame.handlePoints(0));
+
+        // Test case 3: Solo player wins 3 or 4 tricks
+        euchreGame.setAttackingTeam(0);
+        euchreGame.setSoloPlayer(true);
+        euchreGame.setNumTricks(new int[] {3, 0});
+        assertEquals(1, euchreGame.handlePoints(0));
+
+        // Test case 4: Attacking team wins 3 or 4 tricks
+        euchreGame.setAttackingTeam(0);
+        euchreGame.setNumTricks(new int[] {3, 0});
+        assertEquals(1, euchreGame.handlePoints(0));
+
+        // Test case 5: Attacking team wins 5 tricks
+        euchreGame.setAttackingTeam(0);
+        euchreGame.setNumTricks(new int[] {5, 0});
+        assertEquals(4, euchreGame.handlePoints(0));
+
+        // Test case 6: No specific condition met
+        euchreGame.setNumTricks(new int[] {2, 3});
+        assertEquals(2, euchreGame.handlePoints(1));
+    }
+
+    @Test
+    public void testInitializeDeck() {
+        EuchreGame euchreGame = new EuchreGame();
+        euchreGame.initializeDeck();
+        ArrayList<Card> deck = euchreGame.deck;
+        assertNotNull(deck);
+        assertEquals(24, deck.size());
+
+        // Verify the deck contains cards of different suits and ranks
+        boolean hasClubs = false, hasDiamonds = false, hasHearts = false, hasSpades = false;
+        for (Card card : deck) {
+            switch (card.getSuit()) {
+                case CLUBS:
+                    hasClubs = true;
+                    break;
+                case DIAMONDS:
+                    hasDiamonds = true;
+                    break;
+                case HEARTS:
+                    hasHearts = true;
+                    break;
+                case SPADES:
+                    hasSpades = true;
+                    break;
+            }
+            assertTrue(card.getValue() >= 9 && card.getValue() <= 14); // Ranks between 9 and 14 (inclusive)
+        }
+        assertTrue(hasClubs && hasDiamonds && hasHearts && hasSpades); // Ensure all suits are present
+    }
+
     // game loop is currently untested - will add once more finctionality 
 
 }
