@@ -114,6 +114,10 @@ public class Client {
         sendMessage("username", getPlayerId());
     }
 
+    public void sendPlayersInGame() {
+        sendMessage("players", getGame().getPlayerIdsString());
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Client) {

@@ -77,7 +77,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
                     String messageHeader = jsonNode.get("header").asText();
 
                     switch (messageHeader) {
-                        /************** Game Lobby Messages **************/
+                        /************** Multiplayer Game Lobby Messages **************/
 
                         // called when a player creates a new game
                         case "create":
@@ -98,17 +98,13 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
                         /************** In Game Messages **************/
 
-                        // called at the start of a game
-                        case "getUsername":
-                            client.sendPlayerID();
-                            break;
-                        // called at the start of a game
-                        case "getGamePlayers":
-                            game.sendPlayerIdsToAllClients();
+                        // called by each client at the start of a game
+                        case "setup":
+                            handleGameSetUp(client);
                             break;
                         // called whenever a players sends a message in the chat
                         case "message":
-                            game.processMessage(client, jsonNode.get("message").asText());
+                            handleChatMessages(game, client, jsonNode.get("message").asText());
                             break;
                         default:
                             break;
@@ -140,6 +136,12 @@ public class WebSocketConfig implements WebSocketConfigurer {
             }
         };
     }
+
+    /*
+     * The following functions correspond the the handling of messages or events in
+     * the multiplayer game lobby. Most of the data will be sent to all clients in a
+     * game session
+     */
 
     /**
      * This function handles clients closing sessions. It will remove them from
@@ -238,5 +240,32 @@ public class WebSocketConfig implements WebSocketConfigurer {
         } else {
             client.reportError("Please create or join a game first");
         }
+    }
+
+    /*
+     * The following functions will handle in-game events such as the set up of
+     * client side variables, and other game loop related events.
+     */
+
+    /**
+     * Handles client-side set up of the game. This will be done individually by
+     * each client at the very start of the game
+     * 
+     * @param client the client requesting the data
+     */
+    private void handleGameSetUp(Client client) {
+        client.sendPlayerID();
+        client.sendPlayersInGame();
+    }
+
+    /**
+     * Handles the processing of a in-game chat message
+     * 
+     * @param game    the game session that the message was sent in
+     * @param sender  the client that sent the message
+     * @param message the string representation of the message
+     */
+    private void handleChatMessages(GameSession game, Client sender, String message) {
+        game.processMessage(sender, message);
     }
 }

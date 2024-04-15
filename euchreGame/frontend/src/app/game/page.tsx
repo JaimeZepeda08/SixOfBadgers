@@ -27,21 +27,43 @@ import { useSocket } from "@/lib/useSocket";
 export default function Page() {
   const socket = useSocket();
 
+  const [username, setUsername] = useState<string>("");
+  const [players2, setPlayers2] = useState<string[]>([]);
+
   // fetch initial data
   useEffect(() => {
-    socket.send(JSON.stringify({ header: "getUsername" }));
-    socket.send(JSON.stringify({ header: "getGamePlayers" }));
-  }, [socket]);
+    socket.send(JSON.stringify({ header: "setup" }));
+  }, []);
 
   const onMessage = useCallback((message: MessageEvent) => {
     const json_response = JSON.parse(message.data);
     if (json_response.header === "username") {
       console.log(json_response.content);
+      setUsername(json_response.content);
     }
     if (json_response.header === "players") {
-      console.log(json_response.content);
+      const playerString = json_response.content;
+      let playerList = playerString
+        .substring(1, playerString.length - 1)
+        .split(",");
+      // sort players (the player corresponding to this client should go first)
+      playerList = sortPlayerList(playerList, username);
+      setPlayers2(playerList);
+      console.log(players2.toString());
     }
   }, []);
+
+  function sortPlayerList(playerList: string[], username: string) {
+    if (!playerList.includes(username)) {
+      return playerList;
+    }
+
+    const ownIndex = playerList.indexOf(username);
+    const sortedList = playerList
+      .slice(ownIndex)
+      .concat(playerList.slice(0, ownIndex));
+    return sortedList;
+  }
 
   useEffect(() => {
     socket.addEventListener("message", onMessage);

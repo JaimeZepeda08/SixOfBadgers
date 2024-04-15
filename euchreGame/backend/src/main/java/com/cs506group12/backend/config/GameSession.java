@@ -60,7 +60,7 @@ public class GameSession {
      * 
      * @return string representation of players in this game
      */
-    private String getPlayerIdsString() {
+    public String getPlayerIdsString() {
         String ids = "[";
         for (Client player : players) {
             ids += player.getPlayerId() + ",";
