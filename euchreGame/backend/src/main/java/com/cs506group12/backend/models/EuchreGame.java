@@ -177,7 +177,8 @@ public class EuchreGame {
     public void dealCards() {
         System.out.println("in dealCards"); // debug
         playerHands = new List[4];
-        for (int i = 0; i < 4; i++) {
+        // TODO: player hands are length 5
+        for (int i = 0; i < 5; i++) {
             playerHands[i] = new ArrayList<>();
         }
 
@@ -230,6 +231,7 @@ public class EuchreGame {
     public void establishTrump() {
         session.sendMessageToAllClients("trump", trumpToJSON());
         trumpSuitCard = null;
+        // TODO modulo dealer + 1 % 4
         int index = dealer + 1; // who is presented with option of establishing trump (starts to left of dealer)
 
         while (trumpSuitCard == null && index < 4) { // first pass - if anyone choses to establish initial turmp option

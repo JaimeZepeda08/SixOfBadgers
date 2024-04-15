@@ -180,4 +180,45 @@ public class Player {
 		return null;
 	}
 
+
+	/**
+	 * used to get players hand as a json
+	 * @return a json formatted string of cards
+	 */
+	public String handAsJson(){
+		String finalJson = "{\n\t\"hand\": [";
+		for (int i = 0; i < hand.size(); i++){
+			finalJson+=hand.get(i).cardToJson() + ",";
+		}
+		// here if one to many ,
+		finalJson+= "\t]\n}";
+
+		return finalJson;
+	}
+
+	/**
+	 * 
+	 * @param playableHand the cards available for user to play
+	 * @return a json formatted string of cards
+	 */
+	public String handAsJson(ArrayList<Card> playableHand){
+		String finalJson = "{\n\t\"hand\": [";
+		for (int i = 0; i < playableHand.size(); i++){
+			finalJson+=playableHand.get(i).cardToJson() + ",";
+		}
+		// here if one to many ,
+		finalJson+= "\t]\n}";
+
+		return finalJson;
+	}
+
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String playerAsJson(){
+		return "{\n\t\"player_name\": " + userName + "\"\n}" ;
+	}
+
 }
