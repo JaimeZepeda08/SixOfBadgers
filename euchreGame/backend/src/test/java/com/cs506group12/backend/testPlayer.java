@@ -1,6 +1,7 @@
 package com.cs506group12.backend;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import com.cs506group12.backend.models.Card;
 import com.cs506group12.backend.models.Player;
+import org.json.*;
+
 
 /**
  * This class tests the correctness of the Player class.
@@ -149,6 +152,37 @@ public class testPlayer {
 		assertEquals(false, p.hasSuitCard(Card.SUIT.CLUBS));
 	}
 
+	/**
+	 * 
+	 * @param json string to check if json
+	 * @return true if stirng is a valid json- false otherwise
+	 */
+	public boolean isValidJson(String json) {
+		try {
+			new JSONObject(json);
+		} catch (JSONException e) {
+			return false;
+		}
+		return true;
+	}
+	/**
+	 * test that the handAsJson works
+	 */
+	@Test
+	public void testHandAsJson(){
+		Player p = new Player("TEST");
+		p.hand.add(new Card(Card.SUIT.SPADES, 13));
+		p.hand.add(new Card(Card.SUIT.DIAMONDS, 14));
+		p.hand.add(new Card(Card.SUIT.DIAMONDS, 11));
+		p.hand.add(new Card(Card.SUIT.SPADES, 9));
+		p.hand.add(new Card(Card.SUIT.HEARTS, 10));
+		System.out.println(p.handAsJson());
+		String pHandAsJson = p.handAsJson();
+		//assertEquals("" , p.handAsJson());
+		assertTrue(isValidJson(pHandAsJson));  // tests that it is valid josn 
+
+
+	}
 	
 	
 }

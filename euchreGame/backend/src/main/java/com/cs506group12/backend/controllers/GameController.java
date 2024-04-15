@@ -36,10 +36,20 @@ public class GameController {
         return cards;
     }
 
+    @GetMapping("/getOpponents")
+    public ArrayList<Integer> getOpponents() {
+        ArrayList<Integer> opponents = new ArrayList<>();
+        opponents.add(4);
+        opponents.add(5);
+        opponents.add(4);
+
+        return opponents;
+    }
+
     @PostMapping("/selectedCard")
     public void playCard(@RequestBody Card card) throws SQLException {
         System.out.println("Suit: " + card.getSuit() + "\nValue: " + card.getValue());
-        //return card;
+        // return card;
     }
 
 }

@@ -92,13 +92,13 @@ public class GameRecord {
     public Timestamp getEndTime() {
         return this.endTime;
     }
-    
+
     /**
      * Gets the unique identifier for the game in the SQL database
      * 
      * @return The UID of the game record.
      */
-    public int getGameUID(){
+    public int getGameUID() {
         return this.gameUID;
     }
 

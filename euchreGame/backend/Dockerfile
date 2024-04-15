@@ -15,6 +15,7 @@ COPY ./gradlew /api/
 COPY gradle ./gradle
 COPY build.gradle .
 COPY settings.gradle .
+COPY config /api/config
 COPY src ./src
 
 # Build the application using Gradle

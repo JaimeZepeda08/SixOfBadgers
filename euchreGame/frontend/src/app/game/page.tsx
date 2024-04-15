@@ -12,16 +12,60 @@ import { useSocket } from "@/lib/useSocket";
  * Game component representing the main page of the game. Each person
  * will have a set of cards that are fanned out. All opponents will be hidden while
  * the users will be shown to them.
- * 
+ *
  * This component fetches the player's hand, allows the user to select a card to play,
  * and displays the current trump suit. It also renders the player's name, wins, games played,
  * and score, along with tooltips for additional information.
- * 
+ *
  * @returns {JSX.Element} The Game component, which includes player hands, trump suit, and other game elements.
  */
 export default function Page() {
-
   const socket = useSocket();
+
+  const [username, setUsername] = useState<string>("");
+  const [players2, setPlayers2] = useState<string[]>([]);
+
+  // fetch initial data
+  // useEffect(() => {
+  //   socket.send(JSON.stringify({ header: "setup" }));
+  // }, []);
+
+  // const onMessage = useCallback((message: MessageEvent) => {
+  //   const json_response = JSON.parse(message.data);
+  //   if (json_response.header === "username") {
+  //     console.log(json_response.content);
+  //     setUsername(json_response.content);
+  //   }
+  //   if (json_response.header === "players") {
+  //     const playerString = json_response.content;
+  //     let playerList = playerString
+  //       .substring(1, playerString.length - 1)
+  //       .split(",");
+  //     // sort players (the player corresponding to this client should go first)
+  //     playerList = sortPlayerList(playerList, username);
+  //     setPlayers2(playerList);
+  //     console.log(players2.toString());
+  //   }
+  // }, []);
+
+  // function sortPlayerList(playerList: string[], username: string) {
+  //   if (!playerList.includes(username)) {
+  //     return playerList;
+  //   }
+
+  //   const ownIndex = playerList.indexOf(username);
+  //   const sortedList = playerList
+  //     .slice(ownIndex)
+  //     .concat(playerList.slice(0, ownIndex));
+  //   return sortedList;
+  // }
+
+  // useEffect(() => {
+  //   socket.addEventListener("message", onMessage);
+  //   return () => {
+  //     socket.removeEventListener("message", onMessage);
+  //   };
+  // }, [socket, onMessage]);
 
   // State variable to hold the player's hand, initialized with dummy data
   const [playerHand, setPlayerHand] = useState(
@@ -35,40 +79,41 @@ export default function Page() {
   );
 
   // use state to keep track of currently selected card
-  const [selectedCard, setSelectedCard] = useState<{ suit: string; value: string } | null>(null);
+  const [selectedCard, setSelectedCard] = useState<{
+    suit: string;
+    value: string;
+  } | null>(null);
 
   // state to handle new trump suit
   const [trumpSuit, setTrumpSuit] = useState("SPADES");
 
   // state to handle all player named given at start of game
-  const [players, setPlayers] = useState(
-    {
-      player1: {
-        name:"player1",
-        wins: "25",
-        gamesPlayed: "101",
-        score: "1"
-      },
-      player2: {
-        name:"player2",
-        wins: "26",
-        gamesPlayed: "101",
-        score: "2"
-      },
-      player3: {
-        name:"player3",
-        wins: "27",
-        gamesPlayed: "102",
-        score: "3"
-      },
-      player4: {
-        name:"player4",
-        wins: "28",
-        gamesPlayed: "103",
-        score: "4"
-      },
-    }
-  )
+  const [players, setPlayers] = useState({
+    player1: {
+      name: "player1",
+      wins: "25",
+      gamesPlayed: "101",
+      score: "1",
+    },
+    player2: {
+      name: "player2",
+      wins: "26",
+      gamesPlayed: "101",
+      score: "2",
+    },
+    player3: {
+      name: "player3",
+      wins: "27",
+      gamesPlayed: "102",
+      score: "3",
+    },
+    player4: {
+      name: "player4",
+      wins: "28",
+      gamesPlayed: "103",
+      score: "4",
+    },
+  });
 
   // state to for current player (who is playing their card)
   const [currentPlayerTurn, setCurrentPlayerTurn] = useState("player1");
@@ -77,7 +122,12 @@ export default function Page() {
   const [turnNotification, setTurnNotification] = useState({ show: false, player: "player3" });
 
   // state for which tooltip is active for a player
-  const [tooltipVisible, setTooltipVisible] = useState({ player1: false, player2: false, player3: false, player4: false });
+  const [tooltipVisible, setTooltipVisible] = useState({
+    player1: false,
+    player2: false,
+    player3: false,
+    player4: false,
+  });
 
   // state for score to win a round
   const [pointsToWin, setPointsToWin] = useState(0);
@@ -90,9 +140,9 @@ export default function Page() {
     { suit: "?", value: "?" },
     { suit: "?", value: "?" },
   ];
-  
+
   // typing for player identifier to help manage tooltip
-  type PlayerIdentifier = 'player1' | 'player2' | 'player3' | 'player4';
+  type PlayerIdentifier = "player1" | "player2" | "player3" | "player4";
 
   // Parse the player's hand JSON string into an object
   const cards = JSON.parse(playerHand);
@@ -139,7 +189,9 @@ export default function Page() {
   // hook to correctly show updated selected card
   useEffect(() => {
     if (selectedCard !== null) {
-      console.log("Suit: " + selectedCard.suit + " Value: " + selectedCard.value);
+      console.log(
+        "Suit: " + selectedCard.suit + " Value: " + selectedCard.value
+      );
     }
   }, [selectedCard]);
 
@@ -160,7 +212,7 @@ export default function Page() {
 
   // placeholder for opponents cards
   const handleOppSelect = (suit: string | null, value: string | null) => {
-    console.log("Remove option of touching others cards")
+    console.log("Remove option of touching others cards");
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -169,7 +221,6 @@ export default function Page() {
         socket.send(JSON.stringify({ suit: selectedCard.suit, value: selectedCard.value }));
     }
   };
-
 
   return (
     <div className="h-screen flex justify-center items-center relative bg-cover bg-center" style={{ backgroundImage: 'url("/textures/wood3.jpg")' }}>
@@ -186,18 +237,22 @@ export default function Page() {
       <div className="flex justify-center items-center relative rounded-2xl" style={{ width: '90%', height: '85%', backgroundColor: 'rgba(74, 160, 74)', border: '3px solid #c0c0c0' }}>
 
         {/* Render player 1 */}
-        <div className="absolute bottom-5" style={{ transform: "rotate(0deg)" }}>
-          <Hand cards={cards} onCardSelect={handleCardSelect}/>
+        <div
+          className="absolute bottom-5"
+          style={{ transform: "rotate(0deg)" }}
+        >
+          <Hand cards={cards} onCardSelect={handleCardSelect} />
           <div className="text-center mt-5">
-            <div 
-              onMouseEnter={() => toggleTooltip('player1')} 
-              onMouseLeave={() => toggleTooltip('player1')} 
+            <div
+              onMouseEnter={() => toggleTooltip("player1")}
+              onMouseLeave={() => toggleTooltip("player1")}
               className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
             >
               {players.player1.name}
               {tooltipVisible.player1 && (
                 <div className="absolute z-10 w-40 p-2 -mt-30 left-1/2 transform -translate-x-1/2 text-white bg-gray-900 rounded-lg shadow-md">
-                  Wins: {players.player1.wins}<br/>
+                  Wins: {players.player1.wins}
+                  <br />
                   Games Played: {players.player1.gamesPlayed}
                 </div>
               )}
@@ -207,18 +262,25 @@ export default function Page() {
         </div>
 
         {/* Render player 2 */}
-        <div className="absolute left-10 pb-10" style={{ transform: "rotate(90deg)" }}>
-          <Hand cards={opponents} onCardSelect={handleOppSelect}/>
-          <div className="text-center mt-10" style={{transform: "rotate(-90deg)"}}>
-            <div 
-              onMouseEnter={() => toggleTooltip('player2')} 
-              onMouseLeave={() => toggleTooltip('player2')} 
+        <div
+          className="absolute left-10 pb-10"
+          style={{ transform: "rotate(90deg)" }}
+        >
+          <Hand cards={opponents} onCardSelect={handleOppSelect} />
+          <div
+            className="text-center mt-10"
+            style={{ transform: "rotate(-90deg)" }}
+          >
+            <div
+              onMouseEnter={() => toggleTooltip("player2")}
+              onMouseLeave={() => toggleTooltip("player2")}
               className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
             >
               {players.player2.name}
               {tooltipVisible.player2 && (
                 <div className="absolute z-10 w-40 p-2 -mt-30 left-1/2 transform -translate-x-1/2 text-white bg-gray-900 rounded-lg shadow-md">
-                  Wins: {players.player2.wins}<br/>
+                  Wins: {players.player2.wins}
+                  <br />
                   Games Played: {players.player2.gamesPlayed}
                 </div>
               )}
@@ -229,17 +291,21 @@ export default function Page() {
 
         {/* Render player 3 */}
         <div className="absolute top-5" style={{ transform: "rotate(180deg)" }}>
-          <Hand cards={opponents} onCardSelect={handleOppSelect}/>  
-          <div className="text-center mt-5" style={{transform: "rotate(-180deg)"}}>
-            <div 
-              onMouseEnter={() => toggleTooltip('player3')} 
-              onMouseLeave={() => toggleTooltip('player3')} 
+          <Hand cards={opponents} onCardSelect={handleOppSelect} />
+          <div
+            className="text-center mt-5"
+            style={{ transform: "rotate(-180deg)" }}
+          >
+            <div
+              onMouseEnter={() => toggleTooltip("player3")}
+              onMouseLeave={() => toggleTooltip("player3")}
               className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
             >
               {players.player3.name}
               {tooltipVisible.player3 && (
                 <div className="absolute z-10 w-40 p-2 -mt-30 left-1/2 transform -translate-x-1/2 text-white bg-gray-900 rounded-lg shadow-md">
-                  Wins: {players.player3.wins}<br/>
+                  Wins: {players.player3.wins}
+                  <br />
                   Games Played: {players.player3.gamesPlayed}
                 </div>
               )}
@@ -249,18 +315,25 @@ export default function Page() {
         </div>
 
         {/* Render player 4 */}
-        <div className="absolute right-10 pb-10" style={{ transform: "rotate(270deg)" }}>
-          <Hand cards={opponents} onCardSelect={handleOppSelect}/>
-          <div className="text-center mt-10" style={{transform: "rotate(90deg)"}}>
-            <div 
-              onMouseEnter={() => toggleTooltip('player4')} 
-              onMouseLeave={() => toggleTooltip('player4')} 
+        <div
+          className="absolute right-10 pb-10"
+          style={{ transform: "rotate(270deg)" }}
+        >
+          <Hand cards={opponents} onCardSelect={handleOppSelect} />
+          <div
+            className="text-center mt-10"
+            style={{ transform: "rotate(90deg)" }}
+          >
+            <div
+              onMouseEnter={() => toggleTooltip("player4")}
+              onMouseLeave={() => toggleTooltip("player4")}
               className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
             >
               {players.player4.name}
               {tooltipVisible.player4 && (
                 <div className="absolute z-10 w-40 p-2 -mt-30 left-1/2 transform -translate-x-1/2 text-white bg-gray-900 rounded-lg shadow-md">
-                  Wins: {players.player4.wins}<br/>
+                  Wins: {players.player4.wins}
+                  <br />
                   Games Played: {players.player4.gamesPlayed}
                 </div>
               )}
@@ -273,29 +346,46 @@ export default function Page() {
         <form onSubmit={handleSubmit} className="absolute bottom-0 right-0">
           <button
             type="submit"
-            className={`baseButton ${!selectedCard ? 'disabled' : ''} mb-20 mr-80`}
+            className={`baseButton ${
+              !selectedCard ? "disabled" : ""
+            } mb-20 mr-80`}
             disabled={!selectedCard}
-            onClick={() => console.log('Submit action')}
+            onClick={() => console.log("Submit action")}
           >
             Play Card
           </button>
         </form>
 
         {/* Render Trump Suit */}
-        <div style={{ position: 'absolute', top: '47.5%', right: 'calc(50% + 200px)', transform: 'translateY(-50%)' }}>
+        <div
+          style={{
+            position: "absolute",
+            top: "47.5%",
+            right: "calc(50% + 200px)",
+            transform: "translateY(-50%)",
+          }}
+        >
           <h1 className="font-bold font-germania pb-3">Trump Suit</h1>
-          <Card suit={trumpSuit} value="" isSelected={false}/>
+          <Card suit={trumpSuit} value="" isSelected={false} />
         </div>
 
         {/* Render played cards */}
-        <div className="flex flex-row" style={{ position: 'absolute', top: '50%', right: 'calc(50% - 250px)', transform: 'translateY(-50%)' }}>
-          <Card suit="CLUBS" value="1" isSelected={false}/>
-          <Card suit="SPADES" value="2" isSelected={false}/>
-          <Card suit="DIAMONDS" value="3" isSelected={false}/>
-          <Card suit="HEARTS" value="4" isSelected={false}/>
+        <div
+          className="flex flex-row"
+          style={{
+            position: "absolute",
+            top: "50%",
+            right: "calc(50% - 250px)",
+            transform: "translateY(-50%)",
+          }}
+        >
+          <Card suit="CLUBS" value="1" isSelected={false} />
+          <Card suit="SPADES" value="2" isSelected={false} />
+          <Card suit="DIAMONDS" value="3" isSelected={false} />
+          <Card suit="HEARTS" value="4" isSelected={false} />
         </div>
-
       </div>
+      {/* <MessagePanel /> */}
     </div>
   );
 }

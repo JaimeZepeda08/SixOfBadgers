@@ -1,7 +1,7 @@
 package com.cs506group12.backend.models;
 
-public class Bot extends Player{
-    
+public class Bot extends Player {
+
     /**
      * Constructer that calls the super
      */
@@ -10,10 +10,7 @@ public class Bot extends Player{
     }
 
     public Card toPlay() {
-
-
         return null;
     }
-
 
 }

@@ -18,7 +18,7 @@ public class Card {
 		SPADES;
 
 		SUIT getSuit() {
-			return(this.getSuit());
+			return (this.getSuit());
 		}
 	}
 
@@ -96,8 +96,8 @@ public class Card {
 	/**
 	 * Method to calculate the value of the card to compare
 	 * 
-	 * @param trumpSuitCard   The trump of the round
-	 * @param leading The leading card of this round
+	 * @param trumpSuitCard The trump of the round
+	 * @param leading       The leading card of this round
 	 * @return The value of the card based on the trump and the leading value
 	 */
 	public int value(Card trumpSuitCard, SUIT leading) {
@@ -111,7 +111,7 @@ public class Card {
 			}
 		}
 
-		if (this.suit == sameColor && this.value == 11) { //Jack of same color
+		if (this.suit == sameColor && this.value == 11) { // Jack of same color
 			return 43; // one less than jack of trump, one more than max other value
 		}
 
@@ -174,12 +174,11 @@ public class Card {
 	 * @param leading
 	 * @return
 	 */
-	public boolean greater(Card other, Card trumpSuitCard, SUIT leading)
-	{
-		return this.value(trumpSuitCard,leading) > other.value(trumpSuitCard, leading);	
+	public boolean greater(Card other, Card trumpSuitCard, SUIT leading) {
+		return this.value(trumpSuitCard, leading) > other.value(trumpSuitCard, leading);
 	}
 
-    public static SUIT twinColorSuit(SUIT trumpSuit) {
+	public static SUIT twinColorSuit(SUIT trumpSuit) {
 		SUIT sameColor = null;
 		switch (trumpSuit) {
 			case CLUBS:
@@ -196,5 +195,22 @@ public class Card {
 				break;
 		}
 		return sameColor;
-    }
+	}
+
+	/**
+	 * 
+	 * @return a json formatted string of a card - meant to be used in an array
+	 */
+	public String cardToJson() {
+		return "{\n\t\"card_rank\": " + value + ",\n\t\"card_suit\": \"" + toString().split(" ")[2] + "\"\n}";
+	}
+
+	/**
+	 * returns suit of a card a json - used for trump probably
+	 * 
+	 * @returna json formatted string
+	 */
+	public String suitAsJson() {
+		return "{\n\t\"card_suit\": \"" + toString().split(" ")[2] + "\"\n}";
+	}
 }
