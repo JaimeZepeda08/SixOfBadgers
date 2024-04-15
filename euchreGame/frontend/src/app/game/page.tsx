@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 import { getPlayerHand, submitSelectedCard, getPlayers, getTrumpSuit, getCurrentPlayer } from "@/lib/gameService";
 import Hand from "../../components/Hand";
 import Card from "../../components/Card";
 import './css_files_game/buttonStyles.css';
+import { useSocket } from "@/lib/useSocket";
 
 
 /**
@@ -19,6 +20,9 @@ import './css_files_game/buttonStyles.css';
  * @returns {JSX.Element} The Game component, which includes player hands, trump suit, and other game elements.
  */
 export default function Page() {
+
+  const socket = useSocket();
+
   // State variable to hold the player's hand, initialized with dummy data
   const [playerHand, setPlayerHand] = useState(
     JSON.stringify([
@@ -75,6 +79,9 @@ export default function Page() {
   // state for which tooltip is active for a player
   const [tooltipVisible, setTooltipVisible] = useState({ player1: false, player2: false, player3: false, player4: false });
 
+  // state for score to win a round
+  const [pointsToWin, setPointsToWin] = useState(0);
+
   // placeholder for opponents cards
   const opponents = [
     { suit: "?", value: "?" },
@@ -90,75 +97,44 @@ export default function Page() {
   // Parse the player's hand JSON string into an object
   const cards = JSON.parse(playerHand);
 
-  useEffect(() => {
-    async function fetchCurrentPlayer() {
-      const currPlayer = await getCurrentPlayer();
-      if (currPlayer) {
-        setCurrentPlayerTurn(currPlayer);
-        showTurnNotification(currPlayer);
-      } else {
-        console.error("Current player is undefined");
-      }
+  const onMessage = useCallback((message: MessageEvent) => {
+    const json_response = JSON.parse(message.data);
+
+    if (json_response.header === "currentPlayer") {
+      setCurrentPlayerTurn(json_response.content);
+      showTurnNotification(json_response.content);
     }
-    fetchCurrentPlayer();
+
+    if(json_response.header === "playersData") {
+      setPlayers(json_response.content);
+    }
+
+    if(json_response.header === "playerHand") {
+      setPlayerHand(json_response.content);
+    }
+    
+    if(json_response.header === "trumpSuit") {
+      setTrumpSuit(json_response.content);
+    }
+
+    if(json_response.header === "pointsToWin") {
+      setPointsToWin(json_response.content);
+    }
+
   }, []);
 
+  useEffect(() => {
+    socket.addEventListener("message", onMessage);
+    return () => {
+      socket.removeEventListener("message", onMessage);
+    };
+  }, [socket, onMessage]);
+
+  // notification handler given by current player message
   const showTurnNotification = (player: PlayerIdentifier) => {
     setTurnNotification({ show: true, player });
     setTimeout(() => setTurnNotification({ show: false, player: "" }), 1000);  // Hide the popup after 1 second
   };
-  
-  //
-  useEffect(() => {
-    async function fetchCurrentPlayer() {
-      const currPlayer = await getCurrentPlayer();
-      if (currPlayer != null) {
-        setCurrentPlayerTurn(currPlayer);
-      } else {
-        console.error("Current player is undefined");
-      }
-    }
-    getCurrentPlayer();
-  }, []);
-
-  // useEffect hooks to fetch player's hand, trump suit, and players' information when the component mounts
-  useEffect(() => {
-    async function fetchPlayers() {
-      const players = await getPlayers();
-      if (players != null) {
-        setPlayerHand(players);
-      } else {
-        console.error("Players are undefined");
-      }
-    }
-    getPlayers();
-  }, []);
-
-  useEffect(() => {
-    async function fetchTrumpSuit() {
-      const trumpSuit = await getTrumpSuit();
-      if (trumpSuit != null) {
-        setTrumpSuit(trumpSuit);
-      } else {
-        console.error("Trump suit is undefined");
-      }
-    }
-    getTrumpSuit();
-  }, []);
-
-  useEffect(() => {
-    async function fetchPlayerHand() {
-      // Fetch player's hand from the server
-      const hand = await getPlayerHand();
-      if (hand && hand.length > 0) {
-        // Update state with the fetched player's hand
-        setPlayerHand(hand);
-      } else {
-        console.error("Player hand is undefined");
-      }
-    }
-    fetchPlayerHand();
-  }, []);
 
   // hook to correctly show updated selected card
   useEffect(() => {
@@ -189,12 +165,8 @@ export default function Page() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // if (selectedCard && selectedCard.suit !== "?" && selectedCard.value !== "?") {
     if(selectedCard !== null) {
-        const formData = new FormData();
-        formData.append("suit", selectedCard.suit);
-        formData.append("value", selectedCard.value);
-        await submitSelectedCard(formData);
+        socket.send(JSON.stringify({ suit: selectedCard.suit, value: selectedCard.value }));
     }
   };
 
