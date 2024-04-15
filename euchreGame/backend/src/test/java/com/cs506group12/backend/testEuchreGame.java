@@ -1,9 +1,11 @@
 package com.cs506group12.backend;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 
@@ -113,6 +115,132 @@ public class testEuchreGame {
         assertEquals(0, game.getNumTricks()[0]);
 
 
+    }
+
+    public void testGettersAndSetters() {
+        EuchreGame euchreGame = new EuchreGame();
+        // Test getters and setters for team scores
+        euchreGame.setTeamOneScore(5);
+        assertEquals(5, euchreGame.getTeamOneScore());
+        euchreGame.setTeamTwoScore(7);
+        assertEquals(7, euchreGame.getTeamTwoScore());
+
+        // Test getters and setters for points threshold
+        euchreGame.setPointsThreshold(15);
+        assertEquals(15, euchreGame.getPointsThreshold());
+
+        // Test getters and setters for dealer position
+        euchreGame.setDealer(2);
+        assertEquals(2, euchreGame.getDealer());
+
+        // Test getters and setters for leading player
+        euchreGame.setLeadingPlayer(3);
+        assertEquals(3, euchreGame.getLeadingPlayer());
+
+        // Test getters and setters for face up card
+        Card faceUpCard = new Card(Card.SUIT.HEARTS, 10);
+        euchreGame.setFaceUpCard(faceUpCard);
+        assertEquals(faceUpCard, euchreGame.getFaceUpCard());
+
+        // Test getters and setters for team that won trick
+        euchreGame.setTeamThatWonTrick(1);
+        assertEquals(1, euchreGame.getTeamThatWonTrick());
+
+        // Test getters and setters for team that won turn
+        euchreGame.setTeamThatWonTurn(0);
+        assertEquals(0, euchreGame.getTeamThatWonTurn());
+
+        // Test getters and setters for attacking team
+        euchreGame.setAttackingTeam(1);
+        assertEquals(1, euchreGame.getAttackingTeam());
+
+        // Test getters and setters for team overall scores
+        euchreGame.setTeamOverallScores(new int[]{20, 25});
+        assertArrayEquals(new int[]{20, 25}, euchreGame.getTeamOverallScores());
+
+        // Test getters and setters for number of tricks
+        euchreGame.setNumTricks(new int[]{3, 2});
+        assertArrayEquals(new int[]{3, 2}, euchreGame.getNumTricks());
+
+        // Test getters and setters for played cards
+        ArrayList<Card> playedCards = new ArrayList<>();
+        playedCards.add(new Card(Card.SUIT.CLUBS, 9));
+        playedCards.add(new Card(Card.SUIT.DIAMONDS, 10));
+        euchreGame.setPlayedCards(playedCards);
+        assertEquals(playedCards, euchreGame.getPlayedCards());
+
+        // Test getters and setters for solo player flag
+        euchreGame.setSoloPlayer(true);
+        assertTrue(euchreGame.isSoloPlayer());
+
+        // Test getters and setters for trump suit card
+        Card trumpSuitCard = new Card(Card.SUIT.HEARTS, 11);
+        euchreGame.setTrumpSuitCard(trumpSuitCard);
+        assertEquals(trumpSuitCard, euchreGame.getTrumpSuitCard());
+    }
+
+    @Test
+    public void testHandlePointsSpecialCases() {
+        EuchreGame euchreGame = new EuchreGame();
+        // Test case 1: Defenders win
+        euchreGame.setAttackingTeam(0);
+        assertEquals(2, euchreGame.handlePoints(1));
+
+        // Test case 2: Solo player wins 5 tricks
+        euchreGame.setAttackingTeam(0);
+        euchreGame.setSoloPlayer(true);
+        euchreGame.setNumTricks(new int[] {5, 0});
+        assertEquals(4, euchreGame.handlePoints(0));
+
+        // Test case 3: Solo player wins 3 or 4 tricks
+        euchreGame.setAttackingTeam(0);
+        euchreGame.setSoloPlayer(true);
+        euchreGame.setNumTricks(new int[] {3, 0});
+        assertEquals(1, euchreGame.handlePoints(0));
+
+        // Test case 4: Attacking team wins 3 or 4 tricks
+        euchreGame.setAttackingTeam(0);
+        euchreGame.setNumTricks(new int[] {3, 0});
+        assertEquals(1, euchreGame.handlePoints(0));
+
+        // Test case 5: Attacking team wins 5 tricks
+        euchreGame.setAttackingTeam(0);
+        euchreGame.setNumTricks(new int[] {5, 0});
+        assertEquals(4, euchreGame.handlePoints(0));
+
+        // Test case 6: No specific condition met
+        euchreGame.setNumTricks(new int[] {2, 3});
+        assertEquals(2, euchreGame.handlePoints(1));
+    }
+
+    @Test
+    public void testInitializeDeck() {
+        EuchreGame euchreGame = new EuchreGame();
+        euchreGame.initializeDeck();
+        ArrayList<Card> deck = euchreGame.deck;
+        assertNotNull(deck);
+        assertEquals(24, deck.size());
+
+        // Verify the deck contains cards of different suits and ranks
+        boolean hasClubs = false, hasDiamonds = false, hasHearts = false, hasSpades = false;
+        for (Card card : deck) {
+            switch (card.getSuit()) {
+                case CLUBS:
+                    hasClubs = true;
+                    break;
+                case DIAMONDS:
+                    hasDiamonds = true;
+                    break;
+                case HEARTS:
+                    hasHearts = true;
+                    break;
+                case SPADES:
+                    hasSpades = true;
+                    break;
+            }
+            assertTrue(card.getValue() >= 9 && card.getValue() <= 14); // Ranks between 9 and 14 (inclusive)
+        }
+        assertTrue(hasClubs && hasDiamonds && hasHearts && hasSpades); // Ensure all suits are present
     }
 
     // game loop is currently untested - will add once more finctionality 
