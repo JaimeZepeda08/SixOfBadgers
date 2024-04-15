@@ -4,14 +4,20 @@ import { useSocket } from "@/lib/useSocket";
 import React, { useCallback, useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-const MessagePanel = () => {
+/**
+ * Component for in-game chat message panel.
+ * @returns JSX.Element
+ */
+const MessagePanel = (): JSX.Element => {
   const socket = useSocket();
 
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
-  const [message, setMessage] = useState("");
-  const [chat, setChat] = useState<String[]>([]);
-  const [unreadMessage, setUnreadMessage] = useState(false);
+  // State variables
+  const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
+  const [chat, setChat] = useState<string[]>([]);
+  const [unreadMessage, setUnreadMessage] = useState<boolean>(false);
 
+  // Callback function for handling incoming messages from the socket
   const onMessage = useCallback((message: MessageEvent) => {
     const json_response = JSON.parse(message.data);
     if (json_response.header === "chat") {
@@ -23,6 +29,7 @@ const MessagePanel = () => {
     }
   }, []);
 
+  // Effect hook for adding and removing event listener for socket messages
   useEffect(() => {
     socket.addEventListener("message", onMessage);
     return () => {
@@ -30,11 +37,13 @@ const MessagePanel = () => {
     };
   }, [socket, onMessage]);
 
+  // Function to toggle the visibility of the message panel
   const togglePanel = () => {
     setIsPanelOpen(!isPanelOpen);
     setUnreadMessage(false);
   };
 
+  // Function to send a message via socket
   const sendMessage = () => {
     console.log(message);
     socket.send(JSON.stringify({ header: "message", message: message }));
@@ -53,7 +62,7 @@ const MessagePanel = () => {
         }`}
       >
         <div>
-          {/*Add messages here*/}
+          {/* Display chat messages */}
           {chat.map((message, index) => (
             <p key={index} className="text-white p-2 overflow-hidden">
               {message}
@@ -74,17 +83,20 @@ const MessagePanel = () => {
           </div>
         </div>
       </div>
+      {/* Button to toggle message panel */}
       <div
         className={`absolute text-center justify-center py-8 px-1 bg-gray-700/90 rounded-l-md shadow-lg ${
           isPanelOpen ? "right-1/4" : "right-0"
         }`}
         onClick={togglePanel}
       >
+        {/* Display icon */}
         {isPanelOpen ? (
           <FaChevronRight className="text-white" style={{ zoom: 2 }} />
         ) : (
           <FaChevronLeft className="text-white" style={{ zoom: 2 }} />
         )}
+        {/* Display unread message indicator */}
         {unreadMessage ? (
           <div className="absolute left-[-10px] top-[-10px] px-3 py-[0.125rem] rounded-full bg-red-500 text-white font-bold shadow-xl">
             !

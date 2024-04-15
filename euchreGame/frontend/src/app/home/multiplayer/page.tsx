@@ -5,17 +5,24 @@ import React, { useCallback, useEffect, useState } from "react";
 import { SimpleButtonRed, SimpleButtonGreen } from "@/components/SimpleButton";
 import { useRouter } from "next/navigation";
 
-export default function Page() {
+/**
+ * React component for managing multiplayer game lobby.
+ * @returns JSX.Element
+ */
+export default function Page(): JSX.Element {
   const socket = useSocket();
   const router = useRouter();
 
-  const [gameID, setGameID] = useState("");
-  const [joinID, setJoinID] = useState("");
-  const [players, setPlayers] = useState([]);
-  const [message, setMessage] = useState("");
+  // State variables
+  const [gameID, setGameID] = useState<string>("");
+  const [joinID, setJoinID] = useState<string>("");
+  const [players, setPlayers] = useState<string[]>([]);
+  const [message, setMessage] = useState<string>("");
 
+  // Error message timeout
   const errorWaitTime = 3000;
 
+  // Callback function for handling incoming messages from the socket
   const onMessage = useCallback(
     (message: MessageEvent) => {
       const json_response = JSON.parse(message.data);
@@ -45,6 +52,7 @@ export default function Page() {
     [router]
   );
 
+  // Effect hook for adding and removing event listener for socket messages
   useEffect(() => {
     socket.addEventListener("message", onMessage);
     return () => {
@@ -57,12 +65,17 @@ export default function Page() {
       className="flex flex-col items-center justify-center mt-5"
       style={{ zoom: 0.8 }}
     >
+      {/* Multiplayer header */}
       <div className="bg-red-500 text-white text-4xl p-4 rounded-md mb-4">
         <h1>Multiplayer</h1>
       </div>
+
+      {/* Display game code */}
       <div className="text-3xl font-medium my-5">
         Code: <span className="text-4xl font-bold">{gameID}</span>
       </div>
+
+      {/* Create and join game buttons */}
       <div className="flex flex-col justify-center items-center">
         <SimpleButtonRed
           text="Create New Game"
@@ -86,6 +99,8 @@ export default function Page() {
           />
         </div>
       </div>
+
+      {/* Display players */}
       <div className="w-5/6 my-2">
         <h2 className="text-md font-light text-slate-500">
           {players.length} out of 4 Players
@@ -102,6 +117,8 @@ export default function Page() {
           </div>
         ))}
       </div>
+
+      {/* Leave and start game buttons */}
       <div className="w-full flex justify-end">
         <SimpleButtonRed
           text="Leave Game"
@@ -118,6 +135,8 @@ export default function Page() {
           }}
         />
       </div>
+
+      {/* Display error message */}
       <h2
         className={`absolute bottom-10 text-white font-medium text-lg bg-orange-500/50 shadow-md rounded-md ${
           message !== "" ? "py-2 px-3" : ""

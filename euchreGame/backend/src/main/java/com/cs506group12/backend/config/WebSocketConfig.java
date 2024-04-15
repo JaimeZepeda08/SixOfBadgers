@@ -196,6 +196,11 @@ public class WebSocketConfig implements WebSocketConfigurer {
         }
     }
 
+    /**
+     * Handles players leaving a game session
+     * 
+     * @param client the client leaving the game
+     */
     private void handleLeaveMessage(Client client) {
         if (client.isInGame()) {
             // remove from current game

@@ -1,17 +1,26 @@
 import Link from "next/link";
 import React from "react";
 
+/**
+ * Props for the SimpleButton component.
+ */
 interface SimpleButtonProps {
-  text: string;
-  onClick?: () => void;
-  className?: string;
+  text: string /** Text displayed on the button */;
+  onClick?: () => void /** Function to be called when the button is clicked */;
+  className?: string /** Custom CSS classes for styling */;
 }
 
+/**
+ * Props for the SimpleButtonLink component, extends SimpleButtonProps with href and disabled props.
+ */
 interface SimpleButtonLinkProps extends SimpleButtonProps {
-  href: string;
-  disabled?: boolean;
+  href: string /** URL the button should link to */;
+  disabled?: boolean /** Whether the button should be disabled */;
 }
 
+/**
+ * Simple button component with red color theme.
+ */
 export const SimpleButtonRed: React.FC<SimpleButtonProps> = ({
   text,
   onClick,
@@ -27,6 +36,9 @@ export const SimpleButtonRed: React.FC<SimpleButtonProps> = ({
   );
 };
 
+/**
+ * Simple button component with green color theme.
+ */
 export const SimpleButtonGreen: React.FC<SimpleButtonProps> = ({
   text,
   onClick,
@@ -42,6 +54,10 @@ export const SimpleButtonGreen: React.FC<SimpleButtonProps> = ({
   );
 };
 
+/**
+ * Button component with red color theme and the ability to act as a link.
+ * If disabled, renders a disabled button with gray color.
+ */
 export const SimpleButtonLinkRed: React.FC<SimpleButtonLinkProps> = ({
   text,
   onClick,

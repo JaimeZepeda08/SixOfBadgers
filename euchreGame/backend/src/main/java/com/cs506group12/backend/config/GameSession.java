@@ -69,6 +69,12 @@ public class GameSession {
         return ids;
     }
 
+    /**
+     * Check if the given client is the host of this game session
+     * 
+     * @param client the client to be checked
+     * @return true if the client is the host, false otherwise
+     */
     public boolean isHost(Client client) {
         if (this.host.equals(client)) {
             return true;
