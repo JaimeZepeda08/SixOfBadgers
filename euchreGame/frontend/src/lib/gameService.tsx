@@ -27,40 +27,57 @@ export async function getPlayerHand() {
   }
 }
 
+export async function getOpponents() {
+  const url = `http://${localhost}:8080/getOpponents`; // construct URL
+  try {
+    // fetch data from backend
+    const res = await fetch(url, {
+      method: "GET",
+    });
+    // check response status (expected: 200)
+    if (!res.ok) {
+      throw new Error("Failed to opponents");
+    }
+    return await res.text();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 /**
- * Function gives played card from user to the controller 
+ * Function gives played card from user to the controller
  * json inclused suit and value of card
- * 
+ *
  * @param formData json of card data
  * @returns confirmation from backend or throws an error if failed to do so
  */
 export async function submitSelectedCard(formData: FormData) {
   const url = `http://${localhost}:8080/selectedCard`;
   const card = {
-      suite: formData.get("suit"),
-      value: formData.get("value")
-  }
-  console.log(card)
+    suite: formData.get("suit"),
+    value: formData.get("value"),
+  };
+  console.log(card);
   try {
-      const res = await fetch(url, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(card)
-      });
-      if (!res.ok) {
-          throw new Error("Failed to save selected card")
-      } 
-      return res.text();
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(card),
+    });
+    if (!res.ok) {
+      throw new Error("Failed to save selected card");
+    }
+    return res.text();
   } catch (error) {
-      console.log(error);
+    console.log(error);
   }
 }
 
 /**
  * Retrives players and their data to display in the game
- * 
+ *
  * @returns confirmation from backend or throws an error if failed to do so
  */
 export async function getPlayers() {
@@ -81,9 +98,9 @@ export async function getPlayers() {
 }
 
 /**
- * Retrives the current trump suit for the 
+ * Retrives the current trump suit for the
  * trick
- * 
+ *
  * @returns confirmation from backend or throws an error if failed to do so
  */
 export async function getTrumpSuit() {

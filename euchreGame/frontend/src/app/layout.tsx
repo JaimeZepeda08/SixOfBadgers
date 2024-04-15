@@ -4,6 +4,7 @@ import "./globals.css";
 import TopNav from "@/components/TopNav";
 import MusicPlayer from "@/components/MusicPlayer";
 import Profile from "@/components/Profile";
+import { SocketProvider } from "@/lib/SocketProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,10 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <TopNav
-          components={[<Profile key="profileComponent"/>, <MusicPlayer key="musicPlayerComponent" src="/pokerFace.mp3" />]}
-        />
-        {children}
+        <SocketProvider>
+          <TopNav
+            components={[<MusicPlayer src="/pokerFace.mp3" />, <Profile />]}
+          />
+          {children}
+        </SocketProvider>
       </body>
     </html>
   );

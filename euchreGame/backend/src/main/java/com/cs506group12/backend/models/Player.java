@@ -49,15 +49,14 @@ public class Player {
 
 		Card high = null;
 
-		for (Card c: hand) {
-			if (c.getSuit() == suit && (high==null || c.getValue() > high.getValue())) {
+		for (Card c : hand) {
+			if (c.getSuit() == suit && (high == null || c.getValue() > high.getValue())) {
 				high = c;
 			}
 		}
 
 		return high;
 	}
-
 
 	/**
 	 * returns the lowest card of the passed param suit
@@ -68,8 +67,8 @@ public class Player {
 	public Card getLowCardOfSuit(Card.SUIT suit) {
 		Card low = null;
 
-		for (Card c: hand) {
-			if (c.getSuit() == suit && (low==null || c.getValue() < low.getValue())) {
+		for (Card c : hand) {
+			if (c.getSuit() == suit && (low == null || c.getValue() < low.getValue())) {
 				low = c;
 			}
 		}
@@ -77,14 +76,12 @@ public class Player {
 		return low;
 	}
 
-
 	/*
 	 * Adds an integer as paramater to points
 	 */
 	public void addPoints(int points) {
 		this.points += points;
 	}
-
 
 	/*
 	 * takes a Card element and removes it from the hand. Returns the same element
@@ -116,7 +113,6 @@ public class Player {
 		return list;
 	}
 
-
 	/**
 	 * Checks if the players hands has tghe param suit
 	 * 
@@ -124,7 +120,7 @@ public class Player {
 	 * @return
 	 */
 	public boolean hasSuitCard(Card.SUIT suit) {
-		for (Card c: hand) {
+		for (Card c : hand) {
 			if (c.getSuit() == suit) {
 				return true;
 			}
@@ -136,7 +132,7 @@ public class Player {
 	 * Method to get the playable cards for the round
 	 * 
 	 * @param leadingSuit The leading suit of the trick
-	 * @param trumpSuit The trump suit of the tricm
+	 * @param trumpSuit   The trump suit of the tricm
 	 * @return Returns an array of boolean for the player cards.
 	 */
 	public boolean[] getPlayableCards(Card.SUIT leadingSuit, Card.SUIT trumpSuit) {
@@ -144,45 +140,45 @@ public class Player {
 		boolean hasAtLeastOneOfSuit = false;
 		Card.SUIT sameColorAsTrump = Card.twinColorSuit(trumpSuit);
 		Card c;
-		
+
 		for (int i = 0; i < hand.size(); i++) {
 			c = hand.get(i);
 
 			// suit is the leading suit and not the same color as trump and a jack
 			// OR leading is trump and card is same color as the trump and a jack
 			if ((c.getSuit() == leadingSuit && !(c.getSuit() == sameColorAsTrump && c.getValue() == 11)) ||
-				(leadingSuit == trumpSuit && c.getSuit() == sameColorAsTrump && c.getValue() == 11)) { 
+					(leadingSuit == trumpSuit && c.getSuit() == sameColorAsTrump && c.getValue() == 11)) {
 				hasAtLeastOneOfSuit = true;
 				toReturn[i] = true;
 			} else {
 				toReturn[i] = false;
 			}
 		}
-		
+
 		if (!hasAtLeastOneOfSuit) {
 			for (int i = 0; i < hand.size(); i++) {
 				toReturn[i] = true;
 			}
 		}
-		
+
 		return toReturn;
 	}
 
 	/**
 	 * Class to choose the trump for the round
 	 * TODO: implement with frotnend
+	 * 
 	 * @return Card.SUIT enum of the chosen suit, null if none picked
 	 */
 	public Card.SUIT chooseTrump() {
 		Card.SUIT trump = null;
 		for (Card c : this.hand) {
 			trump = c.getSuit();
-			
+
 		}
-		
+
 		return null;
 	}
-	
 
 
 	/**

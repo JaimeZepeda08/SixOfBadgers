@@ -1,14 +1,35 @@
-import Link from "next/link";
+import React from "react";
+import { SimpleButtonLinkRed } from "@/components/SimpleButton";
 
+/**
+ * Page component representing a page with a link to navigate to saved games.
+ *
+ * @returns {JSX.Element} The page component.
+ */
 export default function Page() {
   return (
-    <div className="flex justify-center items-center h-screen">
-      <Link
-        href="/home/saved_games"
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Go to Saved Games
-      </Link>
+    <div
+      className="flex flex-col justify-center items-center"
+      style={{ zoom: 0.8 }}
+    >
+      <h1 className="text-6xl font-bold text-red-900 mb-40 mt-36">
+        Euchre With Friends
+      </h1>
+      <SimpleButtonLinkRed
+        text="Singleplayer"
+        href="home/singleplayer"
+        className="my-6"
+      />
+      <SimpleButtonLinkRed
+        text="Multiplayer"
+        href="home/multiplayer"
+        className="my-6"
+      />
+      <SimpleButtonLinkRed
+        text="Go to Saved Games"
+        href="home/saved_games"
+        className="my-6"
+      />
     </div>
   );
 }

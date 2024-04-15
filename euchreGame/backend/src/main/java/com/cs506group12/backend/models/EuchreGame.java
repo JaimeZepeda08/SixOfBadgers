@@ -1,73 +1,77 @@
 package com.cs506group12.backend.models;
 
 import java.util.*;
-
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
+import com.cs506group12.backend.config.GameSession;
+import com.cs506group12.backend.config.Client;
 
 public class EuchreGame {
+    private GameSession session;
+    private ArrayList<Client> clients;
+
     public static ArrayList<Card> deck = new ArrayList<Card>();
     private List<Card>[] playerHands;
     private int cardsLeft;
 
     public ArrayList<Player> players = new ArrayList<Player>();
-    private boolean areTurnsTimed;   
+    private boolean areTurnsTimed;
     private int dealer = 0; // position of dealer
-    private int leadingPlayer = 1;  // player who plays first card of truck
+    private int leadingPlayer = 1; // player who plays first card of truck
     private int teamOneScore; // do turns until one of the team scores is over threshhold
     private int teamTwoScore;
     private int pointsThreshold = 10;
 
-    private Card faceUpCard;  // used to helpo establish trump
+    private Card faceUpCard; // used to helpo establish trump
     private Card trumpSuitCard; // for comparison
     private Card leadingCard; // first card that is in trick played - important if not trump
     private Card cardThatIsPlayed;
 
-    private int numPlayingCards = 4;  // for if we implement 3 player
-	private int teamThatWonTrick = 0;
+    private int numPlayingCards = 4; // for if we implement 3 player
+    private int teamThatWonTrick = 0;
     private int teamThatWonTurn;
-	public int attackingTeam;  // team who establishes trump
-    public int[] teamOverallScores = {0,0};
-	private int[] numTricks = {0,0};
+    public int attackingTeam; // team who establishes trump
+    public int[] teamOverallScores = { 0, 0 };
+    private int[] numTricks = { 0, 0 };
 
-    private ArrayList<Card> playedCards =  new ArrayList<Card>();
+    private ArrayList<Card> playedCards = new ArrayList<Card>();
     private ArrayList<Card> cardsThatCanBePlayed = new ArrayList<Card>();
 
-    private boolean isSoloPlayer = false;  // if a player goes alone (3 players) - currently unimplemented
+    private boolean isSoloPlayer = false; // if a player goes alone (3 players) - currently unimplemented
     private int soloPlayerIndex;
-
 
     public static ArrayList<Integer> ranks = new ArrayList<>();
 
     public EuchreGame() {
-
     }
 
+    public EuchreGame(GameSession session) {
+        this.session = session;
+        clients = session.getPlayers();
+    }
 
     /**
-     * The function from which the game is run.  Game will run until one team has 10 points
+     * The function from which the game is run. Game will run until one team has 10
+     * points
      */
-    public void euchreGameLoop(){
-        initializeDeck();
-        dealCards();
+    public void euchreGameLoop() {
+        System.out.println("in euchreGameLoop"); // debug
+
+        initializeGame(); // creates players, deck, and assigns cards
         establishTrump();
         cardsLeft = deck.size();
-        for (int i = 0; i < 4; i++){
-            players.add(new Player("placeholder"));  //TODO this will be done by controller
-        }
 
-        // game loop - exits once a team wins 
+        // game loop - exits once a team wins
         while (teamOverallScores[0] < pointsThreshold && teamOverallScores[1] < pointsThreshold) {
-            for (int i = 0; i < 5; i ++){  // for each trick - TODO terminate early if team wins 
-                handleTrick();            
+            for (int i = 0; i < 5; i++) { // for each trick - TODO terminate early if team wins
+                handleTrick();
             }
 
             teamThatWonTurn = determineTurnWinner();
             teamOverallScores[teamThatWonTurn] += handlePoints(teamThatWonTurn); // updates overall point total
 
             Collections.shuffle(deck);
-            dealCards();  // resets
+            dealCards(); // resets
             dealer = (dealer + 1) % 4;
-            //leadingPlayer = (dealer + 1) % 4; // goes first in first round  MAYBE REMOVE 
+            // leadingPlayer = (dealer + 1) % 4; // goes first in first round MAYBE REMOVE
             establishTrump();
         }
     }
@@ -75,42 +79,46 @@ public class EuchreGame {
     /**
      * used for testing purposes - initializes player array, deck, and assigns cards
      */
-    public void initializeGame(){  // used for games 
-        for (int i = 0; i < 4; i++){
-            players.add(new Player("placeholder"));  //TODO this will be done by controller
+    public void initializeGame() { // used for games
+        System.out.println("in initializeGame"); // debug
+        for (int i = 0; i < 4; i++) {
+            String username = clients.get(i).getPlayerId();
+            players.add(new Player(username));
         }
         initializeDeck();
         dealCards();
     }
 
     /**
-	 * all players play one card then scored
-	 * @return the team number that won the trick
-	 */
-    public void handleTrick(){
+     * all players play one card then scored
+     * 
+     * @return the team number that won the trick
+     */
+    public void handleTrick() {
         // TODO if player goes alone (3 players)
 
-
-		for (int i = 0; i < playedCards.size(); i++){  //TODO - chnage from playedCards.size()
-			// call a controller and add result to arraylist of played cards then score - starting from leading player
-          //  cardsThatCanBePlayed = players.get(i).(getPlayableHand(leadingCard.getSuit(), trumpSuitCard.getSuit()));
-            cardThatIsPlayed = players.get(0).getHand().get(0); // placeholder - put in controller 
+        for (int i = 0; i < playedCards.size(); i++) { // TODO - chnage from playedCards.size()
+            // call a controller and add result to arraylist of played cards then score -
+            // starting from leading player
+            // cardsThatCanBePlayed = players.get(i).(getPlayableHand(leadingCard.getSuit(),
+            // trumpSuitCard.getSuit()));
+            cardThatIsPlayed = players.get(0).getHand().get(0); // placeholder - put in controller
             players.get(i).playAndRemoveCard(cardThatIsPlayed);
 
+        }
 
-		}
-
-        teamThatWonTrick = (leadingPlayer + score(playedCards)) % 2;  
+        teamThatWonTrick = (leadingPlayer + score(playedCards)) % 2;
         leadingPlayer = ((leadingPlayer + score(playedCards)) % 4); // player who won current trick starts of next trick
-        numTricks[teamThatWonTrick] = numTricks[teamThatWonTrick]+1; // UPDATES
-		playedCards.clear();
-	}
+        numTricks[teamThatWonTrick] = numTricks[teamThatWonTrick] + 1; // UPDATES
+        playedCards.clear();
+    }
 
     /**
      * looks for which team won more tricks
+     * 
      * @return the index of the team that won the turn
      */
-    public int determineTurnWinner(){
+    public int determineTurnWinner() {
         if (numTricks[0] > numTricks[1])
             return 0;
         else {
@@ -118,33 +126,32 @@ public class EuchreGame {
         }
     }
 
-
     /**
      * After all tricks are won, assign points to winning team
+     * 
      * @param winningTeam the team that won the turn
      * @return the number of points the winning team recieves
      */
-    public int handlePoints(int winningTeam){
-        if (winningTeam != attackingTeam){  // if defenders win
+    public int handlePoints(int winningTeam) {
+        if (winningTeam != attackingTeam) { // if defenders win
             return 2;
         }
-        if (isSoloPlayer){ // if a player goes alone and wins  - only attacking team can go alone so should work
-            if (numTricks[winningTeam] == 5){
+        if (isSoloPlayer) { // if a player goes alone and wins - only attacking team can go alone so should
+                            // work
+            if (numTricks[winningTeam] == 5) {
                 return 4; // solo player wins 5 tricks
-            }
-            else{
+            } else {
                 return 1; // solo player wins 3 or 4 tricks
             }
         }
-        if (numTricks[winningTeam] != 5 && attackingTeam == winningTeam){ // if attacking team wins 3 or 4
+        if (numTricks[winningTeam] != 5 && attackingTeam == winningTeam) { // if attacking team wins 3 or 4
             return 1;
         }
-        if (numTricks[winningTeam] == 5 && attackingTeam == winningTeam){ // if attacking team wins 5
+        if (numTricks[winningTeam] == 5 && attackingTeam == winningTeam) { // if attacking team wins 5
             return 2;
         }
 
-        
-        numTricks[0] = 0;  // reset the numkber of tricks won because turn is over
+        numTricks[0] = 0; // reset the numkber of tricks won because turn is over
         numTricks[1] = 0;
         return 1;
     }
@@ -168,8 +175,9 @@ public class EuchreGame {
      * Deals out 4 cards to each person
      */
     public void dealCards() {
+        System.out.println("in dealCards"); // debug
         playerHands = new List[4];
-        //TODO: player hands are length 5
+        // TODO: player hands are length 5
         for (int i = 0; i < 5; i++) {
             playerHands[i] = new ArrayList<>();
         }
@@ -187,72 +195,81 @@ public class EuchreGame {
 
         // sets it in players object.
         for (int i = 0; i < players.size(); i++) {
-            players.get(i).setHand((ArrayList<Card>) playerHands[i]);
+            Player player = players.get(i);
+            player.setHand((ArrayList<Card>) playerHands[i]);
+            System.out.println("sending cards..."); // debug
+            clients.get(i).sendMessage("hand", playerHandToJSON(player));
         }
     }
 
     /**
      * Determines highest value card that wins trick
+     * 
      * @param cards - the cards that have been played
      * @return index of the card with the highest value
      */
-    public int score(ArrayList<Card> cards){
-		int max = 0;
-		int maxIndex = 0;
+    public int score(ArrayList<Card> cards) {
+        int max = 0;
+        int maxIndex = 0;
 
-		for (int i = 0; i < cards.size(); i++){  // starts at leading player
-			if (cards.get(i).value(trumpSuitCard, cards.get(i).getSuit()) > max){  
-				maxIndex = i;
-				max = cards.get(i).value(trumpSuitCard, cards.get(i).getSuit());
-			}
-		}
-		return maxIndex;
-		
-	}
+        for (int i = 0; i < cards.size(); i++) { // starts at leading player
+            if (cards.get(i).value(trumpSuitCard, cards.get(i).getSuit()) > max) {
+                maxIndex = i;
+                max = cards.get(i).value(trumpSuitCard, cards.get(i).getSuit());
+            }
+        }
+        return maxIndex;
+    }
 
     /**
-     * presents all players with option to chose face up card as trumop, if a player chooses, dealer swaps out a card
+     * presents all players with option to chose face up card as trumop, if a player
+     * chooses, dealer swaps out a card
      * else, dealer choses trump
+     * 
      * @return a string representation of the trump suit
      */
-    public void establishTrump(){
+    public void establishTrump() {
+        session.sendMessageToAllClients("trump", trumpToJSON());
         trumpSuitCard = null;
-        //TODO modulo dealer + 1 % 4
+        // TODO modulo dealer + 1 % 4
         int index = dealer + 1; // who is presented with option of establishing trump (starts to left of dealer)
 
-        while (trumpSuitCard == null && index < 4){  // first pass - if anyone choses to establish initial turmp option
+        while (trumpSuitCard == null && index < 4) { // first pass - if anyone choses to establish initial turmp option
 
-        //    if (controllerPlaceholder(index) == true)  // if a player choses faceupcard as trump - should set trump and terminate loop
-                trumpSuitCard = faceUpCard;
+            // if (controllerPlaceholder(index) == true) // if a player choses faceupcard as
+            // trump - should set trump and terminate loop
+            trumpSuitCard = faceUpCard;
 
-
-            index = (index+1) % 4;
+            index = (index + 1) % 4;
         }
-        if (trumpSuitCard != null){  // if someone choses to establish trump as faceupcard, dealer gets that card
+        if (trumpSuitCard != null) { // if someone choses to establish trump as faceupcard, dealer gets that card
 
             ArrayList<Card> dealerHand = players.get(dealer).getHand();
-            int cardToBeDiscarded = 0;  // TODO dealer needs to discard one card - set result equal to int return value from controller
+            int cardToBeDiscarded = 0; // TODO dealer needs to discard one card - set result equal to int return value
+                                       // from controller
 
             dealerHand.remove(cardToBeDiscarded);
-            dealerHand.add(faceUpCard);            
+            dealerHand.add(faceUpCard);
             players.get(dealer).setHand(dealerHand);
 
         }
 
-
         index = 1;
-        while (trumpSuitCard == null && index < 4){ // if no one accepts faceupcard as trump suit, each player starting at dealer+1 has option to chose any trump other than faceupcard
-       //     trumpSuitCard = placeholderChoseTrump(players.get((index+dealer)%4));
+        while (trumpSuitCard == null && index < 4) { // if no one accepts faceupcard as trump suit, each player starting
+                                                     // at dealer+1 has option to chose any trump other than faceupcard
+            // trumpSuitCard = placeholderChoseTrump(players.get((index+dealer)%4));
 
         }
 
         // maybe remove this code block and set while loop to 3, make last player chose
-        if (trumpSuitCard == null){  // should never happen, but just to make sure trump isnt null  - let's dealer take faceup to make fair
+        if (trumpSuitCard == null) { // should never happen, but just to make sure trump isnt null - let's dealer
+                                     // take faceup to make fair
             trumpSuitCard = faceUpCard;
             ArrayList<Card> dealerHand = players.get(dealer).getHand();
-            int cardToBeDiscarded = 0;  // TODO dealer needs to discard one card - set result equal to int return value from controller
+            int cardToBeDiscarded = 0; // TODO dealer needs to discard one card - set result equal to int return value
+                                       // from controller
             dealerHand.remove(cardToBeDiscarded);
-            dealerHand.add(faceUpCard);            
+            dealerHand.add(faceUpCard);
             players.get(dealer).setHand(dealerHand);
         }
     }
@@ -261,27 +278,41 @@ public class EuchreGame {
      * 
      * @return a json formatted string of the euchregame object
      */
-    public String toJson(){
+    public String toJson() {
         String betweenLines = "\",\n\t\"";
         String betwweenKeyValues = "\": \"";
-        
 
         String trickInfo = "dealer" + betwweenKeyValues + dealer + betweenLines
-         + "leading_player" + betwweenKeyValues + leadingPlayer + betweenLines
-          + "trump_suit" + betwweenKeyValues + trumpSuitCard.getSuit() + betweenLines + "leading_card" + betwweenKeyValues + leadingCard + betweenLines
-        + "attacking_team" + betwweenKeyValues + attackingTeam + betweenLines + "is_solo_player" + betwweenKeyValues + isSoloPlayer
-         + betweenLines + "solo_player_index" + betwweenKeyValues + soloPlayerIndex + betweenLines + "team_that_won_trick" + betwweenKeyValues +betweenLines;
+                + "leading_player" + betwweenKeyValues + leadingPlayer + betweenLines
+                + "trump_suit" + betwweenKeyValues + trumpSuitCard.getSuit() + betweenLines + "leading_card"
+                + betwweenKeyValues + leadingCard + betweenLines
+                + "attacking_team" + betwweenKeyValues + attackingTeam + betweenLines + "is_solo_player"
+                + betwweenKeyValues + isSoloPlayer
+                + betweenLines + "solo_player_index" + betwweenKeyValues + soloPlayerIndex + betweenLines
+                + "team_that_won_trick" + betwweenKeyValues + betweenLines;
         String scoreInfo = "team_one_score" + betwweenKeyValues + teamOverallScores[0] + betweenLines
-         + "team_two_score" + betwweenKeyValues + teamOverallScores[1] + betweenLines
-        + "team_one_tricks" + betwweenKeyValues + numTricks[0] + betweenLines + "team_two_tricks" + betwweenKeyValues + numTricks[1] + betweenLines;
-         String playersJson = "all_players\": []";
-         for (int i = 0; i < players.size(); i++){
+                + "team_two_score" + betwweenKeyValues + teamOverallScores[1] + betweenLines
+                + "team_one_tricks" + betwweenKeyValues + numTricks[0] + betweenLines + "team_two_tricks"
+                + betwweenKeyValues + numTricks[1] + betweenLines;
+        String playersJson = "all_players\": []";
+        for (int i = 0; i < players.size(); i++) {
 
-
-         }
-         playersJson += "\n],";
-         String cardsInfo = "";
+        }
+        playersJson += "\n],";
+        String cardsInfo = "";
         return "{\n + " + trickInfo + scoreInfo + playersJson + cardsInfo + "}";
+    }
+
+    // TODO: implement
+    private String playerHandToJSON(Player player) {
+        // '["suit": suit, "value": value]'
+        return player.userName + "test player cards";
+    }
+
+    // TODO: implement
+    private String trumpToJSON() {
+        // '["suit": suit, "value": value]'
+        return "test trump";
     }
 
     /*
@@ -408,6 +439,7 @@ public class EuchreGame {
     public void setTrumpSuitCard(Card trumpSuitCard) {
         this.trumpSuitCard = trumpSuitCard;
     }
+
     public Card getTrumpSuitCard() {
         return trumpSuitCard;
     }
