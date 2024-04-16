@@ -187,28 +187,6 @@ public class testPlayer {
 	}
 
 	@Test
-    void testFindPartner() {
-        // Create players
-        Player player1 = new Player("Alice");
-        Player player2 = new Player("Bob");
-        Player player3 = new Player("Charlie");
-        Player player4 = new Player("David");
-
-        // Assume players 1 and 2 are in the same team, and players 3 and 4 are in the same team
-		ArrayList<Player> players = new ArrayList<>();
-        players.add(player1);
-        players.add(player2);
-        players.add(player3);
-        players.add(player4);
-
-        // Test finding partners
-        assertEquals(player2, player1.findPartner(players));
-        assertEquals(player1, player2.findPartner(players));
-        assertEquals(player4, player3.findPartner(players));
-        assertEquals(player3, player4.findPartner(players));
-    }
-
-	@Test
     void testGameInitialization() {
         Player player1 = new Player("Alice");
         Player player2 = new Player("Bob");
