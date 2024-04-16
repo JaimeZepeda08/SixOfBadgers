@@ -36,7 +36,6 @@ public class WebSocketConfig implements WebMvcConfigurer {
      * @param registry The WebSocketHandlerRegistry to register handlers.
      */
     @SuppressWarnings("null")
-    @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(myWebSocketHandler(), "/ws").setAllowedOrigins("*");
     }
