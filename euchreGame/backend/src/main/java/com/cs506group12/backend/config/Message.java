@@ -26,24 +26,6 @@ public class Message {
     }
 
     /**
-     * Sets the header of the message.
-     *
-     * @param header The header of the message.
-     */
-    public void setheader(String header) {
-        this.header = header;
-    }
-
-    /**
-     * Sets the content of the message.
-     *
-     * @param content The content of the message.
-     */
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    /**
      * Generates a JSON string representation of the message.
      *
      * @return A JSON string representing the message.
