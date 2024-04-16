@@ -38,10 +38,11 @@ export default function Page() {
   const onMessage = useCallback((message: MessageEvent) => {
     const json_response = JSON.parse(message.data);
     if (json_response.header === "username") {
-      console.log(json_response.content);
+      console.log(json_response.content); // debug
       setUsername(json_response.content);
     }
     if (json_response.header === "players") {
+      console.log(json_response.content); // debug
       const playerString = json_response.content;
       let playerList = playerString
         .substring(1, playerString.length - 1)
@@ -49,7 +50,9 @@ export default function Page() {
       // sort players (the player corresponding to this client should go first)
       playerList = sortPlayerList(playerList, username);
       setPlayers2(playerList);
-      console.log(players2.toString());
+    }
+    if (json_response.header === "cards") {
+      console.log(json_response.content);
     }
   }, []);
 

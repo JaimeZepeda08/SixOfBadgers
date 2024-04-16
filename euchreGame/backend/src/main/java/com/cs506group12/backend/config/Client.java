@@ -9,7 +9,7 @@ import java.io.IOException;
  * 
  * @author jaime zepeda
  */
-public class Client {
+public abstract class Client {
 
     private WebSocketSession session;
     private String playerId;
@@ -20,7 +20,7 @@ public class Client {
      * 
      * @param session WebSocket session
      */
-    public Client(WebSocketSession session) {
+    protected Client(WebSocketSession session) {
         this.session = session;
         this.playerId = "Anonymous" + Usernames.getRandomUsername();
         this.game = null;

@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.json.*;
 
-
 import org.junit.jupiter.api.Test;
 
 import com.cs506group12.backend.models.Card;
@@ -162,23 +161,25 @@ class testCard {
 	 * tests the cardToJson method
 	 */
 	@Test
-	public void testCardJson(){
+	public void testCardJson() {
 		Card card = new Card(Card.SUIT.DIAMONDS, 11);
 		assertNotNull(card.cardToJson());
-		assertEquals("{\n\t\"card_rank\": 11,\n\t\"card_suit\": \"Diamonds\"\n}", card.cardToJson());  // tests output correct
+		assertEquals("{\n\t\"card_rank\": 11,\n\t\"card_suit\": \"Diamonds\"\n}", card.cardToJson()); // tests output
+																										// correct
 		String cardAsJson = card.cardToJson();
-		assertTrue(isValidJson(cardAsJson));  // tests that it is valid josn 
+		assertTrue(isValidJson(cardAsJson)); // tests that it is valid josn
 
 	}
-		/**
+
+	/**
 	 * tests the cardToJson method
 	 */
 	@Test
-	public void testSuitJson(){
+	public void testSuitJson() {
 		Card card = new Card(Card.SUIT.HEARTS, 11);
 		assertNotNull(card.cardToJson());
 		String suitJson = card.suitAsJson();
-		assertTrue(isValidJson(suitJson));  // tests that it is valid josn 
+		assertTrue(isValidJson(suitJson)); // tests that it is valid josn
 
 	}
 }

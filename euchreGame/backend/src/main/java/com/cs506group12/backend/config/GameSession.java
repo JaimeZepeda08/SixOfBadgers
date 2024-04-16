@@ -3,14 +3,12 @@ package com.cs506group12.backend.config;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import com.cs506group12.backend.models.EuchreGame;
-
 /**
  * This class represents a euchre game session that clients can join
  * 
  * @author jaime zepeda
  */
-public class GameSession {
+public abstract class GameSession {
 
     // unique 5 charachter long id
     private String gameId;
@@ -20,21 +18,18 @@ public class GameSession {
     private Client host;
     // keeps track of messages sent during this game session
     private Chat chat;
-    // holds the euchre game object
-    private EuchreGame euchreGame;
 
     /**
      * Creates a new instance of GameSession
      * 
      * @param host client that created the game
      */
-    public GameSession(Client host) {
+    protected GameSession(Client host) {
         this.gameId = UUID.randomUUID().toString().replaceAll("[^a-zA-Z0-9]", "").substring(0, 5);
         this.players = new ArrayList<>();
         this.host = host;
         addPlayer(this.host);
         this.chat = new Chat();
-        this.euchreGame = new EuchreGame(this);
     }
 
     /**
@@ -131,7 +126,7 @@ public class GameSession {
      * @param type    type of message
      * @param content content of message
      */
-    public void sendMessageToAllClients(String header, String content) {
+    private void sendMessageToAllClients(String header, String content) {
         for (Client player : players) {
             player.sendMessage(header, content);
         }
@@ -181,22 +176,20 @@ public class GameSession {
 
     /**
      * Handles the initialization of the game
+     * To be overloaded by child classes
+     * 
+     * @return true if able to start game, false otherwise
      */
-    public void startGame() {
+    protected boolean startGame() {
+        // check if 4 players are connected
         if (getPlayers().size() == 4) {
             System.out.println("Started game: " + getGameId()); // debug
-
             // alert players that the game has started
             sendMessageToAllClients("started", "Game " + getGameId() + " has started");
-
-            /*
-             * Initialize euchre game:
-             * 1. Deal initial cards
-             * 2.
-             */
-            // euchreGame.euchreGameLoop();
+            return true;
         } else {
             host.sendMessage("error", "Not enough players to start the game");
+            return false;
         }
     }
 }

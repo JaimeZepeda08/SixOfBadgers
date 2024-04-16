@@ -13,6 +13,8 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
+import com.cs506group12.backend.models.EuchreGame;
+import com.cs506group12.backend.models.Player;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -55,7 +57,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
                 System.out.println("Connection established with session id: " + session.getId()); // debug
 
                 // add client to hashmap
-                sessions.put(session, new Client(session));
+                sessions.put(session, new Player(session));
             }
 
             @SuppressWarnings("null")
@@ -173,7 +175,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
      */
     private void handleCreateMessage(Client client) {
         // create a new game session with the client as the host
-        GameSession game = new GameSession(client);
+        GameSession game = new EuchreGame(client);
         // store game session
         games.put(game.getGameId(), game);
         // send message to all players in game that a new client has joined
@@ -235,14 +237,20 @@ public class WebSocketConfig implements WebSocketConfigurer {
      * @param client the client that started the game
      */
     private void handleStartGame(GameSession game, Client client) {
-        if (game != null) {
-            if (game.isHost(client)) {
-                game.startGame();
+        // cast variables
+        EuchreGame euchreGame = (EuchreGame) game;
+        Player player = (Player) client;
+
+        // check if the game can be started
+        if (euchreGame != null) {
+            if (euchreGame.isHost(client)) {
+                // start the game
+                euchreGame.startGame();
             } else {
-                client.reportError("Only the host can start the game");
+                player.reportError("Only the host can start the game");
             }
         } else {
-            client.reportError("Please create or join a game first");
+            player.reportError("Please create or join a game first");
         }
     }
 
@@ -263,9 +271,12 @@ public class WebSocketConfig implements WebSocketConfigurer {
      * @param client the client requesting the data
      */
     private void handleGameSetUp(Client client) {
-        client.sendPlayerID();
-        client.sendPlayersInGame();
-        // TODO send player cards to clients
+        // cast variables
+        Player player = (Player) client;
+
+        player.sendPlayerID();
+        player.sendPlayersInGame();
+        player.sendPlayerCards();
     }
 
     /**
@@ -280,7 +291,18 @@ public class WebSocketConfig implements WebSocketConfigurer {
      * @param payload contains the JSON data of the game event
      */
     private void handleGameEvent(GameSession game, Client client, JsonNode payload) {
+        // cast variables
+        EuchreGame euchreGame = (EuchreGame) game;
+        Player player = (Player) client;
+
         // TODO switch statment handling different types of events
+        String event = payload.get("event").asText();
+        switch (event) {
+            case "":
+                break;
+            default:
+                break;
+        }
     }
 
     /**

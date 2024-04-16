@@ -1,8 +1,10 @@
 package com.cs506group12.backend.models;
 
 import java.util.*;
+import org.springframework.web.socket.WebSocketSession;
+import com.cs506group12.backend.config.Client;
 
-public class Player {
+public class Player extends Client {
 	public ArrayList<Card> hand = new ArrayList<Card>();
 	public String userName;
 	private int points;
@@ -13,9 +15,8 @@ public class Player {
 	/**
 	 * Constructor class for the Player class.
 	 */
-	public Player(String name) {
-		this.userName = name;
-		this.hand = new ArrayList<Card>();
+	public Player(WebSocketSession session) {
+		super(session);
 	}
 
 	/*
@@ -180,18 +181,19 @@ public class Player {
 		return null;
 	}
 
-
 	/**
 	 * used to get players hand as a json
+	 * 
 	 * @return a json formatted string of cards
 	 */
-	public String handAsJson(){
-		String finalJson = "{\n\t\"hand\": [";
-		for (int i = 0; i < hand.size(); i++){
-			finalJson+=hand.get(i).cardToJson() + ",";
+	public String handAsJson() {
+		String finalJson = "[";
+		for (int i = 0; i < hand.size(); i++) {
+			finalJson += hand.get(i).toString() + ",";
 		}
 		// here if one to many ,
-		finalJson+= "\t]\n}";
+		finalJson = finalJson.substring(0, finalJson.length() - 1);
+		finalJson += "]";
 
 		return finalJson;
 	}
@@ -201,24 +203,34 @@ public class Player {
 	 * @param playableHand the cards available for user to play
 	 * @return a json formatted string of cards
 	 */
-	public String handAsJson(ArrayList<Card> playableHand){
+	public String handAsJson(ArrayList<Card> playableHand) {
 		String finalJson = "{\n\t\"hand\": [";
-		for (int i = 0; i < playableHand.size(); i++){
-			finalJson+=playableHand.get(i).cardToJson() + ",";
+		for (int i = 0; i < playableHand.size(); i++) {
+			finalJson += playableHand.get(i).cardToJson() + ",";
 		}
 		// here if one to many ,
-		finalJson+= "\t]\n}";
+		finalJson += "\t]\n}";
 
 		return finalJson;
 	}
-
 
 	/**
 	 * 
 	 * @return
 	 */
-	public String playerAsJson(){
-		return "{\n\t\"player_name\": " + userName + "\"\n}" ;
+	public String playerAsJson() {
+		return "{\n\t\"player_name\": " + userName + "\"\n}";
+	}
+
+	public void sendPlayerCards() {
+		String handString = "[";
+		for (Card card : hand) {
+			handString += card.toString() + ",";
+		}
+		handString = handString.substring(0, handString.length() - 1);
+		handString += "]";
+		System.out.println(getPlayerId() + ": " + handString); // debug
+		sendMessage("cards", handString);
 	}
 
 }
