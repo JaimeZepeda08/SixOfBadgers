@@ -8,6 +8,8 @@ import com.cs506group12.backend.config.Message;
 
 /**
  * This class tests the correctness of the Message class
+ * 
+ * @author jaime zepeda
  */
 public class testMessage {
 

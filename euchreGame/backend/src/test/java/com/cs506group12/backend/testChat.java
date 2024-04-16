@@ -11,6 +11,8 @@ import com.cs506group12.backend.config.Client;
 
 /**
  * This class tests the correctness of the Chat class
+ * 
+ * @author jaime zepeda
  */
 public class testChat {
 

@@ -64,7 +64,9 @@ public abstract class Client {
      * Handles client leaving a game session
      */
     public void leaveGame() {
-        game.removePlayer(this);
+        if (game != null) {
+            game.removePlayer(this);
+        }
         game = null;
     }
 
