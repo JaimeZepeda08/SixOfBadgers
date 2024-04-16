@@ -66,12 +66,12 @@ public class Chat {
     }
 
     /**
-     * Returns the top n messages in a formated string including who sent each.
+     * Returns the messages in the chat log in a formated string including who sent
+     * each.
      * 
-     * @param n number of messages
      * @return a string representation of the chat log
      */
-    public String getNMessages(int n) {
+    public String getMessages() {
         String messageString = "";
         for (int i = 0; i < chatMessages.size(); i++) {
             ChatMessage message = chatMessages.get(i);

@@ -102,6 +102,10 @@ public class WebSocketConfig implements WebSocketConfigurer {
                         case "setup":
                             handleGameSetUp(client);
                             break;
+                        // called when an in-game event occurs
+                        case "gameEvent":
+                            handleGameEvent(game, client, jsonNode);
+                            break;
                         // called whenever a players sends a message in the chat
                         case "message":
                             handleChatMessages(game, client, jsonNode.get("message").asText());
@@ -249,17 +253,38 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     /**
      * Handles client-side set up of the game. This will be done individually by
-     * each client at the very start of the game
+     * each client at the very start of the game.
+     * 
+     * This class does the following things:
+     * 1. Send player ID to their corresponding client
+     * 2. Send all the player IDs to client
+     * 3. Send the initial player's hand to the client
      * 
      * @param client the client requesting the data
      */
     private void handleGameSetUp(Client client) {
         client.sendPlayerID();
         client.sendPlayersInGame();
+        // TODO send player cards to clients
     }
 
     /**
-     * Handles the processing of a in-game chat message
+     * Handles events that happen during a game, and controls the overall flow of
+     * the state-machine
+     * 
+     * Events handled by this function:
+     * 1.
+     * 
+     * @param game    the game corresponding to the event
+     * @param client  the client that triggered the event
+     * @param payload contains the JSON data of the game event
+     */
+    private void handleGameEvent(GameSession game, Client client, JsonNode payload) {
+        // TODO switch statment handling different types of events
+    }
+
+    /**
+     * Handles the processing of an in-game chat message
      * 
      * @param game    the game session that the message was sent in
      * @param sender  the client that sent the message

@@ -173,9 +173,9 @@ public class GameSession {
     public void processMessage(Client client, String message) {
         // add message to chat log
         chat.addMessage(client, message);
-        // get n number of messages to display
-        String messages = chat.getNMessages(10);
-        // send messages to clients
+        // get messages in chat log
+        String messages = chat.getMessages();
+        // send messages to all clients in the game
         sendMessageToAllClients("chat", messages);
     }
 
@@ -185,9 +185,15 @@ public class GameSession {
     public void startGame() {
         if (getPlayers().size() == 4) {
             System.out.println("Started game: " + getGameId()); // debug
+
+            // alert players that the game has started
             sendMessageToAllClients("started", "Game " + getGameId() + " has started");
 
-            // initialize euchre game
+            /*
+             * Initialize euchre game:
+             * 1. Deal initial cards
+             * 2.
+             */
             // euchreGame.euchreGameLoop();
         } else {
             host.sendMessage("error", "Not enough players to start the game");

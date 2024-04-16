@@ -4,7 +4,7 @@ import java.util.*;
 import com.cs506group12.backend.config.GameSession;
 import com.cs506group12.backend.config.Client;
 
-public class EuchreGame {
+public class EuchreGame extends GameSession {
     private GameSession session;
     private ArrayList<Client> clients;
 

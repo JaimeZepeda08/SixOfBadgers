@@ -114,6 +114,9 @@ public class Client {
         sendMessage("username", getPlayerId());
     }
 
+    /**
+     * Sends the IDs of the players in this client's game
+     */
     public void sendPlayersInGame() {
         sendMessage("players", getGame().getPlayerIdsString());
     }
