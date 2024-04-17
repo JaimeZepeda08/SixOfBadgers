@@ -61,6 +61,12 @@ public class EuchreGame extends GameSession {
         return false;
     }
 
+    public void sendCardsToAllPlayers() {
+        for (Player player : getPlayers()) {
+            player.sendPlayerCards();
+        }
+    }
+
     /**
      * Initializes the original deck of 24 cards, and shuffles it.
      */
@@ -309,18 +315,6 @@ public class EuchreGame extends GameSession {
         playersJson += "\n],";
         String cardsInfo = "";
         return "{\n + " + trickInfo + scoreInfo + playersJson + cardsInfo + "}";
-    }
-
-    // TODO: implement
-    private String playerHandToJSON(Player player) {
-        // '["suit": suit, "value": value]'
-        return player.userName + "test player cards";
-    }
-
-    // TODO: implement
-    private String trumpToJSON() {
-        // '["suit": suit, "value": value]'
-        return "test trump";
     }
 
     /*

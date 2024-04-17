@@ -81,7 +81,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
                     String messageHeader = jsonNode.get("header").asText();
 
                     switch (messageHeader) {
-                        /************** Multiplayer Game Lobby Messages **************/
+                        /************** Multiplayer Game Lobby **************/
 
                         // called when a player creates a new game
                         case "create":
@@ -100,11 +100,11 @@ public class WebSocketConfig implements WebSocketConfigurer {
                             handleStartGame(game, client);
                             break;
 
-                        /************** In Game Messages **************/
+                        /************** In Game **************/
 
-                        // called by each client at the start of a game
-                        case "setup":
-                            handleGameSetUp(client);
+                        // called when the players have loaded the game screen
+                        case "ready":
+                            handleGameSetUp(game, client);
                             break;
                         // called when an in-game event occurs
                         case "gameEvent":
@@ -167,7 +167,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
         game.removeClient(client);
 
         // alert players
-        game.sendClientIdsToAllClients();
+        game.sendSessionToAllClients();
     }
 
     /**
@@ -181,7 +181,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
         // store game session
         games.put(game.getGameId(), game);
         // send message to all players in game that a new client has joined
-        game.notifyNewClient(client);
+        game.sendSessionToAllClients();
     }
 
     /**
@@ -199,7 +199,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
                 // add player to game
                 if (game.addClient(client)) {
                     // send message to all players in game that a new client has joined
-                    game.notifyNewClient(client);
+                    game.sendSessionToAllClients();
                 } else {
                     client.reportError("Game " + id + " is already full");
                 }
@@ -223,7 +223,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
             game.removeClient(client);
 
             // alert players
-            game.sendClientIdsToAllClients();
+            game.sendSessionToAllClients();
 
             // alert client that they can leave the session
             client.sendMessage("leave", "You can now leave the game");
@@ -262,8 +262,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
      */
 
     /**
-     * Handles client-side set up of the game. This will be done individually by
-     * each client at the very start of the game.
+     * Handles client-side set up of the game.
      * 
      * This class does the following things:
      * 1. Send player ID to their corresponding client
@@ -272,13 +271,17 @@ public class WebSocketConfig implements WebSocketConfigurer {
      * 
      * @param client the client requesting the data
      */
-    private void handleGameSetUp(Client client) {
-        // cast variables
-        Player player = (Player) client;
-
-        player.sendPlayerID();
-        player.sendPlayersInGame();
-        player.sendPlayerCards();
+    private void handleGameSetUp(GameSession game, Client client) {
+        client.setReady();
+        // make sure that all clients are ready before sending data
+        if (game.areClientsReady()) {
+            EuchreGame euchreGame = (EuchreGame) game;
+            for (Player player : euchreGame.getPlayers()) {
+                player.sendClient();
+            }
+            euchreGame.sendSessionToAllClients();
+            euchreGame.sendCardsToAllPlayers();
+        }
     }
 
     /**
@@ -294,8 +297,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
      */
     private void handleGameEvent(GameSession game, Client client, JsonNode payload) {
         // cast variables
-        EuchreGame euchreGame = (EuchreGame) game;
-        Player player = (Player) client;
+        // EuchreGame euchreGame = (EuchreGame) game;
+        // Player player = (Player) client;
 
         // TODO switch statment handling different types of events
         String event = payload.get("event").asText();

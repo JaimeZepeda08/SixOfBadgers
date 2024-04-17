@@ -30,20 +30,20 @@ export default function Page() {
   const [username, setUsername] = useState<string>("");
   const [players2, setPlayers2] = useState<string[]>([]);
 
-  // fetch initial data
+  // tell server that the client has loaded the screen and is ready to recieve data
   useEffect(() => {
-    socket.send(JSON.stringify({ header: "setup" }));
+    socket.send(JSON.stringify({ header: "ready" }));
   }, []);
 
   const onMessage = useCallback((message: MessageEvent) => {
     const json_response = JSON.parse(message.data);
-    if (json_response.header === "username") {
-      console.log(json_response.content); // debug
-      setUsername(json_response.content);
+    if (json_response.header === "client") {
+      console.log(json_response.id); // debug
+      setUsername(json_response.id);
     }
-    if (json_response.header === "players") {
-      console.log(json_response.content); // debug
-      const playerString = json_response.content;
+    if (json_response.header === "game") {
+      console.log(json_response.players); // debug
+      const playerString = json_response.players;
       let playerList = playerString
         .substring(1, playerString.length - 1)
         .split(",");

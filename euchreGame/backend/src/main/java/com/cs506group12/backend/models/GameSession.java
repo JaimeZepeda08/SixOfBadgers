@@ -117,62 +117,21 @@ public abstract class GameSession {
     public void removeClient(Client client) {
         clients.remove(client);
         // notify other players in game
-        sendClientIdsToAllClients();
+        sendSessionToAllClients();
     }
 
     /**
-     * Sends a WebSocket message to all the players connected to the game
+     * Checks if all the clients in the session are ready to start
      * 
-     * @param type    type of message
-     * @param content content of message
+     * @return true if all clients are ready, false otherwise
      */
-    private void sendMessageToAllClients(String header, String content) {
+    public boolean areClientsReady() {
         for (Client client : clients) {
-            client.sendMessage(header, content);
+            if (!client.isReady()) {
+                return false;
+            }
         }
-    }
-
-    /**
-     * Sends the IDs of the clients in the game to all clients. Used to initialize
-     * game
-     */
-    public void sendClientIdsToAllClients() {
-        // send ids of connected players to all clients in the game
-        sendMessageToAllClients("players", getClientIdsString());
-    }
-
-    /**
-     * Sends the ID of the game to all clients. Used to initialize game
-     */
-    public void sendGameIdToAllClients() {
-        sendMessageToAllClients("gameId", gameId);
-    }
-
-    /**
-     * Notifies all clients that a new client has joined
-     * 
-     * @param newClient client joining game
-     */
-    public void notifyNewClient(Client newClient) {
-        // send game id back to client
-        newClient.sendMessage("id", getGameId());
-        // send ids of connected players to all clients in the game
-        sendClientIdsToAllClients();
-    }
-
-    /**
-     * Processes messages sent in the chat.
-     * 
-     * @param client  the client that sent the message
-     * @param message the content of the message
-     */
-    public void processMessage(Client client, String message) {
-        // add message to chat log
-        chat.addMessage(client, message);
-        // get messages in chat log
-        String messages = chat.getMessages();
-        // send messages to all clients in the game
-        sendMessageToAllClients("chat", messages);
+        return true;
     }
 
     /**
@@ -192,5 +151,65 @@ public abstract class GameSession {
             host.sendMessage("error", "Not enough players to start the game");
             return false;
         }
+    }
+
+    /**
+     * Sends a WebSocket message to all the players connected to the game.
+     * Used for simple messages and event alerts.
+     * 
+     * @param type    type of message
+     * @param content content of message
+     */
+    protected void sendMessageToAllClients(String header, String content) {
+        for (Client client : clients) {
+            client.sendMessage(header, content);
+        }
+    }
+
+    /**
+     * Sends a WebSocket message to all the players connected to the game.
+     * Used to send larger amounts of data.
+     * 
+     * @param formattedJSON a formatted JSON string
+     */
+    protected void sendMessageToAllClients(String formattedJSON) {
+        for (Client client : clients) {
+            client.sendMessage(formattedJSON);
+        }
+    }
+
+    /**
+     * Send a JSON representation of this game session to all the clients
+     */
+    public void sendSessionToAllClients() {
+        sendMessageToAllClients(toJSON());
+    }
+
+    /**
+     * Processes messages sent in the chat.
+     * 
+     * @param client  the client that sent the message
+     * @param message the content of the message
+     */
+    public void processMessage(Client client, String message) {
+        // add message to chat log
+        chat.addMessage(client, message);
+        // get messages in chat log
+        String messages = chat.getMessages();
+        // send messages to all clients in the game
+        sendMessageToAllClients("chat", messages);
+    }
+
+    /**
+     * Converts this game session into a JSON string
+     * 
+     * @return JSON representation of this game session
+     */
+    public String toJSON() {
+        return "{"
+                + "\"header\" : \"session\", "
+                + "\"gameId\" : " + "\"" + gameId + "\", "
+                + "\"players\" : " + "\"" + getClientIdsString() + "\""
+                + "}";
     }
 }

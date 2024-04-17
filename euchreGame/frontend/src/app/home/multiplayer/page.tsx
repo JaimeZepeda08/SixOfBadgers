@@ -26,14 +26,18 @@ export default function Page(): JSX.Element {
   const onMessage = useCallback(
     (message: MessageEvent) => {
       const json_response = JSON.parse(message.data);
-      if (json_response.header === "id") {
-        setGameID(json_response.content);
-      }
-      if (json_response.header === "players") {
-        let players = json_response.content;
+
+      // JSON session object
+      if (json_response.header === "session") {
+        // set game ID
+        setGameID(json_response.gameId);
+        // set players in game session
+        let players = json_response.players;
         players = players.substring(1, players.length - 1).split(",");
         setPlayers(players);
       }
+
+      // other events that happen in the multiplayer lobby
       if (json_response.header === "leave") {
         setPlayers([]);
         setGameID("");

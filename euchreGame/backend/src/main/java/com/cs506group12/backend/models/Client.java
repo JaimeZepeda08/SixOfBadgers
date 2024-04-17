@@ -14,6 +14,7 @@ public abstract class Client {
     private WebSocketSession session;
     private String clientId;
     private GameSession game;
+    private boolean ready;
 
     /**
      * Creates a new instance of Client
@@ -24,6 +25,7 @@ public abstract class Client {
         this.session = session;
         this.clientId = "Anonymous" + Usernames.getRandomUsername();
         this.game = null;
+        this.ready = false;
     }
 
     /**
@@ -90,7 +92,24 @@ public abstract class Client {
     }
 
     /**
-     * Sends a message to client through its WebSocket connection
+     * Checks if the client is ready
+     * 
+     * @return true if ready, false otherwise
+     */
+    public boolean isReady() {
+        return ready;
+    }
+
+    /**
+     * Marks this client as ready
+     */
+    public void setReady() {
+        ready = true;
+    }
+
+    /**
+     * Sends a message to client through its WebSocket connection.
+     * Used for simple messages and event alerts.
      * 
      * @param type    type of message to be sent
      * @param content content of message
@@ -106,6 +125,28 @@ public abstract class Client {
     }
 
     /**
+     * Sends a WebSocket message to this client
+     * Used to send larger amounts of data.
+     * 
+     * @param formattedJSON a formatted JSON string
+     */
+    @SuppressWarnings("null")
+    public void sendMessage(String formattedJSON) {
+        try {
+            this.getSession().sendMessage(new TextMessage(formattedJSON));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Sends this a JSON representation of this client
+     */
+    public void sendClient() {
+        sendMessage(toJSON());
+    }
+
+    /**
      * Sends an error socket message to the client
      * 
      * @param error the message to be sent
@@ -115,17 +156,15 @@ public abstract class Client {
     }
 
     /**
-     * Sends this client's id
+     * Converts this client into JSON
+     * 
+     * @return a JSON representation of this client
      */
-    public void sendPlayerID() {
-        sendMessage("username", getClientId());
-    }
-
-    /**
-     * Sends the IDs of the players in this client's game
-     */
-    public void sendPlayersInGame() {
-        sendMessage("players", getGame().getClientIdsString());
+    public String toJSON() {
+        return "{"
+                + "\"header\" : \"client\", "
+                + "\"id\" : " + "\"" + getClientId() + "\""
+                + "}";
     }
 
     @Override
