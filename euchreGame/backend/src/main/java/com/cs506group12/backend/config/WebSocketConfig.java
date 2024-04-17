@@ -278,9 +278,9 @@ public class WebSocketConfig implements WebSocketConfigurer {
             EuchreGame euchreGame = (EuchreGame) game;
             for (Player player : euchreGame.getPlayers()) {
                 player.sendClient();
+                player.sendPlayer();
             }
             euchreGame.sendSessionToAllClients();
-            euchreGame.sendCardsToAllPlayers();
         }
     }
 

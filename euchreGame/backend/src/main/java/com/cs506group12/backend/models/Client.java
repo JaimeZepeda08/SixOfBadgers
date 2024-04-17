@@ -143,7 +143,7 @@ public abstract class Client {
      * Sends this a JSON representation of this client
      */
     public void sendClient() {
-        sendMessage(toJSON());
+        sendMessage(clientToJSON());
     }
 
     /**
@@ -160,7 +160,7 @@ public abstract class Client {
      * 
      * @return a JSON representation of this client
      */
-    public String toJSON() {
+    public String clientToJSON() {
         return "{"
                 + "\"header\" : \"client\", "
                 + "\"id\" : " + "\"" + getClientId() + "\""

@@ -5,11 +5,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 public class Player extends Client {
 	public ArrayList<Card> hand;
-	public String userName;
 	private int points;
-	// maybe a team function - i wpuld prefer for teammates to be 0 and 1 in array
-	// but maybe no possible?
-	// do i need login functions?
 
 	/**
 	 * Constructor class for the Player class.
@@ -34,6 +30,13 @@ public class Player extends Client {
 		return this.hand;
 	}
 
+	/*
+	 * Adds an integer as paramater to points
+	 */
+	public void addPoints(int points) {
+		this.points += points;
+	}
+
 	/**
 	 * Getter method for the number of points for the player
 	 */
@@ -47,7 +50,7 @@ public class Player extends Client {
 	 * @param suit The suit that we want the highest card of.
 	 * @return The card that is the highest of the param's suit in the player's hand
 	 */
-	public Card getHighCardofSuit(Card.SUIT suit) {
+	public Card getHighCardOfSuit(Card.SUIT suit) {
 
 		Card high = null;
 
@@ -76,13 +79,6 @@ public class Player extends Client {
 		}
 
 		return low;
-	}
-
-	/*
-	 * Adds an integer as paramater to points
-	 */
-	public void addPoints(int points) {
-		this.points += points;
 	}
 
 	/*
@@ -116,7 +112,7 @@ public class Player extends Client {
 	}
 
 	/**
-	 * Checks if the players hands has tghe param suit
+	 * Checks if the players hands has the param suit
 	 * 
 	 * @param suit The suit that will be checked to see if there is a player hand
 	 * @return
@@ -168,7 +164,7 @@ public class Player extends Client {
 
 	/**
 	 * Class to choose the trump for the round
-	 * TODO: implement with frotnend
+	 * TODO: implement with frontend
 	 * 
 	 * @return Card.SUIT enum of the chosen suit, null if none picked
 	 */
@@ -182,56 +178,25 @@ public class Player extends Client {
 		return null;
 	}
 
-	/**
-	 * used to get players hand as a json
-	 * 
-	 * @return a json formatted string of cards
-	 */
-	public String handAsJson() {
-		String finalJson = "[";
-		for (int i = 0; i < hand.size(); i++) {
-			finalJson += hand.get(i).toString() + ",";
-		}
-		// here if one to many ,
-		finalJson = finalJson.substring(0, finalJson.length() - 1);
-		finalJson += "]";
-
-		return finalJson;
+	public void sendPlayer() {
+		sendMessage(playerToJSON());
 	}
 
-	/**
-	 * 
-	 * @param playableHand the cards available for user to play
-	 * @return a json formatted string of cards
-	 */
-	public String handAsJson(ArrayList<Card> playableHand) {
-		String finalJson = "{\n\t\"hand\": [";
-		for (int i = 0; i < playableHand.size(); i++) {
-			finalJson += playableHand.get(i).cardToJson() + ",";
-		}
-		// here if one to many ,
-		finalJson += "\t]\n}";
-
-		return finalJson;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String playerAsJson() {
-		return "{\n\t\"player_name\": " + userName + "\"\n}";
-	}
-
-	public void sendPlayerCards() {
+	private String playerHandToString() {
 		String handString = "[";
 		for (Card card : hand) {
-			handString += card.toString() + ",";
+			handString += card.cardToJSON() + ",";
 		}
 		handString = handString.substring(0, handString.length() - 1);
 		handString += "]";
-		System.out.println(getClientId() + ": " + handString); // debug
-		sendMessage("cards", handString);
+		return handString;
 	}
 
+	public String playerToJSON() {
+		return "{"
+				+ "\"header\" : \"player\", "
+				+ "\"hand\" : " + "\"" + playerHandToString() + "\", "
+				+ "\"score\" : " + "\"" + getPoints() + "\""
+				+ "}";
+	}
 }

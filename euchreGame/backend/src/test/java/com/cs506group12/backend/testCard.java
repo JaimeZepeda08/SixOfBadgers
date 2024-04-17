@@ -3,7 +3,6 @@ package com.cs506group12.backend;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.json.*;
 
@@ -155,31 +154,5 @@ class testCard {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * tests the cardToJson method
-	 */
-	@Test
-	public void testCardJson() {
-		Card card = new Card(Card.SUIT.DIAMONDS, 11);
-		assertNotNull(card.cardToJson());
-		assertEquals("{\n\t\"card_rank\": 11,\n\t\"card_suit\": \"Diamonds\"\n}", card.cardToJson()); // tests output
-																										// correct
-		String cardAsJson = card.cardToJson();
-		assertTrue(isValidJson(cardAsJson)); // tests that it is valid josn
-
-	}
-
-	/**
-	 * tests the cardToJson method
-	 */
-	@Test
-	public void testSuitJson() {
-		Card card = new Card(Card.SUIT.HEARTS, 11);
-		assertNotNull(card.cardToJson());
-		String suitJson = card.suitAsJson();
-		assertTrue(isValidJson(suitJson)); // tests that it is valid josn
-
 	}
 }

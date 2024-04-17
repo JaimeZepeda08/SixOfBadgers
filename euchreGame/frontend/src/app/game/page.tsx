@@ -41,7 +41,10 @@ export default function Page() {
       console.log(json_response.id); // debug
       setUsername(json_response.id);
     }
-    if (json_response.header === "game") {
+    if (json_response.header === "player") {
+      console.log(json_response.hand); // debug
+    }
+    if (json_response.header === "session") {
       console.log(json_response.players); // debug
       const playerString = json_response.players;
       let playerList = playerString
@@ -50,9 +53,6 @@ export default function Page() {
       // sort players (the player corresponding to this client should go first)
       playerList = sortPlayerList(playerList, username);
       setPlayers2(playerList);
-    }
-    if (json_response.header === "cards") {
-      console.log(json_response.content);
     }
   }, []);
 

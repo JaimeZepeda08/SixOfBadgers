@@ -35,17 +35,14 @@ public class EuchreGame extends GameSession {
 
     public static ArrayList<Integer> ranks = new ArrayList<>();
 
+    /**
+     * Constructor for a EuchreGame object
+     * 
+     * @param host the client that started the game
+     */
     public EuchreGame(Client host) {
         super(host);
         deck = new ArrayList<>();
-    }
-
-    public ArrayList<Player> getPlayers() {
-        ArrayList<Player> players = new ArrayList<>();
-        for (Client client : getConnectedClients()) {
-            players.add((Player) client);
-        }
-        return players;
     }
 
     /**
@@ -59,12 +56,6 @@ public class EuchreGame extends GameSession {
             return true;
         }
         return false;
-    }
-
-    public void sendCardsToAllPlayers() {
-        for (Player player : getPlayers()) {
-            player.sendPlayerCards();
-        }
     }
 
     /**
@@ -99,6 +90,17 @@ public class EuchreGame extends GameSession {
         // sets face up card to first card left in deck (after deal)
         faceUpCard = iterator.next();
         cardsLeft = deck.size() - 16;
+    }
+
+    /**
+     * Gets the clients connected to the game and casts them to players
+     */
+    public ArrayList<Player> getPlayers() {
+        ArrayList<Player> players = new ArrayList<>();
+        for (Client client : getConnectedClients()) {
+            players.add((Player) client);
+        }
+        return players;
     }
 
     /**

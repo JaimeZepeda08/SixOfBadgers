@@ -182,7 +182,7 @@ public abstract class GameSession {
      * Send a JSON representation of this game session to all the clients
      */
     public void sendSessionToAllClients() {
-        sendMessageToAllClients(toJSON());
+        sendMessageToAllClients(sessionToJSON());
     }
 
     /**
@@ -205,7 +205,7 @@ public abstract class GameSession {
      * 
      * @return JSON representation of this game session
      */
-    public String toJSON() {
+    public String sessionToJSON() {
         return "{"
                 + "\"header\" : \"session\", "
                 + "\"gameId\" : " + "\"" + gameId + "\", "
