@@ -164,7 +164,6 @@ public class Player extends Client {
 
 	/**
 	 * Class to choose the trump for the round
-	 * TODO: implement with frontend
 	 * 
 	 * @return Card.SUIT enum of the chosen suit, null if none picked
 	 */
@@ -195,8 +194,7 @@ public class Player extends Client {
 	public String playerToJSON() {
 		return "{"
 				+ "\"header\" : \"player\", "
-				+ "\"hand\" : " + "\"" + playerHandToString() + "\", "
-				+ "\"score\" : " + "\"" + getPoints() + "\""
+				+ "\"hand\" : " + "\"" + playerHandToString() + "\""
 				+ "}";
 	}
 }

@@ -296,18 +296,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
      * @param payload contains the JSON data of the game event
      */
     private void handleGameEvent(GameSession game, Client client, JsonNode payload) {
-        // cast variables
-        // EuchreGame euchreGame = (EuchreGame) game;
-        // Player player = (Player) client;
-
-        // TODO switch statment handling different types of events
-        String event = payload.get("event").asText();
-        switch (event) {
-            case "":
-                break;
-            default:
-                break;
-        }
+        // implement game logic
     }
 
     /**

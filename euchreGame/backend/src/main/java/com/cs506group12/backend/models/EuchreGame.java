@@ -7,13 +7,13 @@ public class EuchreGame extends GameSession {
     private ArrayList<Card>[] playerHands;
     private int cardsLeft;
 
-    public ArrayList<Player> players; // deprecated
+    public ArrayList<Player> players;
     // private boolean areTurnsTimed;
     private int dealer = 0; // position of dealer
     private int leadingPlayer = 1; // player who plays first card of trick
     private int teamOneScore; // do turns until one of the team scores is over threshhold
     private int teamTwoScore;
-    private final int pointsThreshold = 10;
+    private int pointsThreshold = 10;
 
     private Card faceUpCard; // used to helpo establish trump
     private Card trumpSuitCard; // for comparison
@@ -291,10 +291,9 @@ public class EuchreGame extends GameSession {
     }
 
     /**
-     * 
      * @return a json formatted string of the euchregame object
      */
-    public String toJson() {
+    public String gameToJson() {
         String betweenLines = "\",\n\t\"";
         String betwweenKeyValues = "\": \"";
 
@@ -360,9 +359,9 @@ public class EuchreGame extends GameSession {
         return pointsThreshold;
     }
 
-    // public void setPointsThreshold(int pointsThreshold) {
-    // this.pointsThreshold = pointsThreshold;
-    // }
+    public void setPointsThreshold(int pointsThreshold) {
+        this.pointsThreshold = pointsThreshold;
+    }
 
     public int getDealer() {
         return dealer;
