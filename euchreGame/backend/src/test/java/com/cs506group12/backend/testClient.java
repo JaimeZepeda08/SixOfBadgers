@@ -63,10 +63,10 @@ public class testClient {
     @Test
     public void testClientID() {
         // check that the client ID is a String
-        assertEquals(String.class, client.getPlayerId().getClass());
+        assertEquals(String.class, client.getClientId().getClass());
 
         // check that the client ID starts with "Anonymous"
-        assertEquals("Anonymous", client.getPlayerId().substring(0, 9));
+        assertEquals("Anonymous", client.getClientId().substring(0, 9));
     }
 
     /**

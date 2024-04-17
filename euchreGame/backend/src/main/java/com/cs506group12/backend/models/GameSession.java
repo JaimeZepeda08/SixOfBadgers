@@ -12,9 +12,9 @@ public abstract class GameSession {
 
     // unique 5 charachter long id
     private String gameId;
-    // players connected to this game
-    private ArrayList<Client> players;
-    // client that started the game sessio
+    // clients connected to this session
+    private ArrayList<Client> clients;
+    // client that started the game session
     private Client host;
     // keeps track of messages sent during this game session
     private Chat chat;
@@ -26,9 +26,9 @@ public abstract class GameSession {
      */
     protected GameSession(Client host) {
         this.gameId = UUID.randomUUID().toString().replaceAll("[^a-zA-Z0-9]", "").substring(0, 5);
-        this.players = new ArrayList<>();
+        this.clients = new ArrayList<>();
         this.host = host;
-        addPlayer(this.host);
+        addClient(this.host);
         this.chat = new Chat();
     }
 
@@ -42,12 +42,12 @@ public abstract class GameSession {
     }
 
     /**
-     * Getter method for connected players
+     * Getter method for connected clients
      * 
      * @return an ArrayList object containing all the players in this game
      */
-    public ArrayList<Client> getPlayers() {
-        return players;
+    public ArrayList<Client> getConnectedClients() {
+        return clients;
     }
 
     /**
@@ -55,10 +55,10 @@ public abstract class GameSession {
      * 
      * @return string representation of players in this game
      */
-    public String getPlayerIdsString() {
+    public String getClientIdsString() {
         String ids = "[";
-        for (Client player : players) {
-            ids += player.getPlayerId() + ",";
+        for (Client client : clients) {
+            ids += client.getClientId() + ",";
         }
         ids = ids.substring(0, ids.length() - 1) + "]";
         return ids;
@@ -78,13 +78,13 @@ public abstract class GameSession {
     }
 
     /**
-     * Checks if player is already in game
+     * Checks if client is already in game
      * 
-     * @param player Client object to be checked
+     * @param client Client object to be checked
      * @return true if player is in game, false otherwise
      */
-    public boolean hasPlayer(Client player) {
-        if (players.contains(player)) {
+    public boolean hasClient(Client client) {
+        if (clients.contains(client)) {
             return true;
         }
         return false;
@@ -92,17 +92,17 @@ public abstract class GameSession {
 
     /**
      * Adds player to game if conditions are met
-     * 1. Games cannot have more than 4 players
-     * 2. Games cannot have repeated players
+     * 1. Games cannot have more than 4 clients
+     * 2. Games cannot have repeated clients
      * 
-     * @param player Client to join game
+     * @param client Client to join game
      * @return true if successful, false otherwise
      */
-    public boolean addPlayer(Client player) {
-        if (players.size() < 4) {
-            if (!players.contains(player)) {
-                player.joinGame(this);
-                players.add(player);
+    public boolean addClient(Client client) {
+        if (clients.size() < 4) {
+            if (!clients.contains(client)) {
+                client.joinGame(this);
+                clients.add(client);
                 return true;
             }
         }
@@ -110,14 +110,14 @@ public abstract class GameSession {
     }
 
     /**
-     * Removes a player from this game
+     * Removes a client from this game session
      * 
-     * @param player the game that left the game
+     * @param client the client that left the game
      */
-    public void removePlayer(Client player) {
-        players.remove(player);
+    public void removeClient(Client client) {
+        clients.remove(client);
         // notify other players in game
-        sendPlayerIdsToAllClients();
+        sendClientIdsToAllClients();
     }
 
     /**
@@ -127,17 +127,18 @@ public abstract class GameSession {
      * @param content content of message
      */
     private void sendMessageToAllClients(String header, String content) {
-        for (Client player : players) {
-            player.sendMessage(header, content);
+        for (Client client : clients) {
+            client.sendMessage(header, content);
         }
     }
 
     /**
-     * Sends the IDs of players in the game to all clients. Used to initialize game
+     * Sends the IDs of the clients in the game to all clients. Used to initialize
+     * game
      */
-    public void sendPlayerIdsToAllClients() {
+    public void sendClientIdsToAllClients() {
         // send ids of connected players to all clients in the game
-        sendMessageToAllClients("players", getPlayerIdsString());
+        sendMessageToAllClients("players", getClientIdsString());
     }
 
     /**
@@ -148,21 +149,21 @@ public abstract class GameSession {
     }
 
     /**
-     * Notifies all players that a new client has joined
+     * Notifies all clients that a new client has joined
      * 
      * @param newClient client joining game
      */
-    public void notifyPlayersNewClient(Client newClient) {
+    public void notifyNewClient(Client newClient) {
         // send game id back to client
         newClient.sendMessage("id", getGameId());
         // send ids of connected players to all clients in the game
-        sendPlayerIdsToAllClients();
+        sendClientIdsToAllClients();
     }
 
     /**
      * Processes messages sent in the chat.
      * 
-     * @param client  the player that sent the message
+     * @param client  the client that sent the message
      * @param message the content of the message
      */
     public void processMessage(Client client, String message) {
@@ -181,10 +182,10 @@ public abstract class GameSession {
      * @return true if able to start game, false otherwise
      */
     protected boolean startGame() {
-        // check if 4 players are connected
-        if (getPlayers().size() == 4) {
+        // check if 4 clients are connected
+        if (getConnectedClients().size() == 4) {
             System.out.println("Started game: " + getGameId()); // debug
-            // alert players that the game has started
+            // alert clients that the game has started
             sendMessageToAllClients("started", "Game " + getGameId() + " has started");
             return true;
         } else {

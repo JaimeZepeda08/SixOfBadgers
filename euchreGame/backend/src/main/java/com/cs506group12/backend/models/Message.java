@@ -1,14 +1,10 @@
 package com.cs506group12.backend.models;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
  * Represents a message object with a header and content.
  * 
  * @author jaime zepeda
  */
-@SuppressWarnings("unused")
 public class Message {
 
     private String header; // The header of the message

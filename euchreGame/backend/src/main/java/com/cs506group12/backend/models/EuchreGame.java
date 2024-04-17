@@ -7,7 +7,7 @@ public class EuchreGame extends GameSession {
     private ArrayList<Card>[] playerHands;
     private int cardsLeft;
 
-    public ArrayList<Player> players;
+    public ArrayList<Player> players; // deprecated
     // private boolean areTurnsTimed;
     private int dealer = 0; // position of dealer
     private int leadingPlayer = 1; // player who plays first card of trick
@@ -37,13 +37,15 @@ public class EuchreGame extends GameSession {
 
     public EuchreGame(Client host) {
         super(host);
-
         deck = new ArrayList<>();
-        players = new ArrayList<>();
-        ArrayList<Client> clients = getPlayers();
-        for (Client client : clients) {
+    }
+
+    public ArrayList<Player> getPlayers() {
+        ArrayList<Player> players = new ArrayList<>();
+        for (Client client : getConnectedClients()) {
             players.add((Player) client);
         }
+        return players;
     }
 
     /**
@@ -52,7 +54,6 @@ public class EuchreGame extends GameSession {
      */
     public boolean startGame() {
         if (super.startGame()) {
-            System.out.println("Euchre Game Init"); // debug
             initializeDeck();
             dealCards();
             return true;
@@ -80,13 +81,17 @@ public class EuchreGame extends GameSession {
      */
     public void dealCards() {
         Iterator<Card> iterator = deck.iterator();
-        // iterate 5 times to deal 5 cards to each player
+        // iterate to deal 5 cards to each player
         for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < players.size(); j++) {
-                players.get(j).getHand().add(iterator.next());
+            for (int j = 0; j < getPlayers().size(); j++) {
+                Player player = getPlayers().get(j);
+                Card nextCard = iterator.next();
+                player.getHand().add(nextCard);
             }
         }
-        faceUpCard = iterator.next(); // sets face up card to first card left in deck (after deal)
+
+        // sets face up card to first card left in deck (after deal)
+        faceUpCard = iterator.next();
         cardsLeft = deck.size() - 16;
     }
 

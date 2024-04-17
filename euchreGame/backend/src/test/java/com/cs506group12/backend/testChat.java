@@ -28,15 +28,15 @@ public class testChat {
     public void createClient() {
         // initialize user 1
         user1 = mock(Client.class);
-        when(user1.getPlayerId()).thenReturn("user1");
+        when(user1.getClientId()).thenReturn("user1");
 
         // initialize user 2
         user2 = mock(Client.class);
-        when(user2.getPlayerId()).thenReturn("user2");
+        when(user2.getClientId()).thenReturn("user2");
 
         // initialize user 3
         user3 = mock(Client.class);
-        when(user3.getPlayerId()).thenReturn("user3");
+        when(user3.getClientId()).thenReturn("user3");
     }
 
     /**

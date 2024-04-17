@@ -75,7 +75,7 @@ public class Chat {
         String messageString = "";
         for (int i = 0; i < chatMessages.size(); i++) {
             ChatMessage message = chatMessages.get(i);
-            messageString += "[" + message.getSender().getPlayerId() + ": " + message.getMessage() + "],";
+            messageString += "[" + message.getSender().getClientId() + ": " + message.getMessage() + "],";
         }
         return messageString.substring(0, messageString.length() - 1);
     }

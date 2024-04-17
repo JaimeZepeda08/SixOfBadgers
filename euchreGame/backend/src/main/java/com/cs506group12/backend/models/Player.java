@@ -230,7 +230,7 @@ public class Player extends Client {
 		}
 		handString = handString.substring(0, handString.length() - 1);
 		handString += "]";
-		System.out.println(getPlayerId() + ": " + handString); // debug
+		System.out.println(getClientId() + ": " + handString); // debug
 		sendMessage("cards", handString);
 	}
 

@@ -55,15 +55,15 @@ public class testGameSession {
 
         // test client
         client1 = mock(Client.class);
-        when(client1.getPlayerId()).thenReturn("player1");
+        when(client1.getClientId()).thenReturn("player1");
         client2 = mock(Client.class);
-        when(client2.getPlayerId()).thenReturn("player2");
+        when(client2.getClientId()).thenReturn("player2");
         client3 = mock(Client.class);
-        when(client3.getPlayerId()).thenReturn("player3");
+        when(client3.getClientId()).thenReturn("player3");
         client4 = mock(Client.class);
-        when(client4.getPlayerId()).thenReturn("player4");
+        when(client4.getClientId()).thenReturn("player4");
         client5 = mock(Client.class);
-        when(client5.getPlayerId()).thenReturn("player5");
+        when(client5.getClientId()).thenReturn("player5");
 
         // test game
         game = new GameSessionImplementation(client1);
@@ -86,31 +86,31 @@ public class testGameSession {
     public void testClientsJoining() {
         {
             // at first only the host should be in the game
-            String players = game.getPlayerIdsString();
-            String expected = "[" + client1.getPlayerId() + "]";
+            String players = game.getClientIdsString();
+            String expected = "[" + client1.getClientId() + "]";
             assertEquals(expected, players);
         }
 
         {
             // more players join the game session
-            assertTrue(game.addPlayer(client2));
-            assertTrue(game.addPlayer(client3));
-            assertTrue(game.addPlayer(client4));
+            assertTrue(game.addClient(client2));
+            assertTrue(game.addClient(client3));
+            assertTrue(game.addClient(client4));
 
             // check that the players have joined
-            assertTrue(game.hasPlayer(client1));
-            assertTrue(game.hasPlayer(client2));
-            assertTrue(game.hasPlayer(client3));
-            assertTrue(game.hasPlayer(client4));
+            assertTrue(game.hasClient(client1));
+            assertTrue(game.hasClient(client2));
+            assertTrue(game.hasClient(client3));
+            assertTrue(game.hasClient(client4));
 
             // check to see if players where added correclty
-            String players = game.getPlayerIdsString();
-            String expected = "[" + client1.getPlayerId() + "," + client2.getPlayerId() + "," + client3.getPlayerId()
-                    + "," + client4.getPlayerId() + "]";
+            String players = game.getClientIdsString();
+            String expected = "[" + client1.getClientId() + "," + client2.getClientId() + "," + client3.getClientId()
+                    + "," + client4.getClientId() + "]";
             assertEquals(expected, players);
 
             // check that only up to 4 players can join
-            assertFalse(game.addPlayer(client5));
+            assertFalse(game.addClient(client5));
         }
     }
 
@@ -120,26 +120,26 @@ public class testGameSession {
     @Test
     public void testClientsLeaving() {
         // more players join the game session
-        assertTrue(game.addPlayer(client2));
-        assertTrue(game.addPlayer(client3));
-        assertTrue(game.addPlayer(client4));
+        assertTrue(game.addClient(client2));
+        assertTrue(game.addClient(client3));
+        assertTrue(game.addClient(client4));
 
         // check that the players have joined
-        assertTrue(game.hasPlayer(client1));
-        assertTrue(game.hasPlayer(client2));
-        assertTrue(game.hasPlayer(client3));
-        assertTrue(game.hasPlayer(client4));
+        assertTrue(game.hasClient(client1));
+        assertTrue(game.hasClient(client2));
+        assertTrue(game.hasClient(client3));
+        assertTrue(game.hasClient(client4));
 
         // test players leaving
-        game.removePlayer(client2);
-        game.removePlayer(client4);
-        assertFalse(game.hasPlayer(client2));
-        assertFalse(game.hasPlayer(client4));
-        assertTrue(game.hasPlayer(client1));
-        assertTrue(game.hasPlayer(client3));
+        game.removeClient(client2);
+        game.removeClient(client4);
+        assertFalse(game.hasClient(client2));
+        assertFalse(game.hasClient(client4));
+        assertTrue(game.hasClient(client1));
+        assertTrue(game.hasClient(client3));
 
         // if a player leaves, a new player should be able to join
-        assertTrue(game.addPlayer(client5));
+        assertTrue(game.addClient(client5));
     }
 
     /**
@@ -148,21 +148,21 @@ public class testGameSession {
     @Test
     public void testStartGame() {
         // more players join the game session
-        assertTrue(game.addPlayer(client2));
+        assertTrue(game.addClient(client2));
 
         // check that the players have joined
-        assertTrue(game.hasPlayer(client1));
-        assertTrue(game.hasPlayer(client2));
+        assertTrue(game.hasClient(client1));
+        assertTrue(game.hasClient(client2));
 
         // game should not be able to start if there are less than 4 players in the game
         assertFalse(game.startGame());
 
         // add the rest of the players
-        assertTrue(game.addPlayer(client3));
-        assertTrue(game.addPlayer(client4));
+        assertTrue(game.addClient(client3));
+        assertTrue(game.addClient(client4));
         // check that the players have joined
-        assertTrue(game.hasPlayer(client3));
-        assertTrue(game.hasPlayer(client4));
+        assertTrue(game.hasClient(client3));
+        assertTrue(game.hasClient(client4));
 
         // start game
         assertTrue(game.startGame());

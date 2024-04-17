@@ -12,7 +12,7 @@ import java.io.IOException;
 public abstract class Client {
 
     private WebSocketSession session;
-    private String playerId;
+    private String clientId;
     private GameSession game;
 
     /**
@@ -22,7 +22,7 @@ public abstract class Client {
      */
     protected Client(WebSocketSession session) {
         this.session = session;
-        this.playerId = "Anonymous" + Usernames.getRandomUsername();
+        this.clientId = "Anonymous" + Usernames.getRandomUsername();
         this.game = null;
     }
 
@@ -40,8 +40,8 @@ public abstract class Client {
      * 
      * @return player's id
      */
-    public String getPlayerId() {
-        return playerId;
+    public String getClientId() {
+        return clientId;
     }
 
     /**
@@ -53,21 +53,16 @@ public abstract class Client {
         return game;
     }
 
+    /**
+     * Checks if this client is in a game
+     * 
+     * @return true if the client is in a game, false otherwise
+     */
     public boolean isInGame() {
         if (game != null) {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Handles client leaving a game session
-     */
-    public void leaveGame() {
-        if (game != null) {
-            game.removePlayer(this);
-        }
-        game = null;
     }
 
     /**
@@ -82,6 +77,16 @@ public abstract class Client {
         }
         // join new game
         game = newGame;
+    }
+
+    /**
+     * Handles client leaving a game session
+     */
+    public void leaveGame() {
+        if (game != null) {
+            game.removeClient(this);
+        }
+        game = null;
     }
 
     /**
@@ -113,21 +118,21 @@ public abstract class Client {
      * Sends this client's id
      */
     public void sendPlayerID() {
-        sendMessage("username", getPlayerId());
+        sendMessage("username", getClientId());
     }
 
     /**
      * Sends the IDs of the players in this client's game
      */
     public void sendPlayersInGame() {
-        sendMessage("players", getGame().getPlayerIdsString());
+        sendMessage("players", getGame().getClientIdsString());
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Client) {
             Client other = (Client) obj;
-            if (playerId.equals(other.getPlayerId())) {
+            if (clientId.equals(other.getClientId())) {
                 return true;
             }
         }

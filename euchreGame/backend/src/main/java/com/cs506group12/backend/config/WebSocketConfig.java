@@ -164,10 +164,10 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
         // remove from current game
         GameSession game = client.getGame();
-        game.removePlayer(client);
+        game.removeClient(client);
 
         // alert players
-        game.sendPlayerIdsToAllClients();
+        game.sendClientIdsToAllClients();
     }
 
     /**
@@ -181,7 +181,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
         // store game session
         games.put(game.getGameId(), game);
         // send message to all players in game that a new client has joined
-        game.notifyPlayersNewClient(client);
+        game.notifyNewClient(client);
     }
 
     /**
@@ -195,11 +195,11 @@ public class WebSocketConfig implements WebSocketConfigurer {
             // get game with corresponding id
             GameSession game = games.get(id);
             // check that the client is not already in this game
-            if (!game.hasPlayer(client)) {
+            if (!game.hasClient(client)) {
                 // add player to game
-                if (game.addPlayer(client)) {
+                if (game.addClient(client)) {
                     // send message to all players in game that a new client has joined
-                    game.notifyPlayersNewClient(client);
+                    game.notifyNewClient(client);
                 } else {
                     client.reportError("Game " + id + " is already full");
                 }
@@ -220,10 +220,10 @@ public class WebSocketConfig implements WebSocketConfigurer {
         if (client.isInGame()) {
             // remove from current game
             GameSession game = client.getGame();
-            game.removePlayer(client);
+            game.removeClient(client);
 
             // alert players
-            game.sendPlayerIdsToAllClients();
+            game.sendClientIdsToAllClients();
 
             // alert client that they can leave the session
             client.sendMessage("leave", "You can now leave the game");
