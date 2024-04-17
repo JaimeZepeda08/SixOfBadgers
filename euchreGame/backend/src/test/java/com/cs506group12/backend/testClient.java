@@ -37,7 +37,7 @@ public class testClient {
     }
 
     WebSocketSession session;
-    ClientImplementation client;
+    Client client;
     GameSession game1;
     GameSession game2;
 
@@ -46,8 +46,13 @@ public class testClient {
      */
     @BeforeEach
     public void setUp() {
+        // WebSocket session
         session = mock(WebSocketSession.class);
+
+        // test client
         client = new ClientImplementation(session);
+
+        // test games
         game1 = mock(GameSession.class);
         game2 = mock(GameSession.class);
     }
