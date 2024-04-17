@@ -1,8 +1,6 @@
 package com.cs506group12.backend.models;
 
 import java.util.*;
-import com.cs506group12.backend.config.GameSession;
-import com.cs506group12.backend.config.Client;
 
 public class EuchreGame extends GameSession {
     public static ArrayList<Card> deck;
@@ -80,31 +78,16 @@ public class EuchreGame extends GameSession {
     /**
      * Deals out 4 cards to each person
      */
-    @SuppressWarnings("unchecked")
     public void dealCards() {
-        playerHands = new ArrayList[players.size()];
-
-        for (int i = 0; i < playerHands.length; i++) {
-            playerHands[i] = new ArrayList<>();
-        }
-
         Iterator<Card> iterator = deck.iterator();
+        // iterate 5 times to deal 5 cards to each player
         for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < playerHands.length; j++) {
-                playerHands[j].add(iterator.next());
+            for (int j = 0; j < players.size(); j++) {
+                players.get(j).getHand().add(iterator.next());
             }
         }
-
         faceUpCard = iterator.next(); // sets face up card to first card left in deck (after deal)
-
         cardsLeft = deck.size() - 16;
-
-        // sets it in players object.
-        for (int i = 0; i < players.size(); i++) {
-            Player player = players.get(i);
-            System.out.println(player.getPlayerId()); // debug
-            player.setHand(playerHands[i]);
-        }
     }
 
     /**

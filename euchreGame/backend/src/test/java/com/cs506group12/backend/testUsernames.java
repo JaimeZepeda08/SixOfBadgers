@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 
-import com.cs506group12.backend.config.Usernames;
+import com.cs506group12.backend.models.Usernames;
 
 /**
  * This class tests the correctness of the Usernames class.

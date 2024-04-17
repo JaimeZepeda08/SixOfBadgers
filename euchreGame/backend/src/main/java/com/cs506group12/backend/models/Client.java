@@ -1,4 +1,4 @@
-package com.cs506group12.backend.config;
+package com.cs506group12.backend.models;
 
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.TextMessage;

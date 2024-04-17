@@ -14,9 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import com.cs506group12.backend.config.Client;
-import com.cs506group12.backend.config.GameSession;
-import com.cs506group12.backend.config.Message;
+import com.cs506group12.backend.models.Client;
+import com.cs506group12.backend.models.GameSession;
+import com.cs506group12.backend.models.Message;
 
 /**
  * This class test the correctness of the Client class

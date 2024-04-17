@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import com.cs506group12.backend.config.Message;
+import com.cs506group12.backend.models.Message;
 
 /**
  * This class tests the correctness of the Message class

@@ -11,8 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.socket.WebSocketSession;
 
-import com.cs506group12.backend.config.Client;
-import com.cs506group12.backend.config.GameSession;
+import com.cs506group12.backend.models.Client;
+import com.cs506group12.backend.models.GameSession;
 
 /**
  * This class tests the correctness of the GameSession class

@@ -6,8 +6,8 @@ import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.cs506group12.backend.config.Chat;
-import com.cs506group12.backend.config.Client;
+import com.cs506group12.backend.models.Chat;
+import com.cs506group12.backend.models.Client;
 
 /**
  * This class tests the correctness of the Chat class

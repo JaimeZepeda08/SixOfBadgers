@@ -13,7 +13,9 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
+import com.cs506group12.backend.models.Client;
 import com.cs506group12.backend.models.EuchreGame;
+import com.cs506group12.backend.models.GameSession;
 import com.cs506group12.backend.models.Player;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

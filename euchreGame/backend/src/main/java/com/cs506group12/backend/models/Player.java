@@ -2,10 +2,9 @@ package com.cs506group12.backend.models;
 
 import java.util.*;
 import org.springframework.web.socket.WebSocketSession;
-import com.cs506group12.backend.config.Client;
 
 public class Player extends Client {
-	public ArrayList<Card> hand = new ArrayList<Card>();
+	public ArrayList<Card> hand;
 	public String userName;
 	private int points;
 	// maybe a team function - i wpuld prefer for teammates to be 0 and 1 in array
@@ -17,6 +16,8 @@ public class Player extends Client {
 	 */
 	public Player(WebSocketSession session) {
 		super(session);
+		this.hand = new ArrayList<>();
+		this.points = 0;
 	}
 
 	/*
