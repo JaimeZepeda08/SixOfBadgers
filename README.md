@@ -39,6 +39,8 @@ The customer for this project is someone who wishes to play Euchre with their fr
     * Test: Frontend: There must be an option to play or not play music avalaible to the user at all times during the game.  
 9.  There shall be a help screen avaiable to the user via a NavBar at all times.
     * Test: Frontend: There must be a help button that redirects to a page describing the website and rules of euchre available at all times.
+10. During the game the user will be notified of whos turn it is so that they will continuously be engaged.
+    * Test: Frontend: After a card is played, beginning of new trick, or selecting trump, the user should recieve a pop prompting them to play a card or pick trump.
 
 ### Use Cases & User Stories
 

@@ -5,12 +5,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 import com.cs506group12.backend.models.Client;
@@ -26,8 +26,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author jaime zepeda
  */
 @Configuration
-@EnableWebSocket
-public class WebSocketConfig implements WebSocketConfigurer {
+@EnableWebMvc
+public class WebSocketConfig implements WebMvcConfigurer {
 
     // Concurrent HashMap to store active WebSocket sessions clients
     private final Map<WebSocketSession, Client> sessions = new ConcurrentHashMap<>();
@@ -40,7 +40,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
      * @param registry The WebSocketHandlerRegistry to register handlers.
      */
     @SuppressWarnings("null")
-    @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(myWebSocketHandler(), "/ws").setAllowedOrigins("*");
     }
