@@ -7,7 +7,7 @@ public class Player {
 	public String userName;
 	private int points;
 	private Player partner;
-	// maybe a team function - i wpuld prefer for teammates to be 0 and 1 in array
+	// maybe a team functio n - i wpuld prefer for teammates to be 0 and 1 in array
 	// but maybe no possible?
 	// do i need login functions?
 
@@ -267,7 +267,4 @@ public class Player {
     public Player getPartner() {
         return partner;
     }
-
-	
-
 }
