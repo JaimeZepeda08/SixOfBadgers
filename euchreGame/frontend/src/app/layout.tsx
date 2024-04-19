@@ -12,6 +12,13 @@ export const metadata: Metadata = {
   title: "Euchre With Friends",
 };
 
+/**
+ * Root Layout Component
+ * 
+ * This component represents the root layout of the application, providing common structure
+ * such as top navigation, music player, and profile icon. It also sets up global styles
+ * and language settings.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{

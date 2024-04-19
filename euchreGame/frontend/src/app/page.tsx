@@ -15,6 +15,7 @@ export default function Page() {
       <h1 className="text-6xl font-bold text-red-900 mb-40 mt-36">
         Euchre With Friends
       </h1>
+      {/* List of buttons for all game options */}
       <SimpleButtonLinkRed
         text="Singleplayer"
         href="home/singleplayer"
