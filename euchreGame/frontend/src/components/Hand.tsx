@@ -53,7 +53,7 @@ const Hand = ({ cards, onCardSelect }: Hand) => {
      if (selectedCard !== null) {
        console.log("Suit: " + cards[selectedCard].suit + " " + "Value: " + cards[selectedCard].value);
      }
-   }, [selectedCard]);
+   }, [selectedCard, cards]);
  
 
   return (

@@ -1,17 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import {
-  getPlayerHand,
-  submitSelectedCard,
-  getPlayers,
-  getTrumpSuit,
-} from "@/lib/gameService";
+import { use, useCallback, useEffect, useState } from "react";
+import { getPlayerHand, submitSelectedCard, getPlayers, getTrumpSuit, getCurrentPlayer } from "@/lib/gameService";
 import Hand from "../../components/Hand";
 import Card from "../../components/Card";
-import "./css_files_game/buttonStyles.css";
-import MessagePanel from "@/components/MessagePanel";
+import './css_files_game/buttonStyles.css';
 import { useSocket } from "@/lib/useSocket";
+import MessagePanel from "../../components/MessagePanel"
+
 
 /**
  * Game component representing the main page of the game. Each person
@@ -25,52 +21,49 @@ import { useSocket } from "@/lib/useSocket";
  * @returns {JSX.Element} The Game component, which includes player hands, trump suit, and other game elements.
  */
 export default function Page() {
+
+  // const onMessage = useCallback((message: MessageEvent) => {
+  //   const json_response = JSON.parse(message.data);
+  //   if (json_response.header === "username") {
+  //     console.log(json_response.content);
+  //     setUsername(json_response.content);
+  //   }
+  //   if (json_response.header === "players") {
+  //     const playerString = json_response.content;
+  //     let playerList = playerString
+  //       .substring(1, playerString.length - 1)
+  //       .split(",");
+  //     // sort players (the player corresponding to this client should go first)
+  //     playerList = sortPlayerList(playerList, username);
+  //     setPlayers2(playerList);
+  //     console.log(players2.toString());
+  //   }
+  // }, []);
+
+  // function sortPlayerList(playerList: string[], username: string) {
+  //   if (!playerList.includes(username)) {
+  //     return playerList;
+  //   }
+
+  //   const ownIndex = playerList.indexOf(username);
+  //   const sortedList = playerList
+  //     .slice(ownIndex)
+  //     .concat(playerList.slice(0, ownIndex));
+  //   return sortedList;
+  // }
+
+
+  // create socket hook
   const socket = useSocket();
 
+  // fetch initial data
+  // useEffect(() => {
+  //   socket.send(JSON.stringify({ header: "setup" }));
+  // }, []);
+
+  // states for all player names as well as this clients name
   const [username, setUsername] = useState<string>("");
   const [players2, setPlayers2] = useState<string[]>([]);
-
-  // fetch initial data
-  useEffect(() => {
-    socket.send(JSON.stringify({ header: "setup" }));
-  }, []);
-
-  const onMessage = useCallback((message: MessageEvent) => {
-    const json_response = JSON.parse(message.data);
-    if (json_response.header === "username") {
-      console.log(json_response.content);
-      setUsername(json_response.content);
-    }
-    if (json_response.header === "players") {
-      const playerString = json_response.content;
-      let playerList = playerString
-        .substring(1, playerString.length - 1)
-        .split(",");
-      // sort players (the player corresponding to this client should go first)
-      playerList = sortPlayerList(playerList, username);
-      setPlayers2(playerList);
-      console.log(players2.toString());
-    }
-  }, []);
-
-  function sortPlayerList(playerList: string[], username: string) {
-    if (!playerList.includes(username)) {
-      return playerList;
-    }
-
-    const ownIndex = playerList.indexOf(username);
-    const sortedList = playerList
-      .slice(ownIndex)
-      .concat(playerList.slice(0, ownIndex));
-    return sortedList;
-  }
-
-  useEffect(() => {
-    socket.addEventListener("message", onMessage);
-    return () => {
-      socket.removeEventListener("message", onMessage);
-    };
-  }, [socket, onMessage]);
 
   // State variable to hold the player's hand, initialized with dummy data
   const [playerHand, setPlayerHand] = useState(
@@ -120,6 +113,12 @@ export default function Page() {
     },
   });
 
+  // state to for current player (who is playing their card)
+  const [currentPlayerTurn, setCurrentPlayerTurn] = useState("player1");
+
+  // state to handle who recieves the notification
+  const [turnNotification, setTurnNotification] = useState({ show: false, player: "player3" });
+
   // state for which tooltip is active for a player
   const [tooltipVisible, setTooltipVisible] = useState({
     player1: false,
@@ -127,6 +126,9 @@ export default function Page() {
     player3: false,
     player4: false,
   });
+
+  // state for score to win a round
+  const [pointsToWin, setPointsToWin] = useState(0);
 
   // placeholder for opponents cards
   const opponents = [
@@ -137,50 +139,64 @@ export default function Page() {
     { suit: "?", value: "?" },
   ];
 
-  // typing for player identifier to help manage tooltip
-  type PlayerIdentifier = "player1" | "player2" | "player3" | "player4";
-
   // Parse the player's hand JSON string into an object
   const cards = JSON.parse(playerHand);
 
-  // useEffect hooks to fetch player's hand, trump suit, and players' information when the component mounts
-  useEffect(() => {
-    async function fetchPlayers() {
-      const players = await getPlayers();
-      if (players != null) {
-        setPlayerHand(players);
-      } else {
-        console.error("Players are undefined");
-      }
+  // case statements for handling incoming messages 
+  const onMessage = useCallback((message: MessageEvent) => {
+    const json_response = JSON.parse(message.data);
+
+    if(json_response.header == "players") {
+      setPlayers2(json_response.content);
     }
-    getPlayers();
+
+    if(json_response.header === "userName") {
+      setUsername(json_response.content);
+    }
+
+    if(json_response.header === "currentPlayer") {
+      setCurrentPlayerTurn(json_response.content);
+      showTurnNotification(json_response.content);
+    }
+
+    if(json_response.header === "playersData") {
+      setPlayers(json_response.content);
+    }
+
+    if(json_response.header === "playerHand") {
+      setPlayerHand(json_response.content);
+    }
+    
+    if(json_response.header === "trumpSuit") {
+      setTrumpSuit(json_response.content);
+    }
+
+    if(json_response.header === "pointsToWin") {
+      setPointsToWin(json_response.content);
+    }
+
   }, []);
 
+  // hook for grabbing messages being transmitted
   useEffect(() => {
-    async function fetchTrumpSuit() {
-      const trumpSuit = await getTrumpSuit();
-      if (trumpSuit != null) {
-        setTrumpSuit(trumpSuit);
-      } else {
-        console.error("Trump suit is undefined");
-      }
-    }
-    getTrumpSuit();
-  }, []);
+    socket.addEventListener("message", onMessage);
+    return () => {
+      socket.removeEventListener("message", onMessage);
+    };
+  }, [socket, onMessage]);
 
+  // notification handler given by current player message
+  const showTurnNotification = (player: string) => {
+    setTurnNotification({ show: true, player });
+    setTimeout(() => setTurnNotification({ show: false, player: "" }), 1000);  // Hide the popup after 1 second
+  };
+
+  // useEffect hook to trigger turn notification when currentPlayerTurn changes
   useEffect(() => {
-    async function fetchPlayerHand() {
-      // Fetch player's hand from the server
-      const hand = await getPlayerHand();
-      if (hand && hand.length > 0) {
-        // Update state with the fetched player's hand
-        setPlayerHand(hand);
-      } else {
-        console.error("Player hand is undefined");
-      }
+    if(currentPlayerTurn == username) {
+      showTurnNotification(currentPlayerTurn);
     }
-    fetchPlayerHand();
-  }, []);
+  }, [currentPlayerTurn]);
 
   // hook to correctly show updated selected card
   useEffect(() => {
@@ -192,7 +208,7 @@ export default function Page() {
   }, [selectedCard]);
 
   // based on which name we are hovering that tooltip will be visible
-  const toggleTooltip = (player: PlayerIdentifier) => {
+  const toggleTooltip = (player: string) => {
     setTooltipVisible((prev) => ({ ...prev, [player]: !prev[player] }));
   };
 
@@ -211,32 +227,28 @@ export default function Page() {
     console.log("Remove option of touching others cards");
   };
 
+  // submits selected card to play
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // if (selectedCard && selectedCard.suit !== "?" && selectedCard.value !== "?") {
-    if (selectedCard !== null) {
-      const formData = new FormData();
-      formData.append("suit", selectedCard.suit);
-      formData.append("value", selectedCard.value);
-      await submitSelectedCard(formData);
+    if(selectedCard !== null) {
+        socket.send(JSON.stringify({ suit: selectedCard.suit, value: selectedCard.value }));
     }
   };
 
   return (
-    <div
-      className="h-screen flex justify-center items-center relative bg-cover bg-center"
-      style={{ backgroundImage: 'url("/textures/wood3.jpg")' }}
-    >
-      <div
-        className="flex justify-center items-center relative rounded-2xl"
-        style={{
-          width: "80%",
-          height: "85%",
-          backgroundColor: "rgba(74, 160, 74)",
-          border: "3px solid #c0c0c0",
-          zoom: 0.8,
-        }}
-      >
+    <div className="h-screen flex justify-center items-center relative bg-cover bg-center" style={{ backgroundImage: 'url("/textures/wood3.jpg")' }}>
+
+        {/* Conditional rendering for turn notification */}
+        {turnNotification.show && (
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+            <div className="p-6 text-lg text-black rounded-lg" style={{background: 'linear-gradient(to right, red, orange)'}} role="alert">
+              It Is Your Turn!
+            </div>
+          </div>
+        )}
+
+      <div className="flex justify-center items-center relative rounded-2xl" style={{ width: '90%', height: '85%', backgroundColor: 'rgba(74, 160, 74)', border: '3px solid #c0c0c0' }}>
+
         {/* Render player 1 */}
         <div
           className="absolute bottom-5"
@@ -245,8 +257,8 @@ export default function Page() {
           <Hand cards={cards} onCardSelect={handleCardSelect} />
           <div className="text-center mt-5">
             <div
-              onMouseEnter={() => toggleTooltip("player1")}
-              onMouseLeave={() => toggleTooltip("player1")}
+              onMouseEnter={() => toggleTooltip(players.player1.name)}
+              onMouseLeave={() => toggleTooltip(players.player1.name)}
               className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
             >
               {players.player1.name}
@@ -273,8 +285,8 @@ export default function Page() {
             style={{ transform: "rotate(-90deg)" }}
           >
             <div
-              onMouseEnter={() => toggleTooltip("player2")}
-              onMouseLeave={() => toggleTooltip("player2")}
+              onMouseEnter={() => toggleTooltip(players.player2.name)}
+              onMouseLeave={() => toggleTooltip(players.player2.name)}
               className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
             >
               {players.player2.name}
@@ -298,8 +310,8 @@ export default function Page() {
             style={{ transform: "rotate(-180deg)" }}
           >
             <div
-              onMouseEnter={() => toggleTooltip("player3")}
-              onMouseLeave={() => toggleTooltip("player3")}
+              onMouseEnter={() => toggleTooltip(players.player3.name)}
+              onMouseLeave={() => toggleTooltip(players.player3.name)}
               className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
             >
               {players.player3.name}
@@ -326,8 +338,8 @@ export default function Page() {
             style={{ transform: "rotate(90deg)" }}
           >
             <div
-              onMouseEnter={() => toggleTooltip("player4")}
-              onMouseLeave={() => toggleTooltip("player4")}
+              onMouseEnter={() => toggleTooltip(players.player4.name)}
+              onMouseLeave={() => toggleTooltip(players.player4.name)}
               className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
             >
               {players.player4.name}
@@ -380,13 +392,15 @@ export default function Page() {
             transform: "translateY(-50%)",
           }}
         >
+          {/* players hands */}
           <Card suit="CLUBS" value="1" isSelected={false} />
           <Card suit="SPADES" value="2" isSelected={false} />
           <Card suit="DIAMONDS" value="3" isSelected={false} />
           <Card suit="HEARTS" value="4" isSelected={false} />
         </div>
       </div>
-      <MessagePanel />
+
+      <MessagePanel/>
     </div>
   );
 }

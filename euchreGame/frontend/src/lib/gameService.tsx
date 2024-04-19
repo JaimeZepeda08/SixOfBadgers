@@ -119,3 +119,20 @@ export async function getTrumpSuit() {
     console.log(error);
   }
 }
+
+export async function getCurrentPlayer() {
+  const url = `http://${localhost}:8080/`;
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+    });
+    // checks that the response is valid
+    if (!res.ok) {
+      throw new Error("Failed to get records");
+    }
+    // creates and maps an array of Test Objects
+    return await res.json();
+  } catch (error) {
+    console.log(error);
+  }
+}
