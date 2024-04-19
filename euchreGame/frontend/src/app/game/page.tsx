@@ -22,11 +22,6 @@ import MessagePanel from "../../components/MessagePanel"
  */
 export default function Page() {
 
-  // fetch initial data
-  // useEffect(() => {
-  //   socket.send(JSON.stringify({ header: "setup" }));
-  // }, []);
-
   // const onMessage = useCallback((message: MessageEvent) => {
   //   const json_response = JSON.parse(message.data);
   //   if (json_response.header === "username") {
@@ -57,15 +52,14 @@ export default function Page() {
   //   return sortedList;
   // }
 
-  // useEffect(() => {
-  //   socket.addEventListener("message", onMessage);
-  //   return () => {
-  //     socket.removeEventListener("message", onMessage);
-  //   };
-  // }, [socket, onMessage]);
 
   // create socket hook
   const socket = useSocket();
+
+  // fetch initial data
+  useEffect(() => {
+    socket.send(JSON.stringify({ header: "setup" }));
+  }, []);
 
   // states for all player names as well as this clients name
   const [username, setUsername] = useState<string>("");
