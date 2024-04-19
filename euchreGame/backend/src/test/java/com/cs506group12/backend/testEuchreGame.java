@@ -211,6 +211,56 @@ public class testEuchreGame {
         // Test case 6: No specific condition met
         euchreGame.setNumTricks(new int[] {2, 3});
         assertEquals(2, euchreGame.handlePoints(1));
+
+        /*
+        // Test case 7: Defenders win but solo player is active
+        euchreGame.setAttackingTeam(1);
+        euchreGame.setIsSoloPlayer(true);
+        euchreGame.setNumTricks(new int[] {3, 2});
+        assertEquals(2, euchreGame.handlePoints(1));
+
+        // Test case 8: Attacking team wins with solo player active and winning 5 tricks
+        euchreGame.setAttackingTeam(0);
+        euchreGame.setIsSoloPlayer(true);
+        euchreGame.setNumTricks(new int[] {5, 0});
+        assertEquals(2, euchreGame.handlePoints(0));
+
+        // Test case 9: Attacking team wins with solo player active and winning 3 or 4 tricks
+        euchreGame.setAttackingTeam(0);
+        euchreGame.setIsSoloPlayer(true);
+        euchreGame.setNumTricks(new int[] {4, 1});
+        assertEquals(1, euchreGame.handlePoints(0));
+
+        // Test case 10: Attacking team wins with solo player active and not winning 5 tricks
+        euchreGame.setAttackingTeam(0);
+        euchreGame.setIsSoloPlayer(true);
+        euchreGame.setNumTricks(new int[] {3, 1});
+        assertEquals(1, euchreGame.handlePoints(0));
+
+        // Test case 11: Attacking team wins with solo player not active
+        euchreGame.setAttackingTeam(0);
+        euchreGame.setIsSoloPlayer(false);
+        euchreGame.setNumTricks(new int[] {4, 1});
+        assertEquals(1, euchreGame.handlePoints(0));
+
+        // Test case 12: Attacking team wins with solo player not active and winning 5 tricks
+        euchreGame.setAttackingTeam(0);
+        euchreGame.setIsSoloPlayer(false);
+        euchreGame.setNumTricks(new int[] {5, 0});
+        assertEquals(2, euchreGame.handlePoints(0));
+
+        // Test case 13: Attacking team wins with solo player not active and winning 3 or 4 tricks
+        euchreGame.setAttackingTeam(0);
+        euchreGame.setIsSoloPlayer(false);
+        euchreGame.setNumTricks(new int[] {3, 1});
+        assertEquals(1, euchreGame.handlePoints(0));
+
+        // Test case 14: Attacking team wins with solo player not active and not winning 5 tricks
+        euchreGame.setAttackingTeam(0);
+        euchreGame.setIsSoloPlayer(false);
+        euchreGame.setNumTricks(new int[] {2, 2});
+        assertEquals(1, euchreGame.handlePoints(0));
+        */
     }
 
     @Test
@@ -242,6 +292,8 @@ public class testEuchreGame {
         }
         assertTrue(hasClubs && hasDiamonds && hasHearts && hasSpades); // Ensure all suits are present
     }
+
+    
 
     // game loop is currently untested - will add once more finctionality 
 

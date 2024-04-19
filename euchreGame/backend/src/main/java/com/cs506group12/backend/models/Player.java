@@ -6,7 +6,8 @@ public class Player {
 	public ArrayList<Card> hand = new ArrayList<Card>();
 	public String userName;
 	private int points;
-	// maybe a team function - i wpuld prefer for teammates to be 0 and 1 in array
+	private Player partner;
+	// maybe a team functio n - i wpuld prefer for teammates to be 0 and 1 in array
 	// but maybe no possible?
 	// do i need login functions?
 
@@ -221,4 +222,49 @@ public class Player {
 		return "{\n\t\"player_name\": " + userName + "\"\n}" ;
 	}
 
+	/**
+     * Finds a partner for the player within the same team.
+     *
+     * @param players List of players to search for a partner.
+     * @return Partner player if found, otherwise null.
+     */
+    public Player findPartner(List<Player> players) {
+        for (Player player : players) {
+            if (!player.equals(this) && player.isInSameTeam(this)) {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Checks if the player is in the same team as another player.
+     *
+     * @param otherPlayer Player to compare with.
+     * @return True if both players are in the same team, otherwise false.
+     */
+    public boolean isInSameTeam(Player otherPlayer) {
+        // Logic to determine if players are in the same team
+        // This could involve checking some team-related properties or methods
+        // For simplicity, let's assume players are in the same team if their usernames start with the same letter
+        return this.userName.charAt(0) == otherPlayer.userName.charAt(0);
+    }
+
+	/**
+     * Setter for the partner of the player.
+     *
+     * @param partner The partner player.
+     */
+    public void setPartner(Player partner) {
+        this.partner = partner;
+    }
+
+    /**
+     * Getter for the partner of the player.
+     *
+     * @return The partner player if set, otherwise null.
+     */
+    public Player getPartner() {
+        return partner;
+    }
 }
