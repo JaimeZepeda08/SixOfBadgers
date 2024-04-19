@@ -6,6 +6,7 @@ import Hand from "../../components/Hand";
 import Card from "../../components/Card";
 import './css_files_game/buttonStyles.css';
 import { useSocket } from "@/lib/useSocket";
+import MessagePanel from "../../components/MessagePanel"
 
 
 /**
@@ -20,10 +21,6 @@ import { useSocket } from "@/lib/useSocket";
  * @returns {JSX.Element} The Game component, which includes player hands, trump suit, and other game elements.
  */
 export default function Page() {
-  const socket = useSocket();
-
-  const [username, setUsername] = useState<string>("");
-  const [players2, setPlayers2] = useState<string[]>([]);
 
   // fetch initial data
   // useEffect(() => {
@@ -66,6 +63,13 @@ export default function Page() {
   //     socket.removeEventListener("message", onMessage);
   //   };
   // }, [socket, onMessage]);
+
+  // create socket hook
+  const socket = useSocket();
+
+  // states for all player names as well as this clients name
+  const [username, setUsername] = useState<string>("");
+  const [players2, setPlayers2] = useState<string[]>([]);
 
   // State variable to hold the player's hand, initialized with dummy data
   const [playerHand, setPlayerHand] = useState(
@@ -141,16 +145,22 @@ export default function Page() {
     { suit: "?", value: "?" },
   ];
 
-  // typing for player identifier to help manage tooltip
-  type PlayerIdentifier = "player1" | "player2" | "player3" | "player4";
-
   // Parse the player's hand JSON string into an object
   const cards = JSON.parse(playerHand);
 
+  // case statements for handling incoming messages 
   const onMessage = useCallback((message: MessageEvent) => {
     const json_response = JSON.parse(message.data);
 
-    if (json_response.header === "currentPlayer") {
+    if(json_response.header == "players") {
+      setPlayers2(json_response.content);
+    }
+
+    if(json_response.header === "userName") {
+      setUsername(json_response.content);
+    }
+
+    if(json_response.header === "currentPlayer") {
       setCurrentPlayerTurn(json_response.content);
       showTurnNotification(json_response.content);
     }
@@ -173,6 +183,7 @@ export default function Page() {
 
   }, []);
 
+  // hook for grabbing messages being transmitted
   useEffect(() => {
     socket.addEventListener("message", onMessage);
     return () => {
@@ -181,10 +192,15 @@ export default function Page() {
   }, [socket, onMessage]);
 
   // notification handler given by current player message
-  const showTurnNotification = (player: PlayerIdentifier) => {
+  const showTurnNotification = (player: string) => {
     setTurnNotification({ show: true, player });
     setTimeout(() => setTurnNotification({ show: false, player: "" }), 1000);  // Hide the popup after 1 second
   };
+
+  // useEffect hook to trigger turn notification when currentPlayerTurn changes
+  useEffect(() => {
+    showTurnNotification(currentPlayerTurn);
+  }, [currentPlayerTurn]);
 
   // hook to correctly show updated selected card
   useEffect(() => {
@@ -196,7 +212,7 @@ export default function Page() {
   }, [selectedCard]);
 
   // based on which name we are hovering that tooltip will be visible
-  const toggleTooltip = (player: PlayerIdentifier) => {
+  const toggleTooltip = (player: string) => {
     setTooltipVisible((prev) => ({ ...prev, [player]: !prev[player] }));
   };
 
@@ -215,6 +231,7 @@ export default function Page() {
     console.log("Remove option of touching others cards");
   };
 
+  // submits selected card to play
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if(selectedCard !== null) {
@@ -228,7 +245,7 @@ export default function Page() {
         {/* Conditional rendering for turn notification */}
         {turnNotification.show && (
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-            <div className="p-6 text-lg text-black bg-red-500 rounded-lg" role="alert">
+            <div className="p-6 text-lg text-black rounded-lg" style={{background: 'linear-gradient(to right, red, orange)'}} role="alert">
               It's {turnNotification.player}'s turn!
             </div>
           </div>
@@ -244,8 +261,8 @@ export default function Page() {
           <Hand cards={cards} onCardSelect={handleCardSelect} />
           <div className="text-center mt-5">
             <div
-              onMouseEnter={() => toggleTooltip("player1")}
-              onMouseLeave={() => toggleTooltip("player1")}
+              onMouseEnter={() => toggleTooltip(players.player1.name)}
+              onMouseLeave={() => toggleTooltip(players.player1.name)}
               className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
             >
               {players.player1.name}
@@ -272,8 +289,8 @@ export default function Page() {
             style={{ transform: "rotate(-90deg)" }}
           >
             <div
-              onMouseEnter={() => toggleTooltip("player2")}
-              onMouseLeave={() => toggleTooltip("player2")}
+              onMouseEnter={() => toggleTooltip(players.player2.name)}
+              onMouseLeave={() => toggleTooltip(players.player2.name)}
               className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
             >
               {players.player2.name}
@@ -297,8 +314,8 @@ export default function Page() {
             style={{ transform: "rotate(-180deg)" }}
           >
             <div
-              onMouseEnter={() => toggleTooltip("player3")}
-              onMouseLeave={() => toggleTooltip("player3")}
+              onMouseEnter={() => toggleTooltip(players.player3.name)}
+              onMouseLeave={() => toggleTooltip(players.player3.name)}
               className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
             >
               {players.player3.name}
@@ -325,8 +342,8 @@ export default function Page() {
             style={{ transform: "rotate(90deg)" }}
           >
             <div
-              onMouseEnter={() => toggleTooltip("player4")}
-              onMouseLeave={() => toggleTooltip("player4")}
+              onMouseEnter={() => toggleTooltip(players.player4.name)}
+              onMouseLeave={() => toggleTooltip(players.player4.name)}
               className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
             >
               {players.player4.name}
@@ -379,13 +396,15 @@ export default function Page() {
             transform: "translateY(-50%)",
           }}
         >
+          {/* players hands */}
           <Card suit="CLUBS" value="1" isSelected={false} />
           <Card suit="SPADES" value="2" isSelected={false} />
           <Card suit="DIAMONDS" value="3" isSelected={false} />
           <Card suit="HEARTS" value="4" isSelected={false} />
         </div>
       </div>
-      {/* <MessagePanel /> */}
+
+      <MessagePanel/>
     </div>
   );
 }
