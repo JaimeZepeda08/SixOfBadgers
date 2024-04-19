@@ -45,6 +45,7 @@ const Card = ({ suit, value, isSelected }: Card) => {
       <img
         src="/card_back.png"
         className="border border-black rounded-lg h-[7.5rem] w-20 shadow-sm"
+        alt="Back of badger card"
       />
     );
   }

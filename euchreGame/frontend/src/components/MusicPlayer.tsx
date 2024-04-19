@@ -30,7 +30,7 @@ const MusicPlayer = ({ src }: MusicPlayerProps) => {
         audio.pause(); // If isPlaying is false, pause the audio
       }
     }
-  }, [isPlaying]); // Run this effect whenever isPlaying changes
+  }, [isPlaying, audioRef]); // Run this effect whenever isPlaying changes
 
   // Function to toggle the playing state
   const togglePlay = () => {

@@ -57,9 +57,9 @@ export default function Page() {
   const socket = useSocket();
 
   // fetch initial data
-  useEffect(() => {
-    socket.send(JSON.stringify({ header: "setup" }));
-  }, []);
+  // useEffect(() => {
+  //   socket.send(JSON.stringify({ header: "setup" }));
+  // }, []);
 
   // states for all player names as well as this clients name
   const [username, setUsername] = useState<string>("");
@@ -193,7 +193,9 @@ export default function Page() {
 
   // useEffect hook to trigger turn notification when currentPlayerTurn changes
   useEffect(() => {
-    showTurnNotification(currentPlayerTurn);
+    if(currentPlayerTurn == username) {
+      showTurnNotification(currentPlayerTurn);
+    }
   }, [currentPlayerTurn]);
 
   // hook to correctly show updated selected card
@@ -240,7 +242,7 @@ export default function Page() {
         {turnNotification.show && (
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
             <div className="p-6 text-lg text-black rounded-lg" style={{background: 'linear-gradient(to right, red, orange)'}} role="alert">
-              It's {turnNotification.player}'s turn!
+              It Is Your Turn!
             </div>
           </div>
         )}
