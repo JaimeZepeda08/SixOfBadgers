@@ -76,6 +76,7 @@ export default function Page() {
           key={index}
           className="border-t border-2 border-black bg-red-300 text-black py-2 px-4"
         >
+          {/* display data */}
           <div className="grid grid-cols-5">
             <div>{game.gameNumber}</div>
             <div>{game.date}</div>

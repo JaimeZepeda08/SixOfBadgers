@@ -1,5 +1,11 @@
 import React from "react";
 
+/**
+ * Page Component
+ * 
+ * This component represents a simple page layout for the "Singleplayer" mode.
+ * It includes a red-colored background with a heading "Singleplayer".
+ */
 export default function Page() {
   return (
     <div

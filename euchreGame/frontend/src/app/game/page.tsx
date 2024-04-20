@@ -1,17 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 import {
   getPlayerHand,
   submitSelectedCard,
   getPlayers,
   getTrumpSuit,
+  getCurrentPlayer,
 } from "@/lib/gameService";
 import Hand from "../../components/Hand";
 import Card from "../../components/Card";
 import "./css_files_game/buttonStyles.css";
-import MessagePanel from "@/components/MessagePanel";
 import { useSocket } from "@/lib/useSocket";
+import MessagePanel from "../../components/MessagePanel";
+import Opponent from "./game_components/Opponent";
+import CardSubmissionForm from "./game_components/CardSubmissionForm";
+import TrumpSuit from "./game_components/TrumpSuit";
+import Link from "next/link";
+import GameModal from "./game_components/GameModal";
 
 /**
  * Game component representing the main page of the game. Each person
@@ -25,55 +31,22 @@ import { useSocket } from "@/lib/useSocket";
  * @returns {JSX.Element} The Game component, which includes player hands, trump suit, and other game elements.
  */
 export default function Page() {
+  // create socket hook
   const socket = useSocket();
 
-  const [username, setUsername] = useState<string>("");
-  const [players2, setPlayers2] = useState<string[]>([]);
+  // fetch initial data
+  // useEffect(() => {
+  //   socket.send(JSON.stringify({ header: "setup" }));
+  // }, []);
 
-  // tell server that the client has loaded the screen and is ready to recieve data
-  useEffect(() => {
-    socket.send(JSON.stringify({ header: "ready" }));
-  }, []);
-
-  const onMessage = useCallback((message: MessageEvent) => {
-    const json_response = JSON.parse(message.data);
-    if (json_response.header === "client") {
-      console.log(json_response.id); // debug
-      setUsername(json_response.id);
-    }
-    if (json_response.header === "player") {
-      console.log(json_response.hand); // debug
-    }
-    if (json_response.header === "session") {
-      console.log(json_response.players); // debug
-      const playerString = json_response.players;
-      let playerList = playerString
-        .substring(1, playerString.length - 1)
-        .split(",");
-      // sort players (the player corresponding to this client should go first)
-      playerList = sortPlayerList(playerList, username);
-      setPlayers2(playerList);
-    }
-  }, []);
-
-  function sortPlayerList(playerList: string[], username: string) {
-    if (!playerList.includes(username)) {
-      return playerList;
-    }
-
-    const ownIndex = playerList.indexOf(username);
-    const sortedList = playerList
-      .slice(ownIndex)
-      .concat(playerList.slice(0, ownIndex));
-    return sortedList;
-  }
-
-  useEffect(() => {
-    socket.addEventListener("message", onMessage);
-    return () => {
-      socket.removeEventListener("message", onMessage);
-    };
-  }, [socket, onMessage]);
+  // states for all player names as well as this clients name
+  const [username, setUsername] = useState<string>("player1");
+  const [players2, setPlayers2] = useState<string[]>([
+    "player1",
+    "player2",
+    "player3",
+    "player4",
+  ]);
 
   // State variable to hold the player's hand, initialized with dummy data
   const [playerHand, setPlayerHand] = useState(
@@ -123,6 +96,15 @@ export default function Page() {
     },
   });
 
+  // state to for current player (who is playing their card)
+  const [currentPlayerTurn, setCurrentPlayerTurn] = useState("player1");
+
+  // state to handle who recieves the notification
+  const [turnNotification, setTurnNotification] = useState({
+    show: false,
+    player: "player3",
+  });
+
   // state for which tooltip is active for a player
   const [tooltipVisible, setTooltipVisible] = useState({
     player1: false,
@@ -130,6 +112,9 @@ export default function Page() {
     player3: false,
     player4: false,
   });
+
+  // state for score to win a round
+  const [pointsToWin, setPointsToWin] = useState(0);
 
   // placeholder for opponents cards
   const opponents = [
@@ -140,50 +125,82 @@ export default function Page() {
     { suit: "?", value: "?" },
   ];
 
-  // typing for player identifier to help manage tooltip
-  type PlayerIdentifier = "player1" | "player2" | "player3" | "player4";
-
   // Parse the player's hand JSON string into an object
   const cards = JSON.parse(playerHand);
 
-  // useEffect hooks to fetch player's hand, trump suit, and players' information when the component mounts
-  useEffect(() => {
-    async function fetchPlayers() {
-      const players = await getPlayers();
-      if (players != null) {
-        setPlayerHand(players);
-      } else {
-        console.error("Players are undefined");
-      }
+  // case statements for handling incoming messages
+  const onMessage = useCallback((message: MessageEvent) => {
+    const json_response = JSON.parse(message.data);
+
+    if (json_response.header === "players") {
+      const playerString = json_response.content;
+      let playerList = playerString
+        .substring(1, playerString.length - 1)
+        .split(",");
+      // sort players (the player corresponding to this client should go first)
+      playerList = sortPlayerList(playerList, username);
+      setPlayers2(playerList);
     }
-    getPlayers();
+
+    if (json_response.header === "userName") {
+      setUsername(json_response.content);
+    }
+
+    if (json_response.header === "currentPlayer") {
+      setCurrentPlayerTurn(json_response.content);
+      showTurnNotification(json_response.content);
+    }
+
+    if (json_response.header === "playersData") {
+      setPlayers(json_response.content);
+    }
+
+    if (json_response.header === "playerHand") {
+      setPlayerHand(json_response.content);
+    }
+
+    if (json_response.header === "trumpSuit") {
+      setTrumpSuit(json_response.content);
+    }
+
+    if (json_response.header === "pointsToWin") {
+      setPointsToWin(json_response.content);
+    }
   }, []);
 
+  // hook for grabbing messages being transmitted
   useEffect(() => {
-    async function fetchTrumpSuit() {
-      const trumpSuit = await getTrumpSuit();
-      if (trumpSuit != null) {
-        setTrumpSuit(trumpSuit);
-      } else {
-        console.error("Trump suit is undefined");
-      }
-    }
-    getTrumpSuit();
-  }, []);
+    socket.addEventListener("message", onMessage);
+    return () => {
+      socket.removeEventListener("message", onMessage);
+    };
+  }, [socket, onMessage]);
 
-  useEffect(() => {
-    async function fetchPlayerHand() {
-      // Fetch player's hand from the server
-      const hand = await getPlayerHand();
-      if (hand && hand.length > 0) {
-        // Update state with the fetched player's hand
-        setPlayerHand(hand);
-      } else {
-        console.error("Player hand is undefined");
-      }
+  // sorts usernames so that the clients name comes first in the list
+  function sortPlayerList(playerList: string[], username: string) {
+    if (!playerList.includes(username)) {
+      return playerList;
     }
-    fetchPlayerHand();
-  }, []);
+
+    const ownIndex = playerList.indexOf(username);
+    const sortedList = playerList
+      .slice(ownIndex)
+      .concat(playerList.slice(0, ownIndex));
+    return sortedList;
+  }
+
+  // notification handler given by current player message
+  const showTurnNotification = (player: string) => {
+    setTurnNotification({ show: true, player });
+    setTimeout(() => setTurnNotification({ show: false, player: "" }), 2000); // Hide the popup after 1 second
+  };
+
+  // useEffect hook to trigger turn notification when currentPlayerTurn changes
+  useEffect(() => {
+    if (currentPlayerTurn == username) {
+      showTurnNotification(currentPlayerTurn);
+    }
+  }, [currentPlayerTurn]);
 
   // hook to correctly show updated selected card
   useEffect(() => {
@@ -195,7 +212,7 @@ export default function Page() {
   }, [selectedCard]);
 
   // based on which name we are hovering that tooltip will be visible
-  const toggleTooltip = (player: PlayerIdentifier) => {
+  const toggleTooltip = (player: string) => {
     setTooltipVisible((prev) => ({ ...prev, [player]: !prev[player] }));
   };
 
@@ -214,15 +231,31 @@ export default function Page() {
     console.log("Remove option of touching others cards");
   };
 
+  // submits selected card to play
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // if (selectedCard && selectedCard.suit !== "?" && selectedCard.value !== "?") {
     if (selectedCard !== null) {
-      const formData = new FormData();
-      formData.append("suit", selectedCard.suit);
-      formData.append("value", selectedCard.value);
-      await submitSelectedCard(formData);
+      console.log(selectedCard.suit + " " + selectedCard.value);
+      socket.send(
+        JSON.stringify({ suit: selectedCard.suit, value: selectedCard.value })
+      );
     }
+  };
+
+  // state to handle the modal when the game finishes
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const isGameOver = Object.values(players).some(
+      (player) => parseInt(player.score) === pointsToWin
+    );
+    if (isGameOver) {
+      openModal();
+    }
+  }, [players, pointsToWin]);
+
+  const openModal = () => {
+    setIsOpen(true);
   };
 
   return (
@@ -230,14 +263,26 @@ export default function Page() {
       className="h-screen flex justify-center items-center relative bg-cover bg-center"
       style={{ backgroundImage: 'url("/textures/wood3.jpg")' }}
     >
+      {/* Conditional rendering for turn notification */}
+      {turnNotification.show && (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+          <div
+            className="p-6 text-lg text-black rounded-lg"
+            style={{ background: "linear-gradient(to right, red, orange)" }}
+            role="alert"
+          >
+            It Is Your Turn!
+          </div>
+        </div>
+      )}
+
       <div
         className="flex justify-center items-center relative rounded-2xl"
         style={{
-          width: "80%",
+          width: "90%",
           height: "85%",
           backgroundColor: "rgba(74, 160, 74)",
           border: "3px solid #c0c0c0",
-          zoom: 0.8,
         }}
       >
         {/* Render player 1 */}
@@ -248,8 +293,8 @@ export default function Page() {
           <Hand cards={cards} onCardSelect={handleCardSelect} />
           <div className="text-center mt-5">
             <div
-              onMouseEnter={() => toggleTooltip("player1")}
-              onMouseLeave={() => toggleTooltip("player1")}
+              onMouseEnter={() => toggleTooltip(players.player1.name)}
+              onMouseLeave={() => toggleTooltip(players.player1.name)}
               className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
             >
               {players.player1.name}
@@ -266,112 +311,61 @@ export default function Page() {
         </div>
 
         {/* Render player 2 */}
-        <div
-          className="absolute left-10 pb-10"
-          style={{ transform: "rotate(90deg)" }}
-        >
-          <Hand cards={opponents} onCardSelect={handleOppSelect} />
-          <div
-            className="text-center mt-10"
-            style={{ transform: "rotate(-90deg)" }}
-          >
-            <div
-              onMouseEnter={() => toggleTooltip("player2")}
-              onMouseLeave={() => toggleTooltip("player2")}
-              className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
-            >
-              {players.player2.name}
-              {tooltipVisible.player2 && (
-                <div className="absolute z-10 w-40 p-2 -mt-30 left-1/2 transform -translate-x-1/2 text-white bg-gray-900 rounded-lg shadow-md">
-                  Wins: {players.player2.wins}
-                  <br />
-                  Games Played: {players.player2.gamesPlayed}
-                </div>
-              )}
-            </div>
-            <h2 className="text-white mt-2">Score: {players.player2.score}</h2>
-          </div>
-        </div>
+        <Opponent
+          name={players2[1]}
+          player={{
+            ...players[players2[1]],
+            position: "left-10 pb-10",
+            rotation: 90,
+            key: players2[1],
+          }}
+          cards={opponents}
+          onCardSelect={handleOppSelect}
+          tooltipVisible={tooltipVisible}
+          toggleTooltip={toggleTooltip}
+          padding="pr-10"
+        />
 
         {/* Render player 3 */}
-        <div className="absolute top-5" style={{ transform: "rotate(180deg)" }}>
-          <Hand cards={opponents} onCardSelect={handleOppSelect} />
-          <div
-            className="text-center mt-5"
-            style={{ transform: "rotate(-180deg)" }}
-          >
-            <div
-              onMouseEnter={() => toggleTooltip("player3")}
-              onMouseLeave={() => toggleTooltip("player3")}
-              className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
-            >
-              {players.player3.name}
-              {tooltipVisible.player3 && (
-                <div className="absolute z-10 w-40 p-2 -mt-30 left-1/2 transform -translate-x-1/2 text-white bg-gray-900 rounded-lg shadow-md">
-                  Wins: {players.player3.wins}
-                  <br />
-                  Games Played: {players.player3.gamesPlayed}
-                </div>
-              )}
-            </div>
-            <h2 className="text-white mt-2">Score: {players.player3.score}</h2>
-          </div>
-        </div>
+        <Opponent
+          name={players2[2]}
+          player={{
+            ...players[players2[2]],
+            position: "top-5",
+            rotation: 180,
+            key: "player3",
+          }}
+          cards={opponents}
+          onCardSelect={handleOppSelect}
+          tooltipVisible={tooltipVisible}
+          toggleTooltip={toggleTooltip}
+          padding=""
+        />
 
         {/* Render player 4 */}
-        <div
-          className="absolute right-10 pb-10"
-          style={{ transform: "rotate(270deg)" }}
-        >
-          <Hand cards={opponents} onCardSelect={handleOppSelect} />
-          <div
-            className="text-center mt-10"
-            style={{ transform: "rotate(90deg)" }}
-          >
-            <div
-              onMouseEnter={() => toggleTooltip("player4")}
-              onMouseLeave={() => toggleTooltip("player4")}
-              className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
-            >
-              {players.player4.name}
-              {tooltipVisible.player4 && (
-                <div className="absolute z-10 w-40 p-2 -mt-30 left-1/2 transform -translate-x-1/2 text-white bg-gray-900 rounded-lg shadow-md">
-                  Wins: {players.player4.wins}
-                  <br />
-                  Games Played: {players.player4.gamesPlayed}
-                </div>
-              )}
-            </div>
-            <h2 className="text-white mt-2">Score: {players.player4.score}</h2>
-          </div>
-        </div>
+        <Opponent
+          name={players2[3]}
+          player={{
+            ...players[players2[3]],
+            position: "right-10 pb-10",
+            rotation: 270,
+            key: "player4",
+          }}
+          cards={opponents}
+          onCardSelect={handleOppSelect}
+          tooltipVisible={tooltipVisible}
+          toggleTooltip={toggleTooltip}
+          padding="pl-10"
+        />
 
         {/* Form for card submission */}
-        <form onSubmit={handleSubmit} className="absolute bottom-0 right-0">
-          <button
-            type="submit"
-            className={`baseButton ${
-              !selectedCard ? "disabled" : ""
-            } mb-20 mr-80`}
-            disabled={!selectedCard}
-            onClick={() => console.log("Submit action")}
-          >
-            Play Card
-          </button>
-        </form>
+        <CardSubmissionForm
+          handleSubmit={handleSubmit}
+          selectedCard={selectedCard}
+        />
 
         {/* Render Trump Suit */}
-        <div
-          style={{
-            position: "absolute",
-            top: "47.5%",
-            right: "calc(50% + 200px)",
-            transform: "translateY(-50%)",
-          }}
-        >
-          <h1 className="font-bold font-germania pb-3">Trump Suit</h1>
-          <Card suit={trumpSuit} value="" isSelected={false} />
-        </div>
+        <TrumpSuit trumpSuit={"CLUBS"} />
 
         {/* Render played cards */}
         <div
@@ -383,12 +377,17 @@ export default function Page() {
             transform: "translateY(-50%)",
           }}
         >
+          {/* players hands */}
           <Card suit="CLUBS" value="1" isSelected={false} />
           <Card suit="SPADES" value="2" isSelected={false} />
           <Card suit="DIAMONDS" value="3" isSelected={false} />
           <Card suit="HEARTS" value="4" isSelected={false} />
         </div>
       </div>
+
+      {/* modal for when the game finishes */}
+      <GameModal isOpen={isOpen} />
+
       <MessagePanel />
     </div>
   );
