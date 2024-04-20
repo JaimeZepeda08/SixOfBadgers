@@ -6,6 +6,7 @@ import org.springframework.web.socket.WebSocketSession;
 public class Player extends Client {
 	public ArrayList<Card> hand;
 	private int points;
+	private Player partner;
 
 	/**
 	 * Constructor class for the Player class.
@@ -196,52 +197,5 @@ public class Player extends Client {
 				+ "\"header\" : \"player\", "
 				+ "\"hand\" : " + "\"" + playerHandToString() + "\""
 				+ "}";
-	}
-
-	/**
-	 * Finds a partner for the player within the same team.
-	 *
-	 * @param players List of players to search for a partner.
-	 * @return Partner player if found, otherwise null.
-	 */
-	public Player findPartner(List<Player> players) {
-		for (Player player : players) {
-			if (!player.equals(this) && player.isInSameTeam(this)) {
-				return player;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Checks if the player is in the same team as another player.
-	 *
-	 * @param otherPlayer Player to compare with.
-	 * @return True if both players are in the same team, otherwise false.
-	 */
-	public boolean isInSameTeam(Player otherPlayer) {
-		// Logic to determine if players are in the same team
-		// This could involve checking some team-related properties or methods
-		// For simplicity, let's assume players are in the same team if their usernames
-		// start with the same letter
-		return this.userName.charAt(0) == otherPlayer.userName.charAt(0);
-	}
-
-	/**
-	 * Setter for the partner of the player.
-	 *
-	 * @param partner The partner player.
-	 */
-	public void setPartner(Player partner) {
-		this.partner = partner;
-	}
-
-	/**
-	 * Getter for the partner of the player.
-	 *
-	 * @return The partner player if set, otherwise null.
-	 */
-	public Player getPartner() {
-		return partner;
 	}
 }

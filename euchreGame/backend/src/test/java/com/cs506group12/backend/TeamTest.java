@@ -1,12 +1,11 @@
-// package com.cs506group12.backend;
+package com.cs506group12.backend;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // import java.util.ArrayList;
-
-// import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Test;
 
 import com.cs506group12.backend.models.Card;
 import com.cs506group12.backend.models.EuchreGame;
@@ -154,67 +153,40 @@ import org.json.*;
 // assertEquals(false, p.hasSuitCard(Card.SUIT.CLUBS));
 // }
 
-	/**
-	 * 
-	 * @param json string to check if json
-	 * @return true if stirng is a valid json- false otherwise
-	 */
-	public boolean isValidJson(String json) {
-		try {
-			new JSONObject(json);
-		} catch (JSONException e) {
-			return false;
-		}
-		return true;
-	}
-	/**
-	 * test that the handAsJson works
-	 */
-	@Test
-	public void testHandAsJson(){
-		Player p = new Player("TEST");
-		p.hand.add(new Card(Card.SUIT.SPADES, 13));
-		p.hand.add(new Card(Card.SUIT.DIAMONDS, 14));
-		p.hand.add(new Card(Card.SUIT.DIAMONDS, 11));
-		p.hand.add(new Card(Card.SUIT.SPADES, 9));
-		p.hand.add(new Card(Card.SUIT.HEARTS, 10));
-		System.out.println(p.handAsJson());
-		String pHandAsJson = p.handAsJson();
-		//assertEquals("" , p.handAsJson());
-		assertTrue(isValidJson(pHandAsJson));  // tests that it is valid josn 
+/**
+ * 
+ * @param json string to check if json
+ * @return true if stirng is a valid json- false otherwise
+ */
+public boolean isValidJson(String json){try{new JSONObject(json);}catch(JSONException e){return false;}return true;}
+/**
+ * test that the handAsJson works
+ */
+@Test public void testHandAsJson(){Player p=new Player("TEST");p.hand.add(new Card(Card.SUIT.SPADES,13));p.hand.add(new Card(Card.SUIT.DIAMONDS,14));p.hand.add(new Card(Card.SUIT.DIAMONDS,11));p.hand.add(new Card(Card.SUIT.SPADES,9));p.hand.add(new Card(Card.SUIT.HEARTS,10));System.out.println(p.handAsJson());String pHandAsJson=p.handAsJson();
+// assertEquals("" , p.handAsJson());
+assertTrue(isValidJson(pHandAsJson)); // tests that it is valid josn
 
-
-	}
-
-	@Test
-    void testGameInitialization() {
-        Player player1 = new Player("Alice");
-        Player player2 = new Player("Bob");
-        Player player3 = new Player("Charlie");
-        Player player4 = new Player("David");
-        
-        ArrayList<Player> players = new ArrayList<>();
-        players.add(player1);
-        players.add(player2);
-        players.add(player3);
-        players.add(player4);
-        
-        EuchreGame game = new EuchreGame();
-        
-        assertNotNull(game);
-        // Add more assertions to test game initialization
-    }
-
-	public class TeamTest {
-		@Test
-		void testTeamInitialization() {
-			Player player1 = new Player("Alice");
-			Player player2 = new Player("Bob");
-			
-			ArrayList<Player> players = new ArrayList<>();
-			players.add(player1);
-			players.add(player2);
-			assertNotNull(players);
-		}
-	}
 }
+
+@Test void testGameInitialization(){Player player1=new Player("Alice");Player player2=new Player("Bob");Player player3=new Player("Charlie");Player player4=new Player("David");
+
+ArrayList<Player>players=new ArrayList<>();players.add(player1);players.add(player2);players.add(player3);players.add(player4);
+
+EuchreGame game=new EuchreGame();
+
+assertNotNull(game);
+// Add more assertions to test game initialization
+}
+
+public class TeamTest {
+	@Test
+	void testTeamInitialization() {
+		Player player1 = new Player("Alice");
+		Player player2 = new Player("Bob");
+
+		ArrayList<Player> players = new ArrayList<>();
+		players.add(player1);
+		players.add(player2);
+		assertNotNull(players);
+	}
+}}
