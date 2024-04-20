@@ -10,6 +10,8 @@ import MessagePanel from "../../components/MessagePanel"
 import Opponent from "./game_components/Opponent";
 import CardSubmissionForm from "./game_components/CardSubmissionForm";
 import TrumpSuit from "./game_components/TrumpSuit";
+import Link from "next/link";
+import GameModal from "./game_components/GameModal";
 
 
 /**
@@ -100,7 +102,8 @@ export default function Page() {
   });
 
   // state for score to win a round
-  const [pointsToWin, setPointsToWin] = useState(0);
+  const [pointsToWin, setPointsToWin] = useState(4);
+
 
   // placeholder for opponents cards
   const opponents = [
@@ -227,6 +230,20 @@ export default function Page() {
     }
   };
 
+  // state to handle the modal when the game finishes
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const isGameOver = Object.values(players).some(player => parseInt(player.score) === pointsToWin);
+    if (isGameOver) {
+      openModal();
+    }
+  }, [players, pointsToWin]);
+
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
   return (
     <div className="h-screen flex justify-center items-center relative bg-cover bg-center" style={{ backgroundImage: 'url("/textures/wood3.jpg")' }}>
 
@@ -322,6 +339,9 @@ export default function Page() {
           <Card suit="HEARTS" value="4" isSelected={false} />
         </div>
       </div>
+
+      {/* modal for when the game finishes */}
+      <GameModal isOpen={isOpen} />
 
       <MessagePanel/>
     </div>
