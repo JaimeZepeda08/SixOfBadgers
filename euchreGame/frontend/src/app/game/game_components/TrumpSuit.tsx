@@ -1,6 +1,13 @@
 import React from "react";
 import Card from "@/components/Card";
 
+/**
+ * TrumpSuit component.
+ * 
+ * @param {object} props - Component props.
+ * @param {string} props.trumpSuit - The current trump suit.
+ * @returns {JSX.Element} TrumpSuit component.
+ */
 const TrumpSuit = ({ trumpSuit }) => {
   return (
     <div

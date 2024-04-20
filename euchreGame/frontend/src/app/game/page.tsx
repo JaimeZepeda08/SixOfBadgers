@@ -102,7 +102,7 @@ export default function Page() {
   });
 
   // state for score to win a round
-  const [pointsToWin, setPointsToWin] = useState(4);
+  const [pointsToWin, setPointsToWin] = useState(0);
 
 
   // placeholder for opponents cards
