@@ -7,6 +7,9 @@ import Card from "../../components/Card";
 import './css_files_game/buttonStyles.css';
 import { useSocket } from "@/lib/useSocket";
 import MessagePanel from "../../components/MessagePanel"
+import Opponent from "./game_components/Opponent";
+import CardSubmissionForm from "./game_components/CardSubmissionForm";
+import TrumpSuit from "./game_components/TrumpSuit";
 
 
 /**
@@ -22,37 +25,6 @@ import MessagePanel from "../../components/MessagePanel"
  */
 export default function Page() {
 
-  // const onMessage = useCallback((message: MessageEvent) => {
-  //   const json_response = JSON.parse(message.data);
-  //   if (json_response.header === "username") {
-  //     console.log(json_response.content);
-  //     setUsername(json_response.content);
-  //   }
-  //   if (json_response.header === "players") {
-  //     const playerString = json_response.content;
-  //     let playerList = playerString
-  //       .substring(1, playerString.length - 1)
-  //       .split(",");
-  //     // sort players (the player corresponding to this client should go first)
-  //     playerList = sortPlayerList(playerList, username);
-  //     setPlayers2(playerList);
-  //     console.log(players2.toString());
-  //   }
-  // }, []);
-
-  // function sortPlayerList(playerList: string[], username: string) {
-  //   if (!playerList.includes(username)) {
-  //     return playerList;
-  //   }
-
-  //   const ownIndex = playerList.indexOf(username);
-  //   const sortedList = playerList
-  //     .slice(ownIndex)
-  //     .concat(playerList.slice(0, ownIndex));
-  //   return sortedList;
-  // }
-
-
   // create socket hook
   const socket = useSocket();
 
@@ -62,8 +34,8 @@ export default function Page() {
   // }, []);
 
   // states for all player names as well as this clients name
-  const [username, setUsername] = useState<string>("");
-  const [players2, setPlayers2] = useState<string[]>([]);
+  const [username, setUsername] = useState<string>("player1");
+  const [players2, setPlayers2] = useState<string[]>(["player1", "player2", "player3", "player4"]);
 
   // State variable to hold the player's hand, initialized with dummy data
   const [playerHand, setPlayerHand] = useState(
@@ -146,8 +118,14 @@ export default function Page() {
   const onMessage = useCallback((message: MessageEvent) => {
     const json_response = JSON.parse(message.data);
 
-    if(json_response.header == "players") {
-      setPlayers2(json_response.content);
+    if (json_response.header === "players") {
+      const playerString = json_response.content;
+      let playerList = playerString
+        .substring(1, playerString.length - 1)
+        .split(",");
+      // sort players (the player corresponding to this client should go first)
+      playerList = sortPlayerList(playerList, username);
+      setPlayers2(playerList);
     }
 
     if(json_response.header === "userName") {
@@ -185,10 +163,23 @@ export default function Page() {
     };
   }, [socket, onMessage]);
 
+  // sorts usernames so that the clients name comes first in the list
+  function sortPlayerList(playerList: string[], username: string) {
+    if (!playerList.includes(username)) {
+      return playerList;
+    }
+
+    const ownIndex = playerList.indexOf(username);
+    const sortedList = playerList
+      .slice(ownIndex)
+      .concat(playerList.slice(0, ownIndex));
+    return sortedList;
+  }
+
   // notification handler given by current player message
   const showTurnNotification = (player: string) => {
     setTurnNotification({ show: true, player });
-    setTimeout(() => setTurnNotification({ show: false, player: "" }), 1000);  // Hide the popup after 1 second
+    setTimeout(() => setTurnNotification({ show: false, player: "" }), 2000);  // Hide the popup after 1 second
   };
 
   // useEffect hook to trigger turn notification when currentPlayerTurn changes
@@ -231,6 +222,7 @@ export default function Page() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if(selectedCard !== null) {
+        console.log(selectedCard.suit + " " + selectedCard.value);
         socket.send(JSON.stringify({ suit: selectedCard.suit, value: selectedCard.value }));
     }
   };
@@ -275,112 +267,43 @@ export default function Page() {
         </div>
 
         {/* Render player 2 */}
-        <div
-          className="absolute left-10 pb-10"
-          style={{ transform: "rotate(90deg)" }}
-        >
-          <Hand cards={opponents} onCardSelect={handleOppSelect} />
-          <div
-            className="text-center mt-10"
-            style={{ transform: "rotate(-90deg)" }}
-          >
-            <div
-              onMouseEnter={() => toggleTooltip(players.player2.name)}
-              onMouseLeave={() => toggleTooltip(players.player2.name)}
-              className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
-            >
-              {players.player2.name}
-              {tooltipVisible.player2 && (
-                <div className="absolute z-10 w-40 p-2 -mt-30 left-1/2 transform -translate-x-1/2 text-white bg-gray-900 rounded-lg shadow-md">
-                  Wins: {players.player2.wins}
-                  <br />
-                  Games Played: {players.player2.gamesPlayed}
-                </div>
-              )}
-            </div>
-            <h2 className="text-white mt-2">Score: {players.player2.score}</h2>
-          </div>
-        </div>
+        <Opponent 
+          name={players2[1]}
+          player={{...players[players2[1]], position: "left-10 pb-10", rotation: 90, key: players2[1]}}
+          cards={opponents}
+          onCardSelect={handleOppSelect}
+          tooltipVisible={tooltipVisible}
+          toggleTooltip={toggleTooltip}
+          padding="pr-10"
+        />
 
         {/* Render player 3 */}
-        <div className="absolute top-5" style={{ transform: "rotate(180deg)" }}>
-          <Hand cards={opponents} onCardSelect={handleOppSelect} />
-          <div
-            className="text-center mt-5"
-            style={{ transform: "rotate(-180deg)" }}
-          >
-            <div
-              onMouseEnter={() => toggleTooltip(players.player3.name)}
-              onMouseLeave={() => toggleTooltip(players.player3.name)}
-              className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
-            >
-              {players.player3.name}
-              {tooltipVisible.player3 && (
-                <div className="absolute z-10 w-40 p-2 -mt-30 left-1/2 transform -translate-x-1/2 text-white bg-gray-900 rounded-lg shadow-md">
-                  Wins: {players.player3.wins}
-                  <br />
-                  Games Played: {players.player3.gamesPlayed}
-                </div>
-              )}
-            </div>
-            <h2 className="text-white mt-2">Score: {players.player3.score}</h2>
-          </div>
-        </div>
+        <Opponent 
+          name={players2[2]}
+          player={{...players[players2[2]], position: "top-5", rotation: 180, key: "player3"}}
+          cards={opponents}
+          onCardSelect={handleOppSelect}
+          tooltipVisible={tooltipVisible}
+          toggleTooltip={toggleTooltip}
+          padding=""
+        />
 
         {/* Render player 4 */}
-        <div
-          className="absolute right-10 pb-10"
-          style={{ transform: "rotate(270deg)" }}
-        >
-          <Hand cards={opponents} onCardSelect={handleOppSelect} />
-          <div
-            className="text-center mt-10"
-            style={{ transform: "rotate(90deg)" }}
-          >
-            <div
-              onMouseEnter={() => toggleTooltip(players.player4.name)}
-              onMouseLeave={() => toggleTooltip(players.player4.name)}
-              className="inline-block bg-white rounded-full px-4 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer"
-            >
-              {players.player4.name}
-              {tooltipVisible.player4 && (
-                <div className="absolute z-10 w-40 p-2 -mt-30 left-1/2 transform -translate-x-1/2 text-white bg-gray-900 rounded-lg shadow-md">
-                  Wins: {players.player4.wins}
-                  <br />
-                  Games Played: {players.player4.gamesPlayed}
-                </div>
-              )}
-            </div>
-            <h2 className="text-white mt-2">Score: {players.player4.score}</h2>
-          </div>
-        </div>
+        <Opponent 
+          name={players2[3]}
+          player={{...players[players2[3]], position: "right-10 pb-10", rotation: 270, key: "player4"}}
+          cards={opponents}
+          onCardSelect={handleOppSelect}
+          tooltipVisible={tooltipVisible}
+          toggleTooltip={toggleTooltip}
+          padding="pl-10"
+        />
 
         {/* Form for card submission */}
-        <form onSubmit={handleSubmit} className="absolute bottom-0 right-0">
-          <button
-            type="submit"
-            className={`baseButton ${
-              !selectedCard ? "disabled" : ""
-            } mb-20 mr-80`}
-            disabled={!selectedCard}
-            onClick={() => console.log("Submit action")}
-          >
-            Play Card
-          </button>
-        </form>
+        <CardSubmissionForm handleSubmit={handleSubmit} selectedCard={selectedCard} />
 
         {/* Render Trump Suit */}
-        <div
-          style={{
-            position: "absolute",
-            top: "47.5%",
-            right: "calc(50% + 200px)",
-            transform: "translateY(-50%)",
-          }}
-        >
-          <h1 className="font-bold font-germania pb-3">Trump Suit</h1>
-          <Card suit={trumpSuit} value="" isSelected={false} />
-        </div>
+        <TrumpSuit trumpSuit={"CLUBS"} />
 
         {/* Render played cards */}
         <div
