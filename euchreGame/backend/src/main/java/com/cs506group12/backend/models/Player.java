@@ -6,7 +6,6 @@ import org.springframework.web.socket.WebSocketSession;
 public class Player extends Client {
 	public ArrayList<Card> hand;
 	private int points;
-	private Player partner;
 
 	/**
 	 * Constructor class for the Player class.
