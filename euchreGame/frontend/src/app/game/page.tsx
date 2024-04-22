@@ -1,18 +1,23 @@
 "use client";
 
 import { use, useCallback, useEffect, useState } from "react";
-import { getPlayerHand, submitSelectedCard, getPlayers, getTrumpSuit, getCurrentPlayer } from "@/lib/gameService";
+import {
+  getPlayerHand,
+  submitSelectedCard,
+  getPlayers,
+  getTrumpSuit,
+  getCurrentPlayer,
+} from "@/lib/gameService";
 import Hand from "../../components/Hand";
 import Card from "../../components/Card";
-import './css_files_game/buttonStyles.css';
+import "./css_files_game/buttonStyles.css";
 import { useSocket } from "@/lib/useSocket";
-import MessagePanel from "../../components/MessagePanel"
+import MessagePanel from "../../components/MessagePanel";
 import Opponent from "./game_components/Opponent";
 import CardSubmissionForm from "./game_components/CardSubmissionForm";
 import TrumpSuit from "./game_components/TrumpSuit";
 import Link from "next/link";
 import GameModal from "./game_components/GameModal";
-
 
 /**
  * Game component representing the main page of the game. Each person
@@ -26,7 +31,6 @@ import GameModal from "./game_components/GameModal";
  * @returns {JSX.Element} The Game component, which includes player hands, trump suit, and other game elements.
  */
 export default function Page() {
-
   // create socket hook
   const socket = useSocket();
 
@@ -37,7 +41,12 @@ export default function Page() {
 
   // states for all player names as well as this clients name
   const [username, setUsername] = useState<string>("player1");
-  const [players2, setPlayers2] = useState<string[]>(["player1", "player2", "player3", "player4"]);
+  const [players2, setPlayers2] = useState<string[]>([
+    "player1",
+    "player2",
+    "player3",
+    "player4",
+  ]);
 
   // State variable to hold the player's hand, initialized with dummy data
   const [playerHand, setPlayerHand] = useState(
@@ -91,7 +100,10 @@ export default function Page() {
   const [currentPlayerTurn, setCurrentPlayerTurn] = useState("player1");
 
   // state to handle who recieves the notification
-  const [turnNotification, setTurnNotification] = useState({ show: false, player: "player3" });
+  const [turnNotification, setTurnNotification] = useState({
+    show: false,
+    player: "player3",
+  });
 
   // state for which tooltip is active for a player
   const [tooltipVisible, setTooltipVisible] = useState({
@@ -103,7 +115,6 @@ export default function Page() {
 
   // state for score to win a round
   const [pointsToWin, setPointsToWin] = useState(0);
-
 
   // placeholder for opponents cards
   const opponents = [
@@ -117,7 +128,7 @@ export default function Page() {
   // Parse the player's hand JSON string into an object
   const cards = JSON.parse(playerHand);
 
-  // case statements for handling incoming messages 
+  // case statements for handling incoming messages
   const onMessage = useCallback((message: MessageEvent) => {
     const json_response = JSON.parse(message.data);
 
@@ -131,31 +142,30 @@ export default function Page() {
       setPlayers2(playerList);
     }
 
-    if(json_response.header === "userName") {
+    if (json_response.header === "userName") {
       setUsername(json_response.content);
     }
 
-    if(json_response.header === "currentPlayer") {
+    if (json_response.header === "currentPlayer") {
       setCurrentPlayerTurn(json_response.content);
       showTurnNotification(json_response.content);
     }
 
-    if(json_response.header === "playersData") {
+    if (json_response.header === "playersData") {
       setPlayers(json_response.content);
     }
 
-    if(json_response.header === "playerHand") {
+    if (json_response.header === "playerHand") {
       setPlayerHand(json_response.content);
     }
-    
-    if(json_response.header === "trumpSuit") {
+
+    if (json_response.header === "trumpSuit") {
       setTrumpSuit(json_response.content);
     }
 
-    if(json_response.header === "pointsToWin") {
+    if (json_response.header === "pointsToWin") {
       setPointsToWin(json_response.content);
     }
-
   }, []);
 
   // hook for grabbing messages being transmitted
@@ -182,12 +192,12 @@ export default function Page() {
   // notification handler given by current player message
   const showTurnNotification = (player: string) => {
     setTurnNotification({ show: true, player });
-    setTimeout(() => setTurnNotification({ show: false, player: "" }), 2000);  // Hide the popup after 1 second
+    setTimeout(() => setTurnNotification({ show: false, player: "" }), 2000); // Hide the popup after 1 second
   };
 
   // useEffect hook to trigger turn notification when currentPlayerTurn changes
   useEffect(() => {
-    if(currentPlayerTurn == username) {
+    if (currentPlayerTurn == username) {
       showTurnNotification(currentPlayerTurn);
     }
   }, [currentPlayerTurn]);
@@ -224,9 +234,11 @@ export default function Page() {
   // submits selected card to play
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if(selectedCard !== null) {
-        console.log(selectedCard.suit + " " + selectedCard.value);
-        socket.send(JSON.stringify({ suit: selectedCard.suit, value: selectedCard.value }));
+    if (selectedCard !== null) {
+      console.log(selectedCard.suit + " " + selectedCard.value);
+      socket.send(
+        JSON.stringify({ suit: selectedCard.suit, value: selectedCard.value })
+      );
     }
   };
 
@@ -234,7 +246,9 @@ export default function Page() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const isGameOver = Object.values(players).some(player => parseInt(player.score) === pointsToWin);
+    const isGameOver = Object.values(players).some(
+      (player) => parseInt(player.score) === pointsToWin
+    );
     if (isGameOver) {
       openModal();
     }
@@ -245,19 +259,32 @@ export default function Page() {
   };
 
   return (
-    <div className="h-screen flex justify-center items-center relative bg-cover bg-center" style={{ backgroundImage: 'url("/textures/wood3.jpg")' }}>
-
-        {/* Conditional rendering for turn notification */}
-        {turnNotification.show && (
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-            <div className="p-6 text-lg text-black rounded-lg" style={{background: 'linear-gradient(to right, red, orange)'}} role="alert">
-              It Is Your Turn!
-            </div>
+    <div
+      className="h-screen flex justify-center items-center relative bg-cover bg-center"
+      style={{ backgroundImage: 'url("/textures/wood3.jpg")' }}
+    >
+      {/* Conditional rendering for turn notification */}
+      {turnNotification.show && (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+          <div
+            className="p-6 text-lg text-black rounded-lg"
+            style={{ background: "linear-gradient(to right, red, orange)" }}
+            role="alert"
+          >
+            It Is Your Turn!
           </div>
-        )}
+        </div>
+      )}
 
-      <div className="flex justify-center items-center relative rounded-2xl" style={{ width: '90%', height: '85%', backgroundColor: 'rgba(74, 160, 74)', border: '3px solid #c0c0c0' }}>
-
+      <div
+        className="flex justify-center items-center relative rounded-2xl"
+        style={{
+          width: "90%",
+          height: "85%",
+          backgroundColor: "rgba(74, 160, 74)",
+          border: "3px solid #c0c0c0",
+        }}
+      >
         {/* Render player 1 */}
         <div
           className="absolute bottom-5"
@@ -284,9 +311,14 @@ export default function Page() {
         </div>
 
         {/* Render player 2 */}
-        <Opponent 
+        <Opponent
           name={players2[1]}
-          player={{...players[players2[1]], position: "left-10 pb-10", rotation: 90, key: players2[1]}}
+          player={{
+            ...players[players2[1]],
+            position: "left-10 pb-10",
+            rotation: 90,
+            key: players2[1],
+          }}
           cards={opponents}
           onCardSelect={handleOppSelect}
           tooltipVisible={tooltipVisible}
@@ -295,9 +327,14 @@ export default function Page() {
         />
 
         {/* Render player 3 */}
-        <Opponent 
+        <Opponent
           name={players2[2]}
-          player={{...players[players2[2]], position: "top-5", rotation: 180, key: "player3"}}
+          player={{
+            ...players[players2[2]],
+            position: "top-5",
+            rotation: 180,
+            key: "player3",
+          }}
           cards={opponents}
           onCardSelect={handleOppSelect}
           tooltipVisible={tooltipVisible}
@@ -306,9 +343,14 @@ export default function Page() {
         />
 
         {/* Render player 4 */}
-        <Opponent 
+        <Opponent
           name={players2[3]}
-          player={{...players[players2[3]], position: "right-10 pb-10", rotation: 270, key: "player4"}}
+          player={{
+            ...players[players2[3]],
+            position: "right-10 pb-10",
+            rotation: 270,
+            key: "player4",
+          }}
           cards={opponents}
           onCardSelect={handleOppSelect}
           tooltipVisible={tooltipVisible}
@@ -317,7 +359,10 @@ export default function Page() {
         />
 
         {/* Form for card submission */}
-        <CardSubmissionForm handleSubmit={handleSubmit} selectedCard={selectedCard} />
+        <CardSubmissionForm
+          handleSubmit={handleSubmit}
+          selectedCard={selectedCard}
+        />
 
         {/* Render Trump Suit */}
         <TrumpSuit trumpSuit={"CLUBS"} />
@@ -343,7 +388,7 @@ export default function Page() {
       {/* modal for when the game finishes */}
       <GameModal isOpen={isOpen} />
 
-      <MessagePanel/>
+      <MessagePanel />
     </div>
   );
 }

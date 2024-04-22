@@ -13,6 +13,10 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
+import com.cs506group12.backend.models.Client;
+import com.cs506group12.backend.models.EuchreGame;
+import com.cs506group12.backend.models.GameSession;
+import com.cs506group12.backend.models.Player;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -54,7 +58,7 @@ public class WebSocketConfig implements WebMvcConfigurer {
                 System.out.println("Connection established with session id: " + session.getId()); // debug
 
                 // add client to hashmap
-                sessions.put(session, new Client(session));
+                sessions.put(session, new Player(session));
             }
 
             @SuppressWarnings("null")
@@ -76,7 +80,7 @@ public class WebSocketConfig implements WebMvcConfigurer {
                     String messageHeader = jsonNode.get("header").asText();
 
                     switch (messageHeader) {
-                        /************** Multiplayer Game Lobby Messages **************/
+                        /************** Multiplayer Game Lobby **************/
 
                         // called when a player creates a new game
                         case "create":
@@ -95,11 +99,15 @@ public class WebSocketConfig implements WebMvcConfigurer {
                             handleStartGame(game, client);
                             break;
 
-                        /************** In Game Messages **************/
+                        /************** In Game **************/
 
-                        // called by each client at the start of a game
-                        case "setup":
-                            handleGameSetUp(client);
+                        // called when the players have loaded the game screen
+                        case "ready":
+                            handleGameSetUp(game, client);
+                            break;
+                        // called when an in-game event occurs
+                        case "gameEvent":
+                            handleGameEvent(game, client, jsonNode);
                             break;
                         // called whenever a players sends a message in the chat
                         case "message":
@@ -155,10 +163,10 @@ public class WebSocketConfig implements WebMvcConfigurer {
 
         // remove from current game
         GameSession game = client.getGame();
-        game.removePlayer(client);
+        game.removeClient(client);
 
         // alert players
-        game.sendPlayerIdsToAllClients();
+        game.sendSessionToAllClients();
     }
 
     /**
@@ -168,11 +176,11 @@ public class WebSocketConfig implements WebMvcConfigurer {
      */
     private void handleCreateMessage(Client client) {
         // create a new game session with the client as the host
-        GameSession game = new GameSession(client);
+        GameSession game = new EuchreGame(client);
         // store game session
         games.put(game.getGameId(), game);
         // send message to all players in game that a new client has joined
-        game.notifyPlayersNewClient(client);
+        game.sendSessionToAllClients();
     }
 
     /**
@@ -186,11 +194,11 @@ public class WebSocketConfig implements WebMvcConfigurer {
             // get game with corresponding id
             GameSession game = games.get(id);
             // check that the client is not already in this game
-            if (!game.hasPlayer(client)) {
+            if (!game.hasClient(client)) {
                 // add player to game
-                if (game.addPlayer(client)) {
+                if (game.addClient(client)) {
                     // send message to all players in game that a new client has joined
-                    game.notifyPlayersNewClient(client);
+                    game.sendSessionToAllClients();
                 } else {
                     client.reportError("Game " + id + " is already full");
                 }
@@ -211,10 +219,10 @@ public class WebSocketConfig implements WebMvcConfigurer {
         if (client.isInGame()) {
             // remove from current game
             GameSession game = client.getGame();
-            game.removePlayer(client);
+            game.removeClient(client);
 
             // alert players
-            game.sendPlayerIdsToAllClients();
+            game.sendSessionToAllClients();
 
             // alert client that they can leave the session
             client.sendMessage("leave", "You can now leave the game");
@@ -230,14 +238,20 @@ public class WebSocketConfig implements WebMvcConfigurer {
      * @param client the client that started the game
      */
     private void handleStartGame(GameSession game, Client client) {
-        if (game != null) {
-            if (game.isHost(client)) {
-                game.startGame();
+        // cast variables
+        EuchreGame euchreGame = (EuchreGame) game;
+        Player player = (Player) client;
+
+        // check if the game can be started
+        if (euchreGame != null) {
+            if (euchreGame.isHost(client)) {
+                // start the game
+                euchreGame.startGame();
             } else {
-                client.reportError("Only the host can start the game");
+                player.reportError("Only the host can start the game");
             }
         } else {
-            client.reportError("Please create or join a game first");
+            player.reportError("Please create or join a game first");
         }
     }
 
@@ -247,18 +261,45 @@ public class WebSocketConfig implements WebMvcConfigurer {
      */
 
     /**
-     * Handles client-side set up of the game. This will be done individually by
-     * each client at the very start of the game
+     * Handles client-side set up of the game.
+     * 
+     * This class does the following things:
+     * 1. Send player ID to their corresponding client
+     * 2. Send all the player IDs to client
+     * 3. Send the initial player's hand to the client
      * 
      * @param client the client requesting the data
      */
-    private void handleGameSetUp(Client client) {
-        client.sendPlayerID();
-        client.sendPlayersInGame();
+    private void handleGameSetUp(GameSession game, Client client) {
+        client.setReady();
+        // make sure that all clients are ready before sending data
+        if (game.areClientsReady()) {
+            EuchreGame euchreGame = (EuchreGame) game;
+            for (Player player : euchreGame.getPlayers()) {
+                player.sendClient();
+                player.sendPlayer();
+            }
+            euchreGame.sendSessionToAllClients();
+        }
     }
 
     /**
-     * Handles the processing of a in-game chat message
+     * Handles events that happen during a game, and controls the overall flow of
+     * the state-machine
+     * 
+     * Events handled by this function:
+     * 1.
+     * 
+     * @param game    the game corresponding to the event
+     * @param client  the client that triggered the event
+     * @param payload contains the JSON data of the game event
+     */
+    private void handleGameEvent(GameSession game, Client client, JsonNode payload) {
+        // implement game logic
+    }
+
+    /**
+     * Handles the processing of an in-game chat message
      * 
      * @param game    the game session that the message was sent in
      * @param sender  the client that sent the message

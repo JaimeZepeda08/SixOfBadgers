@@ -1,4 +1,4 @@
-package com.cs506group12.backend.config;
+package com.cs506group12.backend.models;
 
 import java.util.ArrayList;
 
@@ -66,16 +66,16 @@ public class Chat {
     }
 
     /**
-     * Returns the top n messages in a formated string including who sent each.
+     * Returns the messages in the chat log in a formated string including who sent
+     * each.
      * 
-     * @param n number of messages
      * @return a string representation of the chat log
      */
-    public String getNMessages(int n) {
+    public String getMessages() {
         String messageString = "";
         for (int i = 0; i < chatMessages.size(); i++) {
             ChatMessage message = chatMessages.get(i);
-            messageString += "[" + message.getSender().getPlayerId() + ": " + message.getMessage() + "],";
+            messageString += "[" + message.getSender().getClientId() + ": " + message.getMessage() + "],";
         }
         return messageString.substring(0, messageString.length() - 1);
     }

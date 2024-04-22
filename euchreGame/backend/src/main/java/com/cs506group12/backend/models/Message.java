@@ -1,14 +1,10 @@
-package com.cs506group12.backend.config;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+package com.cs506group12.backend.models;
 
 /**
  * Represents a message object with a header and content.
  * 
  * @author jaime zepeda
  */
-@SuppressWarnings("unused")
 public class Message {
 
     private String header; // The header of the message
@@ -22,24 +18,6 @@ public class Message {
      */
     public Message(String header, String content) {
         this.header = header;
-        this.content = content;
-    }
-
-    /**
-     * Sets the header of the message.
-     *
-     * @param header The header of the message.
-     */
-    public void setheader(String header) {
-        this.header = header;
-    }
-
-    /**
-     * Sets the content of the message.
-     *
-     * @param content The content of the message.
-     */
-    public void setContent(String content) {
         this.content = content;
     }
 

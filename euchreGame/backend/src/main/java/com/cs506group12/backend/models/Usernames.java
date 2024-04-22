@@ -1,4 +1,4 @@
-package com.cs506group12.backend.config;
+package com.cs506group12.backend.models;
 
 import java.util.Arrays;
 import java.util.List;

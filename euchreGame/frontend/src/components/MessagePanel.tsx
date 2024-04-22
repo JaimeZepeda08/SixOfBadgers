@@ -61,7 +61,7 @@ const MessagePanel = (): JSX.Element => {
           isPanelOpen ? "translate-x-0" : "translate-x-full hidden"
         }`}
       >
-        <div>
+        <div className="h-[90%] overflow-scroll">
           {/* Display chat messages */}
           {chat.map((message, index) => (
             <p key={index} className="text-white p-2 overflow-hidden">
@@ -69,7 +69,7 @@ const MessagePanel = (): JSX.Element => {
             </p>
           ))}
         </div>
-        <div className="absolute bottom-0 w-[100%] px-3 py-3">
+        <div className="absolute bottom-0 w-[100%] px-3 py-6">
           <div className="flex items-center justify-center">
             <input
               className="w-4/5 mr-3 rounded-md px-1"

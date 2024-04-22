@@ -1,4 +1,4 @@
-package com.cs506group12.backend.config;
+package com.cs506group12.backend.models;
 
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.TextMessage;
@@ -9,21 +9,23 @@ import java.io.IOException;
  * 
  * @author jaime zepeda
  */
-public class Client {
+public abstract class Client {
 
     private WebSocketSession session;
-    private String playerId;
+    private String clientId;
     private GameSession game;
+    private boolean ready;
 
     /**
      * Creates a new instance of Client
      * 
      * @param session WebSocket session
      */
-    public Client(WebSocketSession session) {
+    protected Client(WebSocketSession session) {
         this.session = session;
-        this.playerId = "Anonymous" + Usernames.getRandomUsername();
+        this.clientId = "Anonymous" + Usernames.getRandomUsername();
         this.game = null;
+        this.ready = false;
     }
 
     /**
@@ -40,8 +42,8 @@ public class Client {
      * 
      * @return player's id
      */
-    public String getPlayerId() {
-        return playerId;
+    public String getClientId() {
+        return clientId;
     }
 
     /**
@@ -53,19 +55,16 @@ public class Client {
         return game;
     }
 
+    /**
+     * Checks if this client is in a game
+     * 
+     * @return true if the client is in a game, false otherwise
+     */
     public boolean isInGame() {
         if (game != null) {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Handles client leaving a game session
-     */
-    public void leaveGame() {
-        game.removePlayer(this);
-        game = null;
     }
 
     /**
@@ -83,7 +82,34 @@ public class Client {
     }
 
     /**
-     * Sends a message to client through its WebSocket connection
+     * Handles client leaving a game session
+     */
+    public void leaveGame() {
+        if (game != null) {
+            game.removeClient(this);
+        }
+        game = null;
+    }
+
+    /**
+     * Checks if the client is ready
+     * 
+     * @return true if ready, false otherwise
+     */
+    public boolean isReady() {
+        return ready;
+    }
+
+    /**
+     * Marks this client as ready
+     */
+    public void setReady() {
+        ready = true;
+    }
+
+    /**
+     * Sends a message to client through its WebSocket connection.
+     * Used for simple messages and event alerts.
      * 
      * @param type    type of message to be sent
      * @param content content of message
@@ -99,6 +125,28 @@ public class Client {
     }
 
     /**
+     * Sends a WebSocket message to this client
+     * Used to send larger amounts of data.
+     * 
+     * @param formattedJSON a formatted JSON string
+     */
+    @SuppressWarnings("null")
+    public void sendMessage(String formattedJSON) {
+        try {
+            this.getSession().sendMessage(new TextMessage(formattedJSON));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Sends this a JSON representation of this client
+     */
+    public void sendClient() {
+        sendMessage(clientToJSON());
+    }
+
+    /**
      * Sends an error socket message to the client
      * 
      * @param error the message to be sent
@@ -108,21 +156,22 @@ public class Client {
     }
 
     /**
-     * Sends this client's id
+     * Converts this client into JSON
+     * 
+     * @return a JSON representation of this client
      */
-    public void sendPlayerID() {
-        sendMessage("username", getPlayerId());
-    }
-
-    public void sendPlayersInGame() {
-        sendMessage("players", getGame().getPlayerIdsString());
+    public String clientToJSON() {
+        return "{"
+                + "\"header\" : \"client\", "
+                + "\"id\" : " + "\"" + getClientId() + "\""
+                + "}";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Client) {
             Client other = (Client) obj;
-            if (playerId.equals(other.getPlayerId())) {
+            if (clientId.equals(other.getClientId())) {
                 return true;
             }
         }

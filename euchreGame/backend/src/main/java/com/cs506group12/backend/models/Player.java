@@ -1,22 +1,19 @@
 package com.cs506group12.backend.models;
 
 import java.util.*;
+import org.springframework.web.socket.WebSocketSession;
 
-public class Player {
-	public ArrayList<Card> hand = new ArrayList<Card>();
-	public String userName;
+public class Player extends Client {
+	public ArrayList<Card> hand;
 	private int points;
-	private Player partner;
-	// maybe a team functio n - i wpuld prefer for teammates to be 0 and 1 in array
-	// but maybe no possible?
-	// do i need login functions?
 
 	/**
 	 * Constructor class for the Player class.
 	 */
-	public Player(String name) {
-		this.userName = name;
-		this.hand = new ArrayList<Card>();
+	public Player(WebSocketSession session) {
+		super(session);
+		this.hand = new ArrayList<>();
+		this.points = 0;
 	}
 
 	/*
@@ -33,6 +30,13 @@ public class Player {
 		return this.hand;
 	}
 
+	/*
+	 * Adds an integer as paramater to points
+	 */
+	public void addPoints(int points) {
+		this.points += points;
+	}
+
 	/**
 	 * Getter method for the number of points for the player
 	 */
@@ -46,7 +50,7 @@ public class Player {
 	 * @param suit The suit that we want the highest card of.
 	 * @return The card that is the highest of the param's suit in the player's hand
 	 */
-	public Card getHighCardofSuit(Card.SUIT suit) {
+	public Card getHighCardOfSuit(Card.SUIT suit) {
 
 		Card high = null;
 
@@ -75,13 +79,6 @@ public class Player {
 		}
 
 		return low;
-	}
-
-	/*
-	 * Adds an integer as paramater to points
-	 */
-	public void addPoints(int points) {
-		this.points += points;
 	}
 
 	/*
@@ -115,7 +112,7 @@ public class Player {
 	}
 
 	/**
-	 * Checks if the players hands has tghe param suit
+	 * Checks if the players hands has the param suit
 	 * 
 	 * @param suit The suit that will be checked to see if there is a player hand
 	 * @return
@@ -167,7 +164,6 @@ public class Player {
 
 	/**
 	 * Class to choose the trump for the round
-	 * TODO: implement with frotnend
 	 * 
 	 * @return Card.SUIT enum of the chosen suit, null if none picked
 	 */
@@ -181,90 +177,24 @@ public class Player {
 		return null;
 	}
 
+	public void sendPlayer() {
+		sendMessage(playerToJSON());
+	}
 
-	/**
-	 * used to get players hand as a json
-	 * @return a json formatted string of cards
-	 */
-	public String handAsJson(){
-		String finalJson = "{\n\t\"hand\": [";
-		for (int i = 0; i < hand.size(); i++){
-			finalJson+=hand.get(i).cardToJson() + ",";
+	private String playerHandToString() {
+		String handString = "[";
+		for (Card card : hand) {
+			handString += card.cardToJSON() + ",";
 		}
-		// here if one to many ,
-		finalJson+= "\t]\n}";
-
-		return finalJson;
+		handString = handString.substring(0, handString.length() - 1);
+		handString += "]";
+		return handString;
 	}
 
-	/**
-	 * 
-	 * @param playableHand the cards available for user to play
-	 * @return a json formatted string of cards
-	 */
-	public String handAsJson(ArrayList<Card> playableHand){
-		String finalJson = "{\n\t\"hand\": [";
-		for (int i = 0; i < playableHand.size(); i++){
-			finalJson+=playableHand.get(i).cardToJson() + ",";
-		}
-		// here if one to many ,
-		finalJson+= "\t]\n}";
-
-		return finalJson;
+	public String playerToJSON() {
+		return "{"
+				+ "\"header\" : \"player\", "
+				+ "\"hand\" : " + "\"" + playerHandToString() + "\""
+				+ "}";
 	}
-
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String playerAsJson(){
-		return "{\n\t\"player_name\": " + userName + "\"\n}" ;
-	}
-
-	/**
-     * Finds a partner for the player within the same team.
-     *
-     * @param players List of players to search for a partner.
-     * @return Partner player if found, otherwise null.
-     */
-    public Player findPartner(List<Player> players) {
-        for (Player player : players) {
-            if (!player.equals(this) && player.isInSameTeam(this)) {
-                return player;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Checks if the player is in the same team as another player.
-     *
-     * @param otherPlayer Player to compare with.
-     * @return True if both players are in the same team, otherwise false.
-     */
-    public boolean isInSameTeam(Player otherPlayer) {
-        // Logic to determine if players are in the same team
-        // This could involve checking some team-related properties or methods
-        // For simplicity, let's assume players are in the same team if their usernames start with the same letter
-        return this.userName.charAt(0) == otherPlayer.userName.charAt(0);
-    }
-
-	/**
-     * Setter for the partner of the player.
-     *
-     * @param partner The partner player.
-     */
-    public void setPartner(Player partner) {
-        this.partner = partner;
-    }
-
-    /**
-     * Getter for the partner of the player.
-     *
-     * @return The partner player if set, otherwise null.
-     */
-    public Player getPartner() {
-        return partner;
-    }
 }
