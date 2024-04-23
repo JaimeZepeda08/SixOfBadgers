@@ -222,6 +222,12 @@ React for the frontend.
 
 ```mermaid
 flowchart RL
+
+subgraph "Sign In"
+    C(Google Sign in)
+    C --(Sign in)--> A
+end
+
 subgraph "Start Game"
     A(Choose Settings)
 end
@@ -230,7 +236,7 @@ subgraph "Choose Settings"
     B(Help Page)
     A --(If help needed)--> B
     B --(After help)--> A
-    A --(If settings chosen)--> C
+    A --(If settings chosen)--> Game
 end
 
 subgraph "Gameplay ends"
