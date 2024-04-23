@@ -197,4 +197,6 @@ public class Player extends Client {
 				+ "\"hand\" : " + "\"" + playerHandToString() + "\""
 				+ "}";
 	}
+
+	
 }
