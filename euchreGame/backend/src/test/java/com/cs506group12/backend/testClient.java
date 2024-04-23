@@ -138,4 +138,65 @@ public class testClient {
         TextMessage textMessage = new TextMessage(message.toString());
         verify(session, times(1)).sendMessage(textMessage);
     }
+
+    /**
+     * Tests join game, again
+     */
+    @Test
+    public void testJoinGame() {
+        client.joinGame(game1);
+        assertTrue(client.isInGame());
+        assertEquals(game1, client.getGame());
+    }
+
+    /**
+     * Tests leave game
+     */
+    @Test
+    public void testLeaveGame() {
+        client.joinGame(game1);
+        assertTrue(client.isInGame());
+        assertEquals(game1, client.getGame());
+
+        client.leaveGame();
+        assertFalse(client.isInGame());
+
+        client.joinGame(game1);
+        assertTrue(client.isInGame());
+        assertEquals(game1, client.getGame());
+
+        client.joinGame(game2);
+        assertTrue(client.isInGame());
+        assertEquals(game2, client.getGame());
+    }
+
+
+    /**
+     * Tests the send client
+     * 
+     * @throws IOException if input not mocked
+     */
+    @Test
+    void testSendClient() throws IOException {
+        String expectedJSON = "{\"header\" : \"client\", \"id\" : \"" + client.getClientId() + "\"}";
+        assertEquals(expectedJSON, client.clientToJSON());
+    }
+
+
+    /**
+     * Tests equals, but its not actual equal
+     */
+    @Test
+    void testEqualsWhileNot() {
+        Client sameClientIdClient = new Client(session) {
+            @Override
+            public String clientToJSON() {
+                // Mock JSON representation for testing
+                return "{\"header\": \"client\",\"id\": \"" + client.getClientId() + "\"}";
+            }
+        };
+        assertTrue(!client.equals(sameClientIdClient));
+    }
+
+    
 }
