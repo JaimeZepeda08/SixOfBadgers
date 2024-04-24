@@ -162,6 +162,18 @@ This is the homepage that would show up after clicking home on the navigation ba
 
 This is the game creation screen. It allows to pick the number of physical players playing.It also allows the user to set the number of seconds each turn will be allowed. It indicates the number of points needed to win, and the number of rounds played.
 
+![gamepage](./documentation_and_images/card_game_game.png)
+
+This is the game page where the actual game is played out, includes a button for playing a card and a side bar for messaging teammates
+
+![modal](./documentation_and_images/card_game_modal.png)
+
+This is the modal that pops up after the game is finished, allows the user to head back to the main menu.
+
+![lobby](./documentation_and_images/card_game_multi.png)
+
+This is the starting game tab, where the user is in the multiplayer selection. Here players will join the created game with a unqiue identifier given to them.
+
 #### Technology Stack
 
 
