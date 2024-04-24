@@ -48,7 +48,7 @@ DROP TABLE IF EXISTS `Users`;
 CREATE TABLE `Users` (
   `UserUID` int NOT NULL AUTO_INCREMENT,
   `UserName` varchar(45) DEFAULT NULL,
-  `PasswordHash` varbinary(512) DEFAULT NULL,
+  `EmailAddress` varchar(255) DEFAULT NULL,
   `AccountCreation` datetime DEFAULT NULL,
   `LastLogin` datetime DEFAULT NULL,
   `Settings` varchar(512) DEFAULT NULL,

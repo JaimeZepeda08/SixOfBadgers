@@ -14,7 +14,6 @@ import com.cs506group12.backend.models.GameRecord;
  * to retrieve user profiles and game records. This class contains static
  * methods that do not assume
  * a connection to the database is open at the time they are called.
- * TODO implement SQL injection defense
  * 
  * @author Eric Knepper
  */
@@ -49,25 +48,28 @@ public class DatabaseConnection {
     }
 
     /**
-     * Gets the record of a user with the given name and password. Currently
-     * password is passed in plaintext
-     * and stored as a 512bit SHA2 hash. TODO make this more secure
+     * Gets the record of a user with the given name and email address.
      * 
      * @param userName     The name of the user to be retrieved
-     * @param userPassword The password of the user to be retrieved
+     * @param userEmailAddress The email address of the user to be retrieved
      * @return A User object representing the requested user, or null if there is no
      *         such user in the database
      * @throws SQLException Throws an exception if a connection to the database
      *                      cannot be created.
      */
-    public  User getUser(String userName, String userPassword) throws SQLException {
+    public  User getUser(String userName, String userEmailAddress) throws SQLException {
         if (!createConnection()) {
             throw new SQLException("Unable to create database connection.");
         }
 
-        Statement selectUser = databaseConnection.createStatement();
-        ResultSet rsUser = selectUser.executeQuery("SELECT UserUID, Settings from Users WHERE UserName = '" + userName
-                + "' AND PasswordHash = SHA2('" + userPassword + "',512)");
+        PreparedStatement selectUser = databaseConnection.prepareStatement(
+            "SELECT UserUID, Settings from Users WHERE UserName = ?"
+                + " AND EmailAddress = ?;");
+        selectUser.setString(1, userName);
+        selectUser.setString(2, userEmailAddress);
+        ResultSet rsUser = selectUser.executeQuery();
+
+        
         if (rsUser.next()) {
             // settings are stored as comma separated strings in the database
             int userUID = rsUser.getInt(1);
@@ -85,31 +87,37 @@ public class DatabaseConnection {
     }
 
     /**
-     * Creates a new user record in the database with the given name and password.
-     * Throws an exception if it cannot connect
-     * to the database. Returns true if user successfully created, false otherwise.
+     * Creates a new user record in the database with the given name and email address.
+     * Throws an exception if it cannot connect to the database.
+     * Returns true if user successfully created, false otherwise.
      * 
      * @param userName     The name of the user to be stored
-     * @param userPassword The password of the user to be stored
+     * @param userEmailaddress The email address of the user to be stored
      * @throws SQLException Throws an exception if the databse connection cannot be
      *                      created or if there is a problem with the query.
      */
-    public  Boolean storeUser(String userName, String userPassword) throws SQLException {
+    public  Boolean storeUser(String userName, String userEmailaddress) throws SQLException {
         if (!createConnection()) {
             throw new SQLException("Unable to create database connection.");
         }
         
-        Statement storeUser = databaseConnection.createStatement();
-        ResultSet rsUserCheck = storeUser
-                .executeQuery("SELECT UserUID FROM Users WHERE UserName = '" + userName + "';");
+        PreparedStatement checkUser = databaseConnection.prepareStatement(
+            "SELECT UserUID FROM Users WHERE EmailAddress = ?;"
+        );
+        checkUser.setString(1,userEmailaddress);
+        ResultSet rsUserCheck = checkUser.executeQuery();
 
         // If the ResultSet contains a row, a user with the given name already exists.
         if (rsUserCheck.isBeforeFirst()) {
             return false;
         }
 
-        storeUser.executeUpdate("INSERT INTO Users (UserName, PasswordHash, AccountCreation) VALUES ('"
-                + userName + "', SHA2('" + userPassword + "',512), CURRENT_TIME());");
+        PreparedStatement storeUser = databaseConnection.prepareStatement(
+            "INSERT INTO Users (UserName, EmailAddress, AccountCreation) VALUES (?, ?, CURRENT_TIME());");
+        storeUser.setString(1, userName);
+        storeUser.setString(2, userEmailaddress);
+
+        storeUser.executeUpdate();
 
         return true;
     }
@@ -117,10 +125,10 @@ public class DatabaseConnection {
     /**
      * Stores a record of a played game in the database.
      * 
-     * @param players
-     * @param scores
-     * @param startTime
-     * @param endTime
+     * @param players The email addresses uniquely identifying the players. AI players should have address "EuchreBot"
+     * @param scores The scores at the end of the game 
+     * @param startTime The time the game started
+     * @param endTime The time the game finished
      * @throws SQLException Throws a sql exception if a connection to the database
      *                      cannot be created or if there is an error with the sql
      *                      query.
@@ -133,7 +141,7 @@ public class DatabaseConnection {
 
         PreparedStatement getUserFKs = databaseConnection.prepareStatement(
                 "select u1.UserUID, u2.UserUID, u3.UserUID, u4.UserUID FROM Users as u1, Users as u2, Users as u3, Users as u4 "
-                        + "WHERE u1.UserName = ? AND u2.UserName = ? AND u3.UserName = ? AND u4.UserName = ?");
+                        + "WHERE u1.EmailAddress = ? AND u2.EmailAddress = ? AND u3.EmailAddress = ? AND u4.EmailAddress = ?");
         for (int i = 0; i < 4; i++) {
             getUserFKs.setString(i + 1, players[i]);
         }
@@ -176,15 +184,18 @@ public class DatabaseConnection {
 
         ArrayList<GameRecord> gameRecords = new ArrayList<GameRecord>();
 
-        Statement getRecords = databaseConnection.createStatement();
-        ResultSet rsGameRecords = getRecords.executeQuery(
-                "select GameUID, GameStartTime, GameEndTime, u1.UserName, u2.UserName, u3.UserName, u4.UserName, Team1Score, Team2Score"
-                        + " FROM Games left join Users AS u1 on Games.Player1=u1.UserUID"
-                        + " left join Users AS u2 on Games.Player2=u1.UserUID"
-                        + " left join Users AS u3 on Games.Player3=u3.UserUID"
-                        + " left join Users AS u4 on Games.Player4=u4.UserUID"
-                        + " WHERE Player1=" + userUID + " OR Player2= " + userUID + " OR Player3=" + userUID
-                        + "OR Player4=" + userUID + ";");
+        PreparedStatement getRecords = databaseConnection.prepareStatement(
+        "select GameUID, GameStartTime, GameEndTime, u1.UserName, u2.UserName, u3.UserName, u4.UserName, Team1Score, Team2Score"
+        + " FROM Games left join Users AS u1 on Games.Player1=u1.UserUID"
+        + " left join Users AS u2 on Games.Player2=u1.UserUID"
+        + " left join Users AS u3 on Games.Player3=u3.UserUID"
+        + " left join Users AS u4 on Games.Player4=u4.UserUID"
+        + " WHERE Player1=? OR Player2=? OR Player3=? OR Player4=?;");
+        for(int i=1; i<5 ;i++){
+            getRecords.setInt(i, userUID);
+        }
+        ResultSet rsGameRecords = getRecords.executeQuery();
+                
 
         String[] players;
         int[] scores;
@@ -199,8 +210,7 @@ public class DatabaseConnection {
             scores[0] = rsGameRecords.getInt(8);
             scores[1] = rsGameRecords.getInt(9);
 
-            gameRecords
-                    .add(new GameRecord(rsGameRecords.getInt(1), rsGameRecords.getTimestamp(2), rsGameRecords.getTimestamp(3), players, scores));
+            gameRecords.add(new GameRecord(rsGameRecords.getInt(1), rsGameRecords.getTimestamp(2), rsGameRecords.getTimestamp(3), players, scores));
         }
 
         return gameRecords;
