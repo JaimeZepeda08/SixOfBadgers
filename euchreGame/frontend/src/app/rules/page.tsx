@@ -14,7 +14,7 @@ export default function Page() {
       {/* What is Euchre? */}
       <h2 className="text-2xl font-semibold mb-2">What is Euchre?</h2>
       <p className="mb-4">
-        Euchre is a classNameic trick-taking card game that originated in Europe
+        Euchre is a classic trick-taking card game that originated in Europe
         but gained widespread popularity in North America. It is typically
         played with a deck of 24 cards, consisting of the 9 through Ace of each
         suit.
@@ -33,9 +33,9 @@ export default function Page() {
         </li>
         <li>
           <strong>Bidding:</strong> Starting from the player to the left of the
-          dealer, each player has the option to &quotorder up&quot the face-up
-          card as the trump suit by saying &quotI order it up&quot or to pass by
-          saying &quotPass.&quot If all players pass, the dealer has the option
+          dealer, each player has the option to &quot;order up&quot; the face-up
+          card as the trump suit by saying &quot;I order it up&quot; or to pass by
+          saying &quot;Pass.&quot; If all players pass, the dealer has the option
           to pick up the card themselves and choose the trump suit or pass
           again, leading to a new round of bidding.
         </li>
@@ -43,7 +43,7 @@ export default function Page() {
           <strong>Gameplay:</strong> If a player successfully orders up the
           face-up card or if the dealer picks it up, the suit of that card
           becomes the trump suit. The player who ordered or picked up the
-          card&aposs suit becomes the &quotmaker&quot and plays alone against
+          card&apos;s suit becomes the &quot;maker&quot; and plays alone against
           the other three players.
           <ol className="list-decimal ml-10">
             <li style={{ listStyleType: "lower-alpha" }}>
@@ -51,7 +51,7 @@ export default function Page() {
               playing any card from their hand.
             </li>
             <li style={{ listStyleType: "lower-alpha" }}>
-              Players must follow suit if possible; if they can&apost, they can
+              Players must follow suit if possible; if they can&apos;t, they can
               play any card.
             </li>
             <li style={{ listStyleType: "lower-alpha" }}>
@@ -67,7 +67,7 @@ export default function Page() {
           <strong>Scoring:</strong> The makers aim to win at least three tricks
           to score points. If they succeed, they earn one point. If they win all
           five tricks, they earn two points. If the makers fail to win three
-          tricks, they are &quoteuchred,&quot and the opposing team earns two
+          tricks, they are &quot;euchred,&quot; and the opposing team earns two
           points.
         </li>
         <li>

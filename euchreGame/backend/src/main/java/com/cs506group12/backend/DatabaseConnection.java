@@ -78,7 +78,7 @@ public class DatabaseConnection {
             if (settingsString != null) {
                 settingsArray = settingsString.split(",");
             }
-            User user = new User(userUID, userName, settingsArray);
+            User user = new User(userUID, userName, userEmailAddress);
             return user;
         } else {
             return null;
@@ -100,7 +100,7 @@ public class DatabaseConnection {
         if (!createConnection()) {
             throw new SQLException("Unable to create database connection.");
         }
-        
+
         PreparedStatement checkUser = databaseConnection.prepareStatement(
             "SELECT UserUID FROM Users WHERE EmailAddress = ?;"
         );

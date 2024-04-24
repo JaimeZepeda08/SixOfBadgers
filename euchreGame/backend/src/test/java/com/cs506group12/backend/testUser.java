@@ -14,7 +14,7 @@ public class testUser {
      */
     @Test
     public void testGetters(){
-        User usr = new User(1, "test");
+        User usr = new User(1, "test", "");
         assert(usr.getName().equals("test"));
         assert(usr.getUserUID() == 1);
     }

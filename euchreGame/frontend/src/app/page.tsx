@@ -7,30 +7,27 @@ import { SimpleButtonLinkRed } from "@/components/SimpleButton";
  * @returns {JSX.Element} The page component.
  */
 export default function Page() {
+  // Load test decision context
   return (
     <div
-      className="flex flex-col justify-center items-center"
-      style={{ zoom: 0.8 }}
+      className={"flex flex-col justify-center items-center"}
     >
       <h1 className="text-6xl font-bold text-red-900 mb-40 mt-36">
         Euchre With Friends
       </h1>
       {/* List of buttons for all game options */}
-      <SimpleButtonLinkRed
-        text="Singleplayer"
-        href="home/singleplayer"
-        className="my-6"
-      />
-      <SimpleButtonLinkRed
-        text="Multiplayer"
-        href="home/multiplayer"
-        className="my-6"
-      />
-      <SimpleButtonLinkRed
-        text="Go to Saved Games"
-        href="home/saved_games"
-        className="my-6"
-      />
+      <div style={{ zoom: 1.2 }}>
+        <SimpleButtonLinkRed
+          text="Singleplayer"
+          href="/singleplayer"
+          className="my-6"
+        />
+        <SimpleButtonLinkRed
+          text="Multiplayer"
+          href="/multiplayer"
+          className="my-6"
+        />
+      </div>
     </div>
   );
 }
