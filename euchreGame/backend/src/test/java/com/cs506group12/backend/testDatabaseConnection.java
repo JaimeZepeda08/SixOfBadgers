@@ -4,21 +4,16 @@ import com.cs506group12.backend.models.GameRecord;
 import com.cs506group12.backend.models.User;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.Timestamp;
+import java.sql.*;
 
 import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.junit.jupiter.api.*;
 
 /**
@@ -40,9 +35,6 @@ public class testDatabaseConnection {
     private PreparedStatement pstmt2;
 
     @Mock
-    private Statement stmt;
-
-    @Mock
     private ResultSet rs;
 
     @Mock
@@ -55,7 +47,6 @@ public class testDatabaseConnection {
     public void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
         when(c.prepareStatement(any(String.class))).thenReturn(pstmt);
-        when(c.createStatement()).thenReturn(stmt);
         when(c.isClosed()).thenReturn(false);
         when(ds.getConnection()).thenReturn(c);
     }
@@ -66,7 +57,7 @@ public class testDatabaseConnection {
     @Test
     public void testStoreUser() throws Exception {
         when(rs.isBeforeFirst()).thenReturn(false);
-        when(stmt.executeQuery(any(String.class))).thenReturn(rs);
+        when(pstmt.executeQuery()).thenReturn(rs);
 
         DatabaseConnection dbc = new DatabaseConnection(ds);
 
@@ -82,7 +73,7 @@ public class testDatabaseConnection {
     @Test
     public void testDuplicateUser() throws Exception {
         when(rs.isBeforeFirst()).thenReturn(true);
-        when(stmt.executeQuery(any(String.class))).thenReturn(rs);
+        when(pstmt.executeQuery()).thenReturn(rs);
 
         DatabaseConnection dbc = new DatabaseConnection(ds);
 
@@ -117,8 +108,8 @@ public class testDatabaseConnection {
      */
     @Test
     public void testGetGameRecord() throws Exception{
-        when(c.createStatement()).thenReturn(stmt);
-        when(stmt.executeQuery(any(String.class))).thenReturn(rs);
+        when(c.prepareStatement(anyString())).thenReturn(pstmt);
+        when(pstmt.executeQuery()).thenReturn(rs);
         when(rs.next()).thenReturn(true).thenReturn(true).thenReturn(false);
 
         GameRecord gr1 = new GameRecord(1, new Timestamp(0), new Timestamp(1), new String[]{"a","b","c","d"}, new int[]{10,5});
@@ -164,7 +155,7 @@ public class testDatabaseConnection {
      */
     @Test
     public void testGetUser() throws Exception {
-        when(stmt.executeQuery(any(String.class))).thenReturn(rs);
+        when(pstmt.executeQuery()).thenReturn(rs);
         User validationUsr = new User(1,"1", null);
 
         when(rs.next()).thenReturn(true);

@@ -32,6 +32,17 @@ public class User {
     }
 
     /**
+     * Overloaded constructor, used because user settings are not yet implemented.
+     * 
+     * @param userUID The unique identifier of the user in the MySQL database
+     * @param userName The name of the user
+     */
+    public User(int userUID, String userName){
+        this.userUID = userUID;
+        this.userName = userName;
+    }
+
+    /**
      * Gets the username
      * 
      * @return User's name
