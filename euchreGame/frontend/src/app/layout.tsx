@@ -3,8 +3,10 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import TopNav from "@/components/TopNav";
 import MusicPlayer from "@/components/MusicPlayer";
-import Profile from "@/components/Profile";
 import { SocketProvider } from "@/lib/SocketProvider";
+import {SessionProviders} from "@/lib/SessionProviders";
+import GoogleSignInButton from "@/components/GoogleSignInButton";
+import {UserProvider} from "@/lib/UserContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,12 +29,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SocketProvider>
-          <TopNav
-            components={[<MusicPlayer key="musicPlayer" src={"/pokerFace.mp3"} />, <Profile key={"profile"}/>]}
-          />
-          {children}
-        </SocketProvider>
+      <SocketProvider>
+        <SessionProviders>
+            <UserProvider>
+                <TopNav
+                    components={[<MusicPlayer src="/pokerFace.mp3" key={"Music Player"}/>, <GoogleSignInButton key={"SignIn"}/>]}
+                />
+                {children}
+            </UserProvider>
+        </SessionProviders>
+      </SocketProvider>
       </body>
     </html>
   );

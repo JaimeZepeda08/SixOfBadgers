@@ -1,13 +1,14 @@
 "use client";
 
-import { use, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   getPlayerHand,
   submitSelectedCard,
   getPlayers,
   getTrumpSuit,
   getCurrentPlayer,
-} from "@/lib/gameService";
+} from "@/lib/GameService";
+
 import Hand from "../../components/Hand";
 import Card from "../../components/Card";
 import "./css_files_game/buttonStyles.css";

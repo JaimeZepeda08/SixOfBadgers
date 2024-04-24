@@ -39,7 +39,7 @@ const MusicPlayer = ({ src }: MusicPlayerProps) => {
 
   return (
     <div
-      className="w-full h-full cursor-pointer hover:text-white mt-1"
+      className="w-full h-full cursor-pointer hover:text-white mt-1 pb-1"
       style={{ zoom: 2 }}
     >
       {/* Audio element with source */}

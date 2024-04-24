@@ -47,6 +47,12 @@ public abstract class Client {
     }
 
     /**
+     * Setter method for the id of the player
+     * @param clientId player's id
+     */
+    public void setClientId(String clientId) { this.clientId = clientId; }
+
+    /**
      * Getter method for this client's game
      * 
      * @return the game the client is currently in
@@ -111,7 +117,7 @@ public abstract class Client {
      * Sends a message to client through its WebSocket connection.
      * Used for simple messages and event alerts.
      * 
-     * @param type    type of message to be sent
+     * @param header  type of message to be sent
      * @param content content of message
      */
     @SuppressWarnings("null")

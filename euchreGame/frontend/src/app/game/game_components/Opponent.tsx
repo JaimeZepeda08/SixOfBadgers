@@ -14,7 +14,7 @@ import Hand from '@/components/Hand';
  * @param {string} props.padding - Padding style for the opponent's info.
  * @returns {JSX.Element} Opponent component.
  */
-const Opponent = ({ name, player, cards, onCardSelect, tooltipVisible, toggleTooltip, padding }) => {
+const Opponent = ({ name, player, cards, onCardSelect, tooltipVisible, toggleTooltip, padding }: any) => {
   return (
     <div
       className={`absolute ${player.position}`}

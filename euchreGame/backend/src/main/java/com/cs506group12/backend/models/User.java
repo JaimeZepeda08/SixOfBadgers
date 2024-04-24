@@ -1,5 +1,8 @@
 package com.cs506group12.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * User object to model an authenticated user logged in to the system.
  * This differs from a player object, which is a representation of one of the
@@ -13,7 +16,7 @@ public class User {
 
     int userUID;
     String userName;
-    String[] settings;
+    String email;
 
     /**
      * Creates a User object. Should only be called in the DatabaseConnection class
@@ -22,18 +25,18 @@ public class User {
      * 
      * @param userUID  The unique identifier of the user in the MySQL database
      * @param userName The name of the user
-     * @param settings A string representing various settings as stored in the
-     *                 database.
+     * @param email A string representing the users email
      */
-    public User(int userUID, String userName, String[] settings) {
+    @JsonCreator
+    public User(@JsonProperty("userUID") int userUID, @JsonProperty("userName") String userName, @JsonProperty("email") String email) {
         this.userUID = userUID;
         this.userName = userName;
-        this.settings = settings;
+        this.email = email;
     }
 
     /**
      * Overloaded constructor, used because user settings are not yet implemented.
-     * 
+     *
      * @param userUID The unique identifier of the user in the MySQL database
      * @param userName The name of the user
      */
@@ -61,4 +64,13 @@ public class User {
         return this.userUID;
     }
 
+    /**
+     * Gets the user's email. Used for methods connecting to the database to retrieve
+     * user information
+     *
+     * @return User's email
+     */
+    public String getEmail() {
+        return this.email;
+    }
 }

@@ -8,7 +8,7 @@ import React from "react";
  * @param {boolean} props.selectedCard - Flag indicating if a card is selected.
  * @returns {JSX.Element} CardSubmissionForm component.
  */
-function CardSubmissionForm({ handleSubmit, selectedCard }) {
+function CardSubmissionForm({ handleSubmit, selectedCard }: any) {
   return (
     <form onSubmit={handleSubmit} className="absolute bottom-0 right-0">
       <button

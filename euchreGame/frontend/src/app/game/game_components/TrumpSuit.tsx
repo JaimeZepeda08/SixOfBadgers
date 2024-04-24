@@ -8,7 +8,7 @@ import Card from "@/components/Card";
  * @param {string} props.trumpSuit - The current trump suit.
  * @returns {JSX.Element} TrumpSuit component.
  */
-const TrumpSuit = ({ trumpSuit }) => {
+const TrumpSuit = ({ trumpSuit }: any) => {
   return (
     <div
       style={{

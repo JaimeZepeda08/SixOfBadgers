@@ -9,7 +9,7 @@ import Hand from '@/components/Hand';
  * @param {boolean} props.isOpen - Flag indicating if the modal is open.
  * @returns {JSX.Element} GameModal component.
  */
-const GameModal = ({ isOpen }) => {
+const GameModal = ({ isOpen }: any) => {
 
     const opponents = [
         { suit: "?", value: "?" },

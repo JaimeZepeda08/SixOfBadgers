@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
+import React from "react";
 
 interface TopNavProps {
   components?: React.ReactNode[];
@@ -21,9 +22,9 @@ const TopNav = ({ components }: TopNavProps) => {
   const pathname = usePathname();
 
   const links = [
-    { name: "Home", href: "/home" },
+    { name: "Home", href: "/" },
     { name: "Rules", href: "/rules" },
-    { name: "Stats", href: "/stats" },
+    { name: "Saved Games", href: "/saved_games" },
   ];
 
   return (
@@ -41,7 +42,7 @@ const TopNav = ({ components }: TopNavProps) => {
             <Link href={link.href} key={index}>
               <span
                 className={clsx(
-                  "block px-5 py-5 text-2xl rounded hover:bg-gray-200 hover:text-gray-800 hover:border-transparent cursor-pointer",
+                  "block px-5 py-5 font-bold text-2xl rounded hover:bg-gray-200 hover:text-gray-800 hover:border-transparent cursor-pointer",
                   {
                     "text-white": pathname === link.href,
                   }
@@ -56,7 +57,7 @@ const TopNav = ({ components }: TopNavProps) => {
           {/* add extra components to the nav bar */}
           {components?.map((component, index) => (
             <div key={index} className="mx-5">
-              <div className="w-[40px] flex items-center justify-center">
+              <div className="w-[100%] flex items-center justify-center">
                 {component}
               </div>
             </div>

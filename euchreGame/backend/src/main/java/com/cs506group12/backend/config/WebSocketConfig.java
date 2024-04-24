@@ -84,11 +84,11 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
                         // called when a player creates a new game
                         case "create":
-                            handleCreateMessage(client);
+                            handleCreateMessage(client, jsonNode.get("name").asText());
                             break;
                         // called when a players joins a game
                         case "join":
-                            handleJoinMessage(client, jsonNode.get("gameID").asText());
+                            handleJoinMessage(client, jsonNode.get("gameID").asText(), jsonNode.get("name").asText());
                             break;
                         // called when a player leaves a game
                         case "leave":
@@ -174,8 +174,12 @@ public class WebSocketConfig implements WebSocketConfigurer {
      *
      * @param client The client creating the game.
      */
-    private void handleCreateMessage(Client client) {
+    private void handleCreateMessage(Client client, String name) {
         // create a new game session with the client as the host
+        if(!name.equals("guest")) {
+            client.setClientId(name);
+        }
+
         GameSession game = new EuchreGame(client);
         // store game session
         games.put(game.getGameId(), game);
@@ -188,7 +192,10 @@ public class WebSocketConfig implements WebSocketConfigurer {
      *
      * @param client client that is trying to join a game
      */
-    private void handleJoinMessage(Client client, String id) {
+    private void handleJoinMessage(Client client, String id, String name) {
+        if(!name.equals("guest")) {
+            client.setClientId(name);
+        }
         // check that the game with the id sent by the client exists
         if (games.containsKey(id)) {
             // get game with corresponding id

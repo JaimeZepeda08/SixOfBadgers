@@ -1,9 +1,10 @@
 "use client";
 
 import { useSocket } from "@/lib/useSocket";
-import React, { useCallback, useEffect, useState } from "react";
+import React, {useCallback, useContext, useEffect, useState} from "react";
 import { SimpleButtonRed, SimpleButtonGreen } from "@/components/SimpleButton";
 import { useRouter } from "next/navigation";
+import {UserContext} from "@/lib/UserContext";
 
 /**
  * React component for managing multiplayer game lobby.
@@ -12,6 +13,11 @@ import { useRouter } from "next/navigation";
 export default function Page(): JSX.Element {
   const socket = useSocket();
   const router = useRouter();
+
+  const {
+    userData,
+    setUserData,
+  } = useContext(UserContext);
 
   // State variables
   const [gameID, setGameID] = useState<string>("");
@@ -84,7 +90,7 @@ export default function Page(): JSX.Element {
         <SimpleButtonRed
           text="Create New Game"
           onClick={() => {
-            socket.send(JSON.stringify({ header: "create" }));
+            socket.send(JSON.stringify({ header: "create", name: userData.userName}));
           }}
         />
         <div className="flex justify-center items-center my-8">
@@ -98,7 +104,7 @@ export default function Page(): JSX.Element {
           <SimpleButtonRed
             text="Join Game"
             onClick={() => {
-              socket.send(JSON.stringify({ header: "join", gameID: joinID }));
+              socket.send(JSON.stringify({ header: "join", gameID: joinID, name: userData.userName}));
             }}
           />
         </div>

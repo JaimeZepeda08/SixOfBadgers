@@ -1,6 +1,9 @@
 package com.cs506group12.backend.models;
 
 import java.util.*;
+import com.cs506group12.backend.models.GameSession;
+import com.cs506group12.backend.models.Client;
+import org.springframework.context.annotation.Bean;
 
 public class EuchreGame extends GameSession {
     public static ArrayList<Card> deck;
@@ -37,7 +40,7 @@ public class EuchreGame extends GameSession {
 
     /**
      * Constructor for a EuchreGame object
-     * 
+     *
      * @param host the client that started the game
      */
     public EuchreGame(Client host) {
