@@ -224,28 +224,34 @@ React for the frontend.
 flowchart RL
 
 subgraph "Sign In"
-    C(Google Sign in)
-    C --(Sign in)--> A
+    A(Google Sign in)
+    A --(Sign in)--> B
 end
 
 subgraph "Start Game"
-    A(Choose Settings)
+    B(Choose Settings)
 end
 
 subgraph "Choose Settings"
-    B(Help Page)
-    A --(If help needed)--> B
-    B --(After help)--> A
-    A --(If settings chosen)--> Game
+    C(Help Page)
+    B --(If help needed)--> C
+    C --(After help)--> B
+    B --(If settings chosen)--> D
+end
+
+subgraph "Game"
+    D(Game)
+    D --(finish)--> E
 end
 
 subgraph "Gameplay ends"
-    D(Gameplay ends)
+    E(Gameplay ends)
 end
 
 A --> B
 B --> C
 C --> D
+D --> E
 ```
 
 #### System Architecture Diagram
