@@ -35,7 +35,7 @@ CREATE TABLE `Games` (
   `Team1Score` int DEFAULT NULL,
   `Team2Score` int DEFAULT NULL,
   PRIMARY KEY (`GameUID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -54,6 +54,9 @@ CREATE TABLE `Users` (
   `Settings` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`UserUID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+insert into Users (`UserUID`, `UserName`, `EmailAddress`, `AccountCreation`, `LastLogin`, `Settings`) values (-1, 'EuchreBot', 'euchrebot@euchre.bot', CURRENT_TIME(), CURRENT_TIME(),'');
+insert into Users (`UserUID`, `UserName`, `EmailAddress`, `AccountCreation`, `LastLogin`, `Settings`) values (0, 'guestUser', 'guest@euchre.guest', CURRENT_TIME(), CURRENT_TIME(),'');
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
