@@ -35,7 +35,6 @@ public class GameState {
     private String gameUUID; //unique identifier used to connect to the game
     private ArrayList<Card> deck;
     private Hand[] playerHands;
-    private String[] playerNames;
     private ArrayList<Player> players;
     private int activePlayerIndex;      //Index of the active player
     private int dealerIndex;            //Index of of dealer
@@ -64,7 +63,6 @@ public class GameState {
         for(int i=0; i<4; i++){
             this.playerHands[i] = new Hand();
         }
-        playerNames = new String[4];
         this.players = new ArrayList<Player>();
         this.dealerIndex = -1;
         this.leadingPlayerIndex = -1;
@@ -88,20 +86,18 @@ public class GameState {
 
      /**
       * Restores a game state from the SQL database. Don't use to make modifications to a game in progress.
-      * TODO: select correct game phase
-      * TODO: Load players based on names
-      * @param gameUUID
-      * @param playerHands
-      * @param playerNames
-      * @param dealerPosition
-      * @param leadingPlayerPosition
-      * @param teamOneScore
-      * @param teamTwoScore
-      * @param teamOneTricks
-      * @param teamTwoTricks
-      * @param trumpSuit
-      * @param attackingTeam
-      * @param playerGoingAlone
+      * @param gameUUID The UUID of the game that players use to join
+      * @param playerHands Array of player hands
+      * @param playerNames Array of player names - used to match to clients
+      * @param dealerPosition Current position of the dealer
+      * @param leadingPlayerPosition Position of the leading player or -1 if not playing a trick
+      * @param teamOneScore Score of team 1
+      * @param teamTwoScore Score of team 2
+      * @param teamOneTricks Tricks won by team 1
+      * @param teamTwoTricks Tricks won by team 2
+      * @param trumpSuit Current trump suit or null if not yet called
+      * @param attackingTeam Team that called trump or -1 if not yet called
+      * @param playerGoingAlone Index of the player that is going alone, or -1 if none
       */
     public GameState(String gameUUID, Hand[] playerHands, String[] playerNames,  int dealerPosition, int leadingPlayerPosition,
         int teamOneScore, int teamTwoScore, int teamOneTricks, int teamTwoTricks, Card.SUIT trumpSuit, int attackingTeam, int playerGoingAlone){
@@ -109,7 +105,11 @@ public class GameState {
         
         this.gameUUID = gameUUID;
         this.playerHands = playerHands;
-        this.playerNames = playerNames;
+        this.players = new ArrayList<Player>();
+        for(int i=0; i<4; i++){
+            this.players.add(new EuchrePlayer(playerNames[i], i));
+        }
+
         this.dealerIndex = (dealerPosition - 1) % 4;
         this.leadingPlayerIndex = (leadingPlayerPosition - 1) % 4;
         this.activePlayerIndex = (leadingPlayerPosition - 1) % 4;
@@ -124,7 +124,7 @@ public class GameState {
         this.deck = new ArrayList<Card>();
         this.initializeDeck();
 
-        //TODO
+        //TODO make sure we can only save inbetween tricks or at the start of the round.
         if(teamOneTricks > 0 || teamTwoTricks > 0){
             this.currentPhase = PHASE.PLAYTRICK;
         }else{
@@ -133,6 +133,35 @@ public class GameState {
 
         observer.updateEntireState(dealerPosition,leadingPlayerPosition,0,
             faceUpCard,trumpSuit,leadingSuit,playedCards,playerHands,score,tricks,attackingTeam);
+    }
+
+    /**
+     * Creates player objects based on connected clients from loaded state
+     * There is expected to be one client for each human player in the saved state
+     * @param clients
+     */
+    public void loadConnectedPlayersRestore(ArrayList<Client> clients){
+        //Add players to the game, starting with connected human players
+        Client client;
+        Player newPlayer;
+        String clientID;
+        for (int i = 0; i < clients.size(); i++) {
+            client = clients.get(i);
+            clientID = client.getClientId();
+            for(int j=0; j < players.size(); j++){
+                if(clientID.equals(players.get(i).getName())){
+                    newPlayer = new EuchrePlayer(client.getClientId(), i + 1);
+                    players.remove(i);
+                    this.addPlayer(new HumanPlayerDecorator(newPlayer, client), i + 1); 
+                }
+            }
+        }
+        //loop up from number of current clients to 4 to fill in the remaining slots with bots
+        for (int i = clients.size(); i < 4; i++){
+            newPlayer = new EuchrePlayer(null, i + 1); //don't need to set name for bots
+            players.remove(i);
+            this.addPlayer(new AIPlayerDecorator(newPlayer), i + 1);
+        }
     }
 
     /**
@@ -182,10 +211,6 @@ public class GameState {
         return this.gameUUID;
     }
 
-    public String[] getPlayerNames(){
-        return this.playerNames;
-    }
-
     public Hand getHand(int playerNumber){
         return playerHands[(playerNumber - 1) % 4];
     }
@@ -213,17 +238,17 @@ public class GameState {
     }
 
     /**
-     * 
-     * @param player
-     * @return
+     * Gets a representation of a player's hand in for storing in SQL.
+     * @param player index of the player whose hand should be SQLd (0<=i<=3)
+     * @return A string prepared to be stored in SQL
      */
     public String getHandSQL(int player){
         return playerHands[player].toSqlString();
     }
 
     /**
-     * 
-     * @return
+     * Gets the position of the dealer
+     * @return Position of the dealer (1 to 4)
      */
     public int getDealerPosition(){
         if(dealerIndex == -1){
@@ -234,56 +259,64 @@ public class GameState {
     }
 
     /**
-     * 
-     * @return
+     * Gets the position of the leading player
+     * @return position of the leading player (1 to 4)
      */
     public int getLeadingPlayerPosition(){
-        return this.leadingPlayerIndex + 1;
+        if(this.leadingPlayerIndex == -1){
+            return -1;
+        }else{
+            return this.leadingPlayerIndex + 1;
+        }
     }
 
     /**
-     * 
-     * @return
+     * Gets the current trump suit, or null if no suit set.
+     * @return the current trump suit
      */
     public Card.SUIT getTrump(){
         return this.trumpSuit;
     }
 
     /**
-     * 
-     * @return
+     * Gets the number of the team that called trump, or -1 if none
+     * @return the number of the team that called trump, or -1 if none
      */
     public int getAttackingTeam(){
         return this.attackingTeam;
     }
 
     /**
-     * 
-     * @return
+     * Gets the position of the player going alone, or -1 if none
+     * @return the position of the player going alone, or -1 if none
      */
     public int getPlayerGoingAlone(){
-        return this.playerGoingAlone;
+        if(this.playerGoingAlone == -1){
+            return -1;
+        }else{
+            return this.playerGoingAlone + 1;
+        }
     }
 
     /**
-     * 
-     * @return
+     * Getter for played cards
+     * @return an ArrayList of cards that have been played
      */
     public ArrayList<Card> getPlayedCards() {
         return playedCards;
     }
 
     /**
-     * 
-     * @return
+     * Getter for the faceup card
+     * @return the faceup card
      */
     public Card getFaceUpCard(){
         return faceUpCard;
     }
 
     /**
-     * 
-     * @return
+     * Getter for the current phase
+     * @return the current game phase
      */
     public PHASE getCurrentPhase(){
         return this.currentPhase;
@@ -292,25 +325,50 @@ public class GameState {
     /**
      * Call on resolution of any phase, even if returning to the same phase.
      * Executes batched update for GameObserver
-     * @param phase
+     * @param phase phase that the game is transitioning to.
      */
     public void setPhase(PHASE phase){
         observer.sendUpdate(this.currentPhase, phase, this.players);
         this.currentPhase = phase;
 
+        //Once updated, if we're moving to STARTROUND initialize round starting values.
+        if(phase == PHASE.STARTROUND){
+            this.tricks[0]=0;
+            observer.updateTricks(1, 0);
+            this.tricks[1]=0;
+            observer.updateTricks(2, 0);
+            this.attackingTeam = -1;
+            observer.updateAttackingTeam(-1);
+            if(this.playerGoingAlone != -1){
+                this.playerHands[playerGoingAlone].clearHand();
+                observer.updateHand(playerGoingAlone, this.playerHands[playerGoingAlone]);
+                this.playerGoingAlone = -1;
+            }
+            this.faceUpCard = null;
+            observer.updateFaceUpCard(null);
+            this.leadingPlayerIndex = -1;
+            observer.updatePositions(this.dealerIndex + 1, this.leadingPlayerIndex);
+            this.leadingSuit = null;
+            observer.updateLeadingSuit(null);
+            this.playedCards.clear();
+            observer.updatePlayedCards(this.playedCards);
+            this.trumpSuit = null;
+            observer.updateTrump(null);
+        }
+
     }
 
     /**
-     * 
-     * @return
+     * getter for the leading suit
+     * @return the leading suit of the trick, or null if none
      */
     public Card.SUIT getLeadingSuit(){
         return this.leadingSuit;
     }
 
     /**
-     * 
-     * @return
+     * getter for the highest played card this trick
+     * @return the highest played card this trick
      */
     public Card highestPlayedCard(){
         int max = Integer.MIN_VALUE;
@@ -331,17 +389,17 @@ public class GameState {
     }
 
     /**
-     * 
-     * @param player
-     * @param position
+     * Add a player at a given position
+     * @param player Player to add
+     * @param position Player's position (1 to 4)
      */
     public void addPlayer(Player player, int position){
         this.players.add((position - 1) % 4, player);
     }
 
     /**
-     * 
-     * @param suit
+     * Sets the trump
+     * @param suit Suit to set as trump
      */
     public void setTrump(Card.SUIT suit){
         this.trumpSuit = suit;
@@ -349,8 +407,8 @@ public class GameState {
     }
 
     /**
-     * 
-     * @param position
+     * Sets the active player
+     * @param position Position of the active player (1 to 4)
      */
     public void setActivePlayer(int position){
         this.activePlayerIndex = (position - 1) % 4;
@@ -358,8 +416,8 @@ public class GameState {
     }
 
     /**
-     * 
-     * @return
+     * getter for the active player
+     * @return The active player
      */
     public Player getActivePlayer(){
         if(activePlayerIndex == -1){
@@ -369,18 +427,18 @@ public class GameState {
     }
 
     /**
-     * 
-     * @param position
-     * @return
+     * Gets a player based on a specific position
+     * @param position position of the player to get (1 to 4)
+     * @return The player at the given position
      */
     public Player getPlayer(int position){
         return this.players.get((position - 1) % 4 );
     }
 
     /**
-     * 
-     * @param position
-     * @param c
+     * Removes a card from a player's hand
+     * @param position Position of the player to remove the card from
+     * @param c The card to remove
      */
     public void removeCard(int position, Card c){
         Hand h = playerHands[(position - 1) % 4];
@@ -389,8 +447,9 @@ public class GameState {
     }
 
     /**
-     * 
-     * @param c
+     * Adds a card to the list of played cards. removes the given card
+     * from the active player's hand
+     * @param c card to play
      */
     public void addPlayedCard(Card c){
         playedCards.add(c);
@@ -401,8 +460,8 @@ public class GameState {
     }
 
     /**
-     * 
-     * @param position
+     * sets the leading player
+     * @param position position of the leading player (1 to 4)
      */
     public void setLeadingPlayer(int position){
         this.leadingPlayerIndex = (position - 1) % 4;
@@ -410,8 +469,8 @@ public class GameState {
     }
 
     /**
-     * 
-     * @param position
+     * Adds a trick won by the player at the given position
+     * @param position the position of the player who won the trick (1 to 4)
      */
     public void addTrick(int position){
         int winningTeam = (position - 1) % 2;
@@ -420,7 +479,7 @@ public class GameState {
     }
 
     /**
-     * 
+     * Clear the list of played cards
      */
     public void clearPlayedCards(){
         this.playedCards.clear();
@@ -428,9 +487,9 @@ public class GameState {
     }
 
     /**
-     * 
-     * @param team
-     * @param pointsScored
+     * Adds a number of points to a team's score
+     * @param team Team to add the points to (1 or 2)
+     * @param pointsScored The number of points scored
      */
     public void addScore(int team, int pointsScored){
         int teamIndex = (team - 1) % 2;
@@ -439,8 +498,8 @@ public class GameState {
     }
 
     /**
-     * 
-     * @param position
+     * Sets the position of the dealer
+     * @param position The position of the dealer (1 to 4)
      */
     public void setDealerPosition(int position){
         this.dealerIndex = (position - 1) % 4;
@@ -448,8 +507,8 @@ public class GameState {
     }
 
     /**
-     * 
-     * @param position
+     * Clears the given player's hand
+     * @param position The position of the player to clear hand (1 to 4)
      */
     public void clearHand(int position){
         Hand hand = this.playerHands[(position - 1) % 4];
@@ -458,8 +517,8 @@ public class GameState {
     }
 
     /**
-     * 
-     * @param position
+     * Sets the position of the player going alone
+     * @param position position of the player going alone, or -1 if playing with full roster
      */
     public void setPlayerGoingAlone(int position){
         if(position == -1){
@@ -470,14 +529,18 @@ public class GameState {
     }
 
     /**
-     * 
-     * @param suit
+     * Sets the leading suit for a trick
+     * @param suit The suit of the led card
      */
     public void setLeadingSuit(Card.SUIT suit){
         this.leadingSuit = suit;
         observer.updateLeadingSuit(suit);
     }
 
+    /**
+     * Sets the attacking team based on the position of the calling player
+     * @param playerPosition The position of the player who called trump (1 to 4)
+     */
     public void setAttackingTeam(int playerPosition){
         this.attackingTeam = ((playerPosition - 1) % 2) + 1;
     }

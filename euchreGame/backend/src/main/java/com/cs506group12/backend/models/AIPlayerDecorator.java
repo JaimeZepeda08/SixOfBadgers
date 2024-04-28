@@ -189,10 +189,6 @@ public class AIPlayerDecorator extends PlayerDecorator{
         Card.SUIT currentTrump = state.getTrump();
         Card.SUIT leadingSuit = state.getLeadingSuit();
 
-        //If you have a single card of sufficiently low value, it is your worst card since
-        //must follow suit with it if its suit is led. TODO implement this if there is time
-
-
         //Otherwise just find the lowest valued card given the current trump
         for(int i=0; i<hand.getSize(); i++){
             c = hand.getCard(i);

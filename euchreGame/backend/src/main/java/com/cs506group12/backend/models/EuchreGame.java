@@ -6,7 +6,6 @@ import com.cs506group12.backend.models.Card.SUIT;
 import com.cs506group12.backend.models.GameState.PHASE;
 
 public class EuchreGame extends GameSession {
-//TODO: Make sure state is set on every edge transision (incl to same state)
 
     private GameState state;
 
@@ -59,12 +58,6 @@ public class EuchreGame extends GameSession {
     }
 
     public void startRound(){
-        //If a player went alone, their teammate's hand still has cards in it and needs clearing
-        if(state.getPlayerGoingAlone() != -1){
-            state.clearHand(state.getPlayerGoingAlone() + 2);
-            state.setPlayerGoingAlone(-1);
-        }
-
         //Player to the left of previous dealer deals next
         int dealerPosition = state.getDealerPosition();
 
@@ -110,6 +103,8 @@ public class EuchreGame extends GameSession {
             //If the result is null, we go straight to PICKTRUMP2, otherwise return the value
             if(b != null){
                 return (boolean) b;
+            }else{
+                state.setPhase(PHASE.PICKTRUMP2);
             }
         }
 
@@ -153,6 +148,7 @@ public class EuchreGame extends GameSession {
             }else{
                 //Ask next player for suit.
                 activePlayer = state.getActivePlayer();
+                state.setPhase(PHASE.PICKTRUMP1);
                 suit = activePlayer.chooseTrump(state);
 
                 //If null, await player response
@@ -214,6 +210,7 @@ public class EuchreGame extends GameSession {
             if(suit == null){
                 return false; //exit and await player input
             }else{
+                state.setPhase(PHASE.PICKTRUMP2);
                 return pickTrumpPhase2(suit, activePlayer);
             }
 
@@ -258,6 +255,7 @@ public class EuchreGame extends GameSession {
                 Player activePlayer = state.getActivePlayer();
                 state.setActivePlayer(activePlayer.getPosition() + 1);
                 activePlayer = state.getActivePlayer();
+                state.setPhase(PHASE.PLAYTRICK);
                 c = activePlayer.chooseCard(state);
                 if(c == null){
                     return false;
@@ -379,7 +377,7 @@ public class EuchreGame extends GameSession {
         }
         //if not, go to next round
         else{
-            //TODO reset state
+            state.setPhase(PHASE.STARTROUND);
             startRound();
         }
 
