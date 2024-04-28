@@ -15,16 +15,17 @@ public class EuchreGame extends GameSession {
     /**
      * Constructor for a EuchreGame object
      *
-     * @param client the client that started the game
+     * @param host the client that started the game
      */
-    //public EuchreGame(com.cs506group12.backend.Client client) {
-      //  super(client);
-    //}
+    public EuchreGame(Client host) {
+        super(host);
+    }
 
     public EuchreGame(Client host, GameState state){
         super(host);
         this.state = state;
     }
+
 
     /**
      * Overloads the startGame function of the GameSession Class. It is in charge of
