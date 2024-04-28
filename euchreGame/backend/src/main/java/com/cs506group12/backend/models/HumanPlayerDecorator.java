@@ -31,6 +31,7 @@ public class HumanPlayerDecorator extends PlayerDecorator {
 	 */
 	public Card chooseCard(GameState state){
 		//TODO: Send message to player prompting a card choice
+		client.sendMessage("{\n\t\"message\": \"pickCard\"\n}");
 		return null;
 	}
 
@@ -43,10 +44,15 @@ public class HumanPlayerDecorator extends PlayerDecorator {
 	 */
 	public Card.SUIT chooseTrump(GameState state) {
 		//TODO: Send message to player prompting trump choice
+		if(state.getCurrentPhase() == GameState.PHASE.PICKTRUMP1){
+			client.sendMessage("{\n\t\"message\": \"choseIfYouWantFaceupAsTrump\"\n}");
+		}
 
 		if(state.getCurrentPhase() == GameState.PHASE.PICKTRUMP2
 			&& super.decoratedPlayer.getPosition() == state.getDealerPosition()){
 			//forced to pick trump
+			client.sendMessage("{\n\t\"message\": \"pickTrumpOtherThanFaceupCard\"\n}");
+
 		}
 		return null;
 	}
@@ -56,6 +62,7 @@ public class HumanPlayerDecorator extends PlayerDecorator {
 	 */
 	public Card chooseReplacement(GameState state){
 		//TODO Send message to player for choice of card to replace
+		client.sendMessage("{\n\t\"message\": \"choseCardToSwapWithFaceUpCard\"\n}");
 		return null;
 	}
 
