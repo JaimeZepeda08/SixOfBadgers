@@ -34,7 +34,7 @@ services:
       MYSQL_DATABASE: euchre
       MYSQL_ROOT_HOST: '%'
     volumes:
-      - euchredb:/var/lib/mysql
+      - ./database/euchre_schema.sql:/docker-entrypoint-initdb.d/euchre_schema.sql
     ports:
       - 5306:3306
     networks:
