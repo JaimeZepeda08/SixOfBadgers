@@ -1,42 +1,16 @@
 package com.cs506group12.backend.models;
 
 import java.util.*;
-import com.cs506group12.backend.models.GameSession;
-import com.cs506group12.backend.models.Client;
-import org.springframework.context.annotation.Bean;
+import com.cs506group12.backend.interfaces.*;
+import com.cs506group12.backend.models.Card.SUIT;
+import com.cs506group12.backend.models.GameState.PHASE;
 
 public class EuchreGame extends GameSession {
-    public static ArrayList<Card> deck;
-    private ArrayList<Card>[] playerHands;
-    private int cardsLeft;
+//TODO: Make sure state is set on every edge transision (incl to same state)
 
-    public ArrayList<Player> players;
-    // private boolean areTurnsTimed;
-    private int dealer = 0; // position of dealer
-    private int leadingPlayer = 1; // player who plays first card of trick
-    private int teamOneScore; // do turns until one of the team scores is over threshhold
-    private int teamTwoScore;
-    private int pointsThreshold = 10;
+    private GameState state;
 
-    private Card faceUpCard; // used to helpo establish trump
-    private Card trumpSuitCard; // for comparison
-    private Card leadingCard; // first card that is in trick played - important if not trump
-    private Card cardThatIsPlayed;
-
-    // private int numPlayingCards = 4; // for if we implement 3 player
-    private int teamThatWonTrick = 0;
-    private int teamThatWonTurn;
-    public int attackingTeam; // team who establishes trump
-    public int[] teamOverallScores = { 0, 0 };
-    private int[] numTricks = { 0, 0 };
-
-    private ArrayList<Card> playedCards = new ArrayList<Card>();
-    private ArrayList<Card> cardsThatCanBePlayed = new ArrayList<Card>();
-
-    private boolean isSoloPlayer = false; // if a player goes alone (3 players) - currently unimplemented
-    private int soloPlayerIndex;
-
-    public static ArrayList<Integer> ranks = new ArrayList<>();
+    private int playersPassedTrump;
 
     /**
      * Constructor for a EuchreGame object
@@ -45,7 +19,11 @@ public class EuchreGame extends GameSession {
      */
     public EuchreGame(Client host) {
         super(host);
-        deck = new ArrayList<>();
+    }
+
+    public EuchreGame(Client host, GameState state){
+        super(host);
+        this.state = state;
     }
 
     /**
@@ -54,400 +32,377 @@ public class EuchreGame extends GameSession {
      */
     public boolean startGame() {
         if (super.startGame()) {
-            initializeDeck();
-            dealCards();
+            //Initialize the game state
+            state = new GameState();
+            state.setUUID(super.gameId);
+
+            //Add players to the game, starting with connected human players
+            Client client;
+            Player player;
+            for (int i = 0; i < super.clients.size(); i++) {
+                client = super.clients.get(i);
+                player = new EuchrePlayer(client.getClientId(), i + 1);
+                state.addPlayer(new HumanPlayerDecorator(player, client), i + 1);
+            }
+            //loop up from number of current clients to 4 to fill in the remaining slots with bots
+            for (int i = super.clients.size(); i < 4; i++){
+                player = new EuchrePlayer(null, i + 1); //don't need to set name for bots
+                state.addPlayer(new AIPlayerDecorator(player), i + 1);
+            }
+
+            //Start the first round
+            startRound();
+
             return true;
         }
         return false;
     }
 
-    /**
-     * Initializes the original deck of 24 cards, and shuffles it.
-     */
-    public static void initializeDeck() {
-        deck = new ArrayList<Card>();
-        for (int x = 9; x < 15; x++) {
-            deck.add(new Card(Card.SUIT.CLUBS, x));
-            deck.add(new Card(Card.SUIT.DIAMONDS, x));
-            deck.add(new Card(Card.SUIT.HEARTS, x));
-            deck.add(new Card(Card.SUIT.SPADES, x));
+    public void startRound(){
+        //If a player went alone, their teammate's hand still has cards in it and needs clearing
+        if(state.getPlayerGoingAlone() != -1){
+            state.clearHand(state.getPlayerGoingAlone() + 2);
+            state.setPlayerGoingAlone(-1);
         }
 
-        Collections.shuffle(deck);
+        //Player to the left of previous dealer deals next
+        int dealerPosition = state.getDealerPosition();
+
+        //If no dealer is set yet (Game has just started)
+        if(dealerPosition == -1){
+            //set initial dealer at position 1 (host)
+            state.setDealerPosition(1);
+        }
+        //Otherwise dealer position moves one player left
+        else{
+            state.setDealerPosition(state.getDealerPosition() + 1);
+        }
+
+        //Next round starts with player to the dealer's left
+        state.setActivePlayer(state.getDealerPosition() + 1);
+
+        state.setPhase(PHASE.STARTROUND);
+        state.dealCards();
+
+        state.setPhase(PHASE.PICKTRUMP1);
+        boolean proceed = pickTrump(null); //null indicates initial entry to phase
+
+        //If an AI player picks a trump before it gets to a human player, proceed directly to next phase
+        if(proceed){
+            playTrick(null); //null indicates initial entry to phase again
+        }
     }
 
     /**
-     * Deals out 4 cards to each person
+     * Method for handling trump selection phases. 
+     * @param suit Suit selected by the player, or null if no player yet asked for selection.
+     * @return If true, proceed to next phase. If false, return and await player input.
      */
-    public void dealCards() {
-        Iterator<Card> iterator = deck.iterator();
-        // iterate to deal 5 cards to each player
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < getPlayers().size(); j++) {
-                Player player = getPlayers().get(j);
-                Card nextCard = iterator.next();
-                player.getHand().add(nextCard);
+    public boolean pickTrump(Card.SUIT suit){
+        
+        Player activePlayer = state.getActivePlayer();
+        Boolean b;
+
+        //If in first trump selection phase, picking based on face-up card.
+        if(state.getCurrentPhase() == PHASE.PICKTRUMP1){
+            b = this.pickTrumpPhase1(suit, activePlayer);
+
+            //If the result is null, we go straight to PICKTRUMP2, otherwise return the value
+            if(b != null){
+                return (boolean) b;
             }
         }
 
-        // sets face up card to first card left in deck (after deal)
-        faceUpCard = iterator.next();
-        cardsLeft = deck.size() - 16;
+        //If in second trump selection phase, picking suit other than face-up suit
+        if (state.getCurrentPhase() == PHASE.PICKTRUMP2) {
+            return this.pickTrumpPhase2(suit, activePlayer);
+        }
+        return true;
     }
 
     /**
-     * Gets the clients connected to the game and casts them to players
+     * Helper method of pickTrump representing possibilites in phase PICKTRUMP1.
+     * @param suit The suit the player selected
+     * @param activePlayer The active player
+     * @return True or False if the outer method should return one of those values, null
+     * if the outer method should proceed straight to phase PICKTRUMP2. True represents proceeding
+     * to PLAYTRICK, false represents waiting for player input
      */
-    public ArrayList<Player> getPlayers() {
-        ArrayList<Player> players = new ArrayList<>();
-        for (Client client : getConnectedClients()) {
-            players.add((Player) client);
-        }
-        return players;
-    }
+    public Boolean pickTrumpPhase1(Card.SUIT suit, Player activePlayer){
+        //If the player is directly to the dealer's left, just starting phase.
+        if(activePlayer.getPosition() == (state.getDealerPosition() + 1)){
+            playersPassedTrump = 0;
 
-    /**
-     * // * The function from which the game is run. Game will run until one team
-     * has 10
-     * // * points
-     * //
-     */
-    // public void euchreGameLoop() {
-    // System.out.println("in euchreGameLoop"); // debug
+            suit = activePlayer.chooseTrump(state);
 
-    // initializeGame(); // creates players, deck, and assigns cards
-    // establishTrump();
-    // cardsLeft = deck.size();
-
-    // // game loop - exits once a team wins
-    // while (teamOverallScores[0] < pointsThreshold && teamOverallScores[1] <
-    // pointsThreshold) {
-    // for (int i = 0; i < 5; i++) { // for each trick - TODO terminate early if
-    // team wins
-    // handleTrick();
-    // }
-
-    // teamThatWonTurn = determineTurnWinner();
-    // teamOverallScores[teamThatWonTurn] += handlePoints(teamThatWonTurn); //
-    // updates overall point total
-
-    // Collections.shuffle(deck);
-    // dealCards(); // resets
-    // dealer = (dealer + 1) % 4;
-    // // leadingPlayer = (dealer + 1) % 4; // goes first in first round MAYBE
-    // REMOVE
-    // establishTrump();
-    // }
-    // }
-
-    // /**
-    // * used for testing purposes - initializes player array, deck, and assigns
-    // cards
-    // */
-    // public void initializeGame() { // used for games
-    // System.out.println("in initializeGame"); // debug
-    // for (int i = 0; i < 4; i++) {
-    // // String username = clients.get(i).getPlayerId();
-    // // players.add(new Player(username));
-    // }
-    // initializeDeck();
-    // dealCards();
-    // }
-
-    /**
-     * all players play one card then scored
-     * 
-     * @return the team number that won the trick
-     */
-    public void handleTrick() {
-        // TODO if player goes alone (3 players)
-
-        for (int i = 0; i < playedCards.size(); i++) { // TODO - chnage from playedCards.size()
-            // call a controller and add result to arraylist of played cards then score -
-            // starting from leading player
-            // cardsThatCanBePlayed = players.get(i).(getPlayableHand(leadingCard.getSuit(),
-            // trumpSuitCard.getSuit()));
-            cardThatIsPlayed = players.get(0).getHand().get(0); // placeholder - put in controller
-            players.get(i).playAndRemoveCard(cardThatIsPlayed);
-
-        }
-
-        teamThatWonTrick = (leadingPlayer + score(playedCards)) % 2;
-        leadingPlayer = ((leadingPlayer + score(playedCards)) % 4); // player who won current trick starts of next trick
-        numTricks[teamThatWonTrick] = numTricks[teamThatWonTrick] + 1; // UPDATES
-        playedCards.clear();
-    }
-
-    /**
-     * looks for which team won more tricks
-     * 
-     * @return the index of the team that won the turn
-     */
-    public int determineTurnWinner() {
-        if (numTricks[0] > numTricks[1])
-            return 0;
-        else {
-            return 1;
-        }
-    }
-
-    /**
-     * After all tricks are won, assign points to winning team
-     * 
-     * @param winningTeam the team that won the turn
-     * @return the number of points the winning team recieves
-     */
-    public int handlePoints(int winningTeam) {
-        if (winningTeam != attackingTeam) { // if defenders win
-            return 2;
-        }
-        if (isSoloPlayer) { // if a player goes alone and wins - only attacking team can go alone so should
-                            // work
-            if (numTricks[winningTeam] == 5) {
-                return 4; // solo player wins 5 tricks
-            } else {
-                return 1; // solo player wins 3 or 4 tricks
+            //If suit is null, we're awaiting a response from a human player
+            if(suit == null){
+                return (Boolean) false;
             }
         }
-        if (numTricks[winningTeam] != 5 && attackingTeam == winningTeam) { // if attacking team wins 3 or 4
-            return 1;
-        }
-        if (numTricks[winningTeam] == 5 && attackingTeam == winningTeam) { // if attacking team wins 5
-            return 2;
+
+        if(suit == SUIT.NONE){
+            //Player has passed
+            playersPassedTrump++;
+            state.setActivePlayer(activePlayer.getPosition() + 1);
+            //If all have passed, proceed to PICKTRUMP2
+            if(playersPassedTrump == 4){
+                playersPassedTrump = 0;
+                state.setPhase(PHASE.PICKTRUMP2);
+                return null; //null indicates we're going straight into phase 2
+            }else{
+                //Ask next player for suit.
+                activePlayer = state.getActivePlayer();
+                suit = activePlayer.chooseTrump(state);
+
+                //If null, await player response
+                if(suit == null){
+                    return (Boolean) false;
+
+                //Otherwise an AI player has responded.
+                }else{
+                    return pickTrumpPhase1(suit, activePlayer);
+                }
+            }
+        
         }
 
-        numTricks[0] = 0; // reset the numkber of tricks won because turn is over
-        numTricks[1] = 0;
-        return 1;
+        //Otherwise a suit has been selected, proceed to REPLACECARD
+        else{
+            state.setTrump(suit);
+            state.setAttackingTeam(activePlayer.getPosition());
+
+            Player dealer = state.getPlayer(state.getDealerPosition());
+
+            //Add face up card to dealer's hand
+            state.getHand(dealer.getPosition()).addCard(state.getFaceUpCard());
+            state.setPhase(PHASE.REPLACECARD);
+
+            //Ask dealer to choose which card gets replaced
+            Card c = dealer.chooseReplacement(state);
+
+            if(c == null){
+                return (Boolean) false; //exit and await player response
+            }else{
+                //AI dealer has selected a card, proceed to PLAYTRICK
+                return replaceCard(c); 
+            }
+        }
+    }
+
+    public boolean replaceCard(Card c){
+        state.getHand(state.getDealerPosition()).removeCard(c);
+        state.setLeadingPlayer(state.getActivePlayer().getPosition());
+        state.setPhase(PHASE.PLAYTRICK);
+        return true;
+    }
+
+    /**
+     * Helper method for pickTrump representing possible states in phase PICKTRUMP2
+     * @param suit The suit the active player has chosen
+     * @param activePlayer The active player
+     * @return Boolean value for outer method to return. True represents proceeding
+     * to playTrick, false represents waiting for player input.
+     */
+    private boolean pickTrumpPhase2(Card.SUIT suit, Player activePlayer){
+        if(suit == Card.SUIT.NONE){
+            playersPassedTrump++;
+            state.setActivePlayer(activePlayer.getPosition() + 1);
+            activePlayer = state.getActivePlayer();
+            suit = activePlayer.chooseTrump(state);
+            
+            if(suit == null){
+                return false; //exit and await player input
+            }else{
+                return pickTrumpPhase2(suit, activePlayer);
+            }
+
+        }else{
+            //Suit has been selected, proceed to PLAYTRICK
+            state.setTrump(suit);
+            state.setAttackingTeam(activePlayer.getPosition());
+            state.setLeadingPlayer(activePlayer.getPosition());
+            state.setPhase(PHASE.PLAYTRICK);
+            return true;
+        }
+    }
+
+    public boolean playTrick(Card c){
+        //If no card yet played, ask active player for a card
+        if(c == null){
+            c = state.getActivePlayer().chooseCard(state);
+
+            //if still null, awaiting player response. 
+            if(c == null){
+                return false;
+            }
+            //Otherwise we have a card played by an AI player
+            else{
+                return playTrick(c);
+            }
+        }else{
+            //Play the card
+            state.addPlayedCard(c);
+            if(state.getPlayedCards().size() == 1){
+                state.setLeadingSuit(c.getSuit());
+            }
+
+            //If enough cards have been played, score the trick
+            int numPlayedCards = state.getPlayedCards().size();
+            if(numPlayedCards == 4 || (numPlayedCards == 3 & state.getPlayerGoingAlone() != -1)){
+                state.setPhase(PHASE.SCORETRICK);
+                return true;
+            }
+            //Otherwise activate the next player and ask for a card.
+            else{
+                Player activePlayer = state.getActivePlayer();
+                state.setActivePlayer(activePlayer.getPosition() + 1);
+                activePlayer = state.getActivePlayer();
+                c = activePlayer.chooseCard(state);
+                if(c == null){
+                    return false;
+                }
+                else{
+                    return playTrick(c);
+                }
+            }
+        }
+    }
+
+    public void scoreTrick(){
+        ArrayList<Card> playerCards = state.getPlayedCards();
+
+        int winningPlayerPosition = determineWinningPlayer(playerCards);
+
+        state.addTrick(winningPlayerPosition);
+        
+        //Clear played cards and suits for the trick
+        state.clearPlayedCards();
+        state.setTrump(null);
+        state.setLeadingSuit(null);
+
+        int totalTricks = state.getTeamTricks(1) + state.getTeamTricks(2);
+        if(totalTricks < 5){
+            state.setLeadingPlayer(winningPlayerPosition); //player who won current trick starts of next trick
+            state.setActivePlayer(winningPlayerPosition);
+            state.setPhase(PHASE.PLAYTRICK);
+
+            //Ask next player for input
+            Card c = state.getActivePlayer().chooseCard(state);
+            
+            //If null, waiting on player response
+            if(c == null){
+                return;
+            }
+            //Otherwise an AI player has selected a card, proceed with playTrick.
+            else{
+                playTrick(c);
+            }
+        }
+        else{
+            state.setLeadingPlayer(-1);
+            state.setPhase(PHASE.SCOREROUND);
+            scoreRound();
+        }
     }
 
     /**
      * Determines highest value card that wins trick
      * 
-     * @param cards - the cards that have been played
-     * @return index of the card with the highest value
+     * @param cards - The cards that have been played, in played order
+     * @return The position of the player who won the trick
      */
-    public int score(ArrayList<Card> cards) {
-        int max = 0;
+    private int determineWinningPlayer(ArrayList<Card> cards) {
+        int max = Integer.MIN_VALUE;
         int maxIndex = 0;
+        int currentValue;
+
+        Card.SUIT leadingSuit = state.getLeadingSuit();
+        Card.SUIT trumpSuit = state.getTrump();
 
         for (int i = 0; i < cards.size(); i++) { // starts at leading player
-            if (cards.get(i).value(trumpSuitCard, cards.get(i).getSuit()) > max) {
+            currentValue = cards.get(i).value(trumpSuit, leadingSuit);
+            if (currentValue > max) {
                 maxIndex = i;
-                max = cards.get(i).value(trumpSuitCard, cards.get(i).getSuit());
+                max = currentValue;
             }
         }
-        return maxIndex;
+        return ((state.getLeadingPlayerPosition() + maxIndex) % 4);
     }
 
-    /**
-     * presents all players with option to chose face up card as trumop, if a player
-     * chooses, dealer swaps out a card
-     * else, dealer choses trump
-     * 
-     * @return a string representation of the trump suit
-     */
-    public void establishTrump() {
-        // session.sendMessageToAllClients("trump", trumpToJSON());
-        trumpSuitCard = null;
-        // TODO modulo dealer + 1 % 4
-        int index = dealer + 1; // who is presented with option of establishing trump (starts to left of dealer)
+    public void scoreRound(){
+        int teamOneTricks = state.getTeamTricks(1);
+        int teamTwoTricks = state.getTeamTricks(2);
 
-        while (trumpSuitCard == null && index < 4) { // first pass - if anyone choses to establish initial turmp option
-
-            // if (controllerPlaceholder(index) == true) // if a player choses faceupcard as
-            // trump - should set trump and terminate loop
-            trumpSuitCard = faceUpCard;
-
-            index = (index + 1) % 4;
+        //Figure out who won
+        int winningTeam;
+        int winningTricks;
+        if (teamOneTricks > teamTwoTricks){
+            winningTeam = 1;
+            winningTricks = teamOneTricks;
+        }else{
+            winningTeam = 2;
+            winningTricks = teamTwoTricks;
         }
-        if (trumpSuitCard != null) { // if someone choses to establish trump as faceupcard, dealer gets that card
-
-            ArrayList<Card> dealerHand = players.get(dealer).getHand();
-            int cardToBeDiscarded = 0; // TODO dealer needs to discard one card - set result equal to int return value
-                                       // from controller
-
-            dealerHand.remove(cardToBeDiscarded);
-            dealerHand.add(faceUpCard);
-            players.get(dealer).setHand(dealerHand);
-
+        
+        int attackingTeam = state.getAttackingTeam();
+        if(attackingTeam == winningTeam){
+            //If calling team won all 5 tricks
+            if(winningTricks == 5){
+                //And if the player went alone
+                if(state.getPlayerGoingAlone() != -1){
+                    //Then they score 4 points
+                    state.addScore(winningTeam, 4);
+                }else{
+                    //Otherwise just 2 points
+                    state.addScore(winningTeam, 2);
+                }
+                
+            }else{
+                //If they scored fewer than 5 tricks, they score 1 point
+                state.addScore(winningTeam, 1);
+            }
         }
-
-        index = 1;
-        while (trumpSuitCard == null && index < 4) { // if no one accepts faceupcard as trump suit, each player starting
-                                                     // at dealer+1 has option to chose any trump other than faceupcard
-            // trumpSuitCard = placeholderChoseTrump(players.get((index+dealer)%4));
-
+        //If non-calling team won, they score 2 points
+        else{
+            state.addScore(winningTeam, 2);
         }
 
-        // maybe remove this code block and set while loop to 3, make last player chose
-        if (trumpSuitCard == null) { // should never happen, but just to make sure trump isnt null - let's dealer
-                                     // take faceup to make fair
-            trumpSuitCard = faceUpCard;
-            ArrayList<Card> dealerHand = players.get(dealer).getHand();
-            int cardToBeDiscarded = 0; // TODO dealer needs to discard one card - set result equal to int return value
-                                       // from controller
-            dealerHand.remove(cardToBeDiscarded);
-            dealerHand.add(faceUpCard);
-            players.get(dealer).setHand(dealerHand);
+        //See if anyone has won the game
+        int teamOneScore = state.getTeamScore(1);
+        int teamTwoScore = state.getTeamScore(2);
+        if(teamOneScore >= 10){
+            endGame(1);
         }
-    }
-
-    /**
-     * @return a json formatted string of the euchregame object
-     */
-    public String gameToJson() {
-        String betweenLines = "\",\n\t\"";
-        String betwweenKeyValues = "\": \"";
-
-        String trickInfo = "dealer" + betwweenKeyValues + dealer + betweenLines
-                + "leading_player" + betwweenKeyValues + leadingPlayer + betweenLines
-                + "trump_suit" + betwweenKeyValues + trumpSuitCard.getSuit() + betweenLines + "leading_card"
-                + betwweenKeyValues + leadingCard + betweenLines
-                + "attacking_team" + betwweenKeyValues + attackingTeam + betweenLines + "is_solo_player"
-                + betwweenKeyValues + isSoloPlayer
-                + betweenLines + "solo_player_index" + betwweenKeyValues + soloPlayerIndex + betweenLines
-                + "team_that_won_trick" + betwweenKeyValues + betweenLines;
-        String scoreInfo = "team_one_score" + betwweenKeyValues + teamOverallScores[0] + betweenLines
-                + "team_two_score" + betwweenKeyValues + teamOverallScores[1] + betweenLines
-                + "team_one_tricks" + betwweenKeyValues + numTricks[0] + betweenLines + "team_two_tricks"
-                + betwweenKeyValues + numTricks[1] + betweenLines;
-        String playersJson = "all_players\": []";
-        for (int i = 0; i < players.size(); i++) {
-
+        else if(teamTwoScore >= 10){
+            endGame(2);
         }
-        playersJson += "\n],";
-        String cardsInfo = "";
-        return "{\n + " + trickInfo + scoreInfo + playersJson + cardsInfo + "}";
+        //if not, go to next round
+        else{
+            //TODO reset state
+            startRound();
+        }
+
     }
 
-    /*
-     * Getter method for playerHands
-     */
-    public List<Card>[] getPlayerHands() {
-        return playerHands;
+    public void endGame(int winningTeam){
+        //TODO: the following:
+        //Send messages to clients indicating who won
+        //Send message to host asking to play again
+        //Store game record in database
     }
 
-    /*
-     * Getter method for cards left in the deck
-     */
-    public int getCardsLeft() {
-        return cardsLeft;
+    public GameState.PHASE getCurrentPhase(){
+        return state.getCurrentPhase();
     }
 
-    /*
-     * Getter method for face up card
-     */
-    public Card getFaceUpCard() {
-        return faceUpCard;
-    }
-
-    public int getTeamOneScore() {
-        return teamOneScore;
-    }
-
-    public void setTeamOneScore(int teamOneScore) {
-        this.teamOneScore = teamOneScore;
-    }
-
-    public int getTeamTwoScore() {
-        return teamTwoScore;
-    }
-
-    public void setTeamTwoScore(int teamTwoScore) {
-        this.teamTwoScore = teamTwoScore;
-    }
-
-    public int getPointsThreshold() {
-        return pointsThreshold;
-    }
-
-    public void setPointsThreshold(int pointsThreshold) {
-        this.pointsThreshold = pointsThreshold;
-    }
-
-    public int getDealer() {
-        return dealer;
-    }
-
-    public void setDealer(int dealer) {
-        this.dealer = dealer;
-    }
-
-    public int getLeadingPlayer() {
-        return leadingPlayer;
-    }
-
-    public void setLeadingPlayer(int leadingPlayer) {
-        this.leadingPlayer = leadingPlayer;
-    }
-
-    public void setFaceUpCard(Card faceUpCard) {
-        this.faceUpCard = faceUpCard;
-    }
-
-    public int getTeamThatWonTrick() {
-        return teamThatWonTrick;
-    }
-
-    public void setTeamThatWonTrick(int teamThatWonTrick) {
-        this.teamThatWonTrick = teamThatWonTrick;
-    }
-
-    public int getTeamThatWonTurn() {
-        return teamThatWonTurn;
-    }
-
-    public void setTeamThatWonTurn(int teamThatWonTurn) {
-        this.teamThatWonTurn = teamThatWonTurn;
-    }
-
-    public int getAttackingTeam() {
-        return attackingTeam;
-    }
-
-    public void setAttackingTeam(int attackingTeam) {
-        this.attackingTeam = attackingTeam;
-    }
-
-    public int[] getTeamOverallScores() {
-        return teamOverallScores;
-    }
-
-    public void setTeamOverallScores(int[] teamOverallScores) {
-        this.teamOverallScores = teamOverallScores;
-    }
-
-    public int[] getNumTricks() {
-        return numTricks;
-    }
-
-    public void setNumTricks(int[] numTricks) {
-        this.numTricks = numTricks;
-    }
-
-    public ArrayList<Card> getPlayedCards() {
-        return playedCards;
-    }
-
-    public void setPlayedCards(ArrayList<Card> playedCards) {
-        this.playedCards = playedCards;
-    }
-
-    public boolean isSoloPlayer() {
-        return isSoloPlayer;
-    }
-
-    public void setSoloPlayer(boolean isSoloPlayer) {
-        this.isSoloPlayer = isSoloPlayer;
-    }
-
-    public void setTrumpSuitCard(Card trumpSuitCard) {
-        this.trumpSuitCard = trumpSuitCard;
-    }
-
-    public Card getTrumpSuitCard() {
-        return trumpSuitCard;
+    public Player getActivePlayer(){
+        //When replacing a card, dealer is the active player
+        if(state.getCurrentPhase().equals(PHASE.REPLACECARD)){
+            return state.getPlayer(state.getDealerPosition());
+        }else{
+            return state.getActivePlayer();
+        }
     }
 
 }

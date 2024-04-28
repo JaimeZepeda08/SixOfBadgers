@@ -11,11 +11,11 @@ import java.util.UUID;
 public abstract class GameSession {
 
     // unique 5 charachter long id
-    private String gameId;
+    protected String gameId;
     // clients connected to this session
-    private ArrayList<Client> clients;
+    protected ArrayList<Client> clients;
     // client that started the game session
-    private Client host;
+    protected Client host;
     // keeps track of messages sent during this game session
     private Chat chat;
 
@@ -141,8 +141,8 @@ public abstract class GameSession {
      * @return true if able to start game, false otherwise
      */
     protected boolean startGame() {
-        // check if 4 clients are connected
-        if (getConnectedClients().size() == 4) {
+        // check if at least one client is connected
+        if (getConnectedClients().size() > 0) {
             System.out.println("Started game: " + getGameId()); // debug
             // alert clients that the game has started
             sendMessageToAllClients("started", "Game " + getGameId() + " has started");

@@ -1,10 +1,15 @@
 package com.cs506group12.backend;
 
+import com.cs506group12.backend.models.Card;
 import com.cs506group12.backend.models.GameRecord;
+import com.cs506group12.backend.models.GameState;
 import com.cs506group12.backend.models.User;
+import com.cs506group12.backend.models.Card.SUIT;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.intThat;
 import static org.mockito.Mockito.when;
 
 import java.sql.*;
@@ -35,6 +40,9 @@ public class testDatabaseConnection {
     private PreparedStatement pstmt2;
 
     @Mock
+    private Statement stmt;
+
+    @Mock
     private ResultSet rs;
 
     @Mock
@@ -47,6 +55,7 @@ public class testDatabaseConnection {
     public void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
         when(c.prepareStatement(any(String.class))).thenReturn(pstmt);
+        when(c.createStatement()).thenReturn(stmt);
         when(c.isClosed()).thenReturn(false);
         when(ds.getConnection()).thenReturn(c);
     }
@@ -171,5 +180,34 @@ public class testDatabaseConnection {
 
     }
 
-    
+    @Test
+    public void testLoadGameState() throws Exception{
+        when(stmt.executeQuery(anyString())).thenReturn(rs);
+        when(rs.next()).thenReturn(true);
+        when(rs.getString(intThat(i -> i >= 12 && i <= 15))).thenReturn("9H,14S,12D,11C");
+        when(rs.getString(intThat(i -> i >=1 && i <=4))).thenReturn("testName");
+        when(rs.getInt(16)).thenReturn(1);
+        when(rs.getInt(17)).thenReturn(2);
+        when(rs.getInt(8)).thenReturn(7);
+        when(rs.getInt(9)).thenReturn(5);
+        when(rs.getInt(10)).thenReturn(2);
+        when(rs.getInt(11)).thenReturn(0);
+        when(rs.getInt(19)).thenReturn(2);
+        when(rs.getInt(20)).thenReturn(-1);
+        when(rs.getString(18)).thenReturn("C");
+
+        DatabaseConnection dbc = new DatabaseConnection(ds);
+        GameState state = dbc.loadGameState("1", null);
+
+        assertEquals(1, state.getDealerPosition());
+        assertEquals(2, state.getLeadingPlayerPosition());
+        assertEquals(7, state.getTeamScore(1));
+        assertEquals(5, state.getTeamScore(2));
+        assertEquals(2, state.getTeamTricks(1));
+        assertEquals(0, state.getTeamTricks(2));
+        assertEquals(Card.SUIT.CLUBS, state.getTrump());
+        assertEquals(2, state.getAttackingTeam());
+        assertEquals(-1, state.getPlayerGoingAlone());
+        assertEquals(new Card(SUIT.SPADES,14),state.getHand(1).getCard(1));
+    }
 }

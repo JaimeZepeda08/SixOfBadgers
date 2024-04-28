@@ -18,6 +18,38 @@ USE `euchre`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `GameStates`
+--
+
+DROP TABLE IF EXISTS `GameStates`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `GameStates` (
+  `GameStateUID` varchar(10) NOT NULL,
+  `Player1` int DEFAULT NULL,
+  `Player2` int DEFAULT NULL,
+  `Player3` int DEFAULT NULL,
+  `Player4` int DEFAULT NULL,
+  `GameStartTime` datetime DEFAULT NULL,
+  `GameSaveTime` datetime DEFAULT NULL,
+  `Team1Score` int DEFAULT '0',
+  `Team2Score` int DEFAULT '0',
+  `Team1Tricks` int DEFAULT '0',
+  `Team2Tricks` int DEFAULT '0',
+  `Player1Hand` varchar(19) DEFAULT NULL,
+  `Player2Hand` varchar(19) DEFAULT NULL,
+  `Player3Hand` varchar(19) DEFAULT NULL,
+  `Player4Hand` varchar(19) DEFAULT NULL,
+  `Dealer` int DEFAULT '-1',
+  `LeadingPlayer` int DEFAULT '-1',
+  `Trump` varchar(1) DEFAULT NULL,
+  `CallingTeam` int DEFAULT '-1',
+  `PlayerAlone` int DEFAULT '-1',
+  PRIMARY KEY (`GameStateUID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Games`
 --
 
@@ -35,6 +67,7 @@ CREATE TABLE `Games` (
   `Team1Score` int DEFAULT NULL,
   `Team2Score` int DEFAULT NULL,
   PRIMARY KEY (`GameUID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -67,5 +100,3 @@ insert into Users (`UserUID`, `UserName`, `EmailAddress`, `AccountCreation`, `La
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2024-03-12 16:33:13
