@@ -1,6 +1,7 @@
 package com.cs506group12.backend.models;
 
 import org.springframework.web.socket.WebSocketSession;
+
 import org.springframework.web.socket.TextMessage;
 import java.io.IOException;
 
@@ -9,7 +10,7 @@ import java.io.IOException;
  * 
  * @author jaime zepeda
  */
-public abstract class Client {
+public class Client{
 
     private WebSocketSession session;
     private String clientId;
@@ -21,7 +22,7 @@ public abstract class Client {
      * 
      * @param session WebSocket session
      */
-    protected Client(WebSocketSession session) {
+    public Client(WebSocketSession session) {
         this.session = session;
         this.clientId = "Anonymous" + Usernames.getRandomUsername();
         this.game = null;

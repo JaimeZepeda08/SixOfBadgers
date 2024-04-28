@@ -5,8 +5,7 @@ import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
-import com.cs506group12.backend.models.User;
-import com.cs506group12.backend.models.GameRecord;
+import com.cs506group12.backend.models.*;
 
 /**
  * DatabaseConnection is a class used to connect the backend game engine to the
@@ -216,4 +215,106 @@ public class DatabaseConnection {
         return gameRecords;
     }
 
+    public void storeGameState(GameState state) throws SQLException{
+        
+        if (!createConnection()) {
+            throw new SQLException("Unable to create database connection.");
+        }
+
+        //Prepare SQL statement
+        PreparedStatement storeGameState = databaseConnection.prepareStatement("INSERT INTO GameStates " + 
+        "(GameStateUID, Player1, Player2, Player3, Player4, GameStartTime, GameSaveTime, Team1Score, Team2Score, "
+        +"Team1Tricks, Team2Tricks, Player1Hand, Player2Hand, Player3Hand, Player4Hand, Dealer, LeadingPlayer, "
+        + "Trump, CallingTeam, PlayerGoingAlone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+        "ON DUPLICATE KEY UPDATE GameStateUID=?");
+
+        //Add data to statement
+        storeGameState.setString(1, state.getUUID());
+        String[] players = state.getPlayerNames();
+        for (int i=0; i<4; i++){
+            storeGameState.setString(i + 2, players[i].toString());
+        }
+        storeGameState.setTimestamp(6, state.getStartTime());
+        storeGameState.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
+        storeGameState.setInt(8, state.getTeamScore(1));
+        storeGameState.setInt(9, state.getTeamScore(2));
+        storeGameState.setInt(10,state.getTeamTricks(1));
+        storeGameState.setInt(11,state.getTeamTricks(2));
+        for (int i=0; i<4; i++){
+            storeGameState.setString(i + 12, state.getHandSQL(i));
+        }
+        storeGameState.setInt(16, state.getDealerPosition());
+        storeGameState.setInt(17, state.getLeadingPlayerPosition());
+        storeGameState.setString(18, Card.suitToString(state.getTrump()));
+        storeGameState.setInt(19, state.getAttackingTeam());
+        storeGameState.setInt(20, state.getPlayerGoingAlone());
+
+        //Execute statement
+        storeGameState.executeUpdate();
+
+    }
+
+    /**
+     * 
+     * @param gameStateUUID
+     * @param session
+     * @return
+     * @throws SQLException
+     */
+    public GameState loadGameState(String gameStateUUID, GameSession session) throws SQLException{
+
+        if (!createConnection()) {
+            throw new SQLException("Unable to create database connection.");
+        }
+
+        Statement loadGameState = databaseConnection.createStatement();
+        ResultSet rs = loadGameState.executeQuery(
+        "select GameStateUID, u1.UserName, u2.UserName, u3.UserName, u4.UserName, GameStartTime, GameSaveTime, "
+        + "Team1Score, Team2Score, Team1Tricks, Team2Tricks, Player1Hand, Player2Hand, Player3Hand, Player4Hand, "
+        + "Dealer, LeadingPlayer, Trump, CallingTeam, PlayerAlone"
+        + " FROM GameStates left join Users AS u1 on Games.Player1=u1.UserUID"
+        + " left join Users AS u2 on Games.Player2=u1.UserUID"
+        + " left join Users AS u3 on Games.Player3=u3.UserUID"
+        + " left join Users AS u4 on Games.Player4=u4.UserUID"
+        + " WHERE GameStateUID=" + gameStateUUID + ";");
+        
+        if(!rs.next()){
+            throw new SQLException("No game found with the given identifier: " + gameStateUUID);
+        }
+
+        //Create 2D card array to represent player hands
+        //Player hands are stored in the database as comma delimited strings up to 19 characters,
+        //3 characters per card indicating value (first two) and suit (third).
+        Hand[] playerHands = new Hand[4];
+        String handString;
+        String[] handStringSplit;
+
+        for(int i=0; i<4; i++){
+
+            handString = rs.getString(i+12);
+            handStringSplit = handString.split(",");
+            playerHands[i] = new Hand();
+
+            for(int j=0; j<handStringSplit.length && j<5; j++){
+                playerHands[i].addCard(Card.fromSqlString(handStringSplit[j]));
+            }
+        }
+
+        //TODO: Need to get players to connect to restored state - check for AI players, and load 
+        //emails of logged in players to match with connected sessions.
+        //Create ArrayList of players
+        String[] playerNames = new String[4];
+        for(int i=0; i<4; i++){
+            playerNames[i]= rs.getString(i+1);
+        }
+
+
+        //Load the information into the GameState object
+        GameState loadedState = new GameState(gameStateUUID, playerHands, playerNames, rs.getInt(16), rs.getInt(17),
+            rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), Card.stringToSuit(rs.getString(18)),
+            rs.getInt(19), rs.getInt(20));
+        return loadedState;
+        
+
+    }
 }

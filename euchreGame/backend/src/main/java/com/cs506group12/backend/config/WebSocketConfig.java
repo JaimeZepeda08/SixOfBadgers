@@ -13,10 +13,13 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
+import com.cs506group12.backend.interfaces.Player;
+import com.cs506group12.backend.models.Card;
 import com.cs506group12.backend.models.Client;
 import com.cs506group12.backend.models.EuchreGame;
 import com.cs506group12.backend.models.GameSession;
-import com.cs506group12.backend.models.Player;
+import com.cs506group12.backend.models.GameState;
+import com.cs506group12.backend.models.HumanPlayerDecorator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -58,7 +61,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
                 System.out.println("Connection established with session id: " + session.getId()); // debug
 
                 // add client to hashmap
-                sessions.put(session, new Player(session));
+                sessions.put(session, new Client(session));
             }
 
             @SuppressWarnings("null")
@@ -247,7 +250,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
     private void handleStartGame(GameSession game, Client client) {
         // cast variables
         EuchreGame euchreGame = (EuchreGame) game;
-        Player player = (Player) client;
 
         // check if the game can be started
         if (euchreGame != null) {
@@ -255,10 +257,10 @@ public class WebSocketConfig implements WebSocketConfigurer {
                 // start the game
                 euchreGame.startGame();
             } else {
-                player.reportError("Only the host can start the game");
+                client.reportError("Only the host can start the game");
             }
         } else {
-            player.reportError("Please create or join a game first");
+            client.reportError("Please create or join a game first");
         }
     }
 
@@ -282,9 +284,9 @@ public class WebSocketConfig implements WebSocketConfigurer {
         // make sure that all clients are ready before sending data
         if (game.areClientsReady()) {
             EuchreGame euchreGame = (EuchreGame) game;
-            for (Player player : euchreGame.getPlayers()) {
-                player.sendClient();
-                player.sendPlayer();
+            for (Client c : euchreGame.getConnectedClients()) {
+                c.sendClient();
+                //player.sendPlayer(); //TODO move this out of player class?
             }
             euchreGame.sendSessionToAllClients();
         }
@@ -303,6 +305,57 @@ public class WebSocketConfig implements WebSocketConfigurer {
      */
     private void handleGameEvent(GameSession game, Client client, JsonNode payload) {
         // implement game logic
+        EuchreGame euchreGame = (EuchreGame) game;
+        GameState.PHASE currentPhase = euchreGame.getCurrentPhase();
+
+        Player activePlayer = euchreGame.getActivePlayer();
+        Client activeClient;
+        HumanPlayerDecorator humanPlayer;
+        //Make sure active player is a human player
+        if(!activePlayer.getClass().equals(HumanPlayerDecorator.class)){
+            return;
+        }
+        humanPlayer = (HumanPlayerDecorator) activePlayer;
+        activeClient = humanPlayer.getClient();
+
+        //If the client we received the message from isn't the active player, return
+        if(client != activeClient){
+            return;
+        }
+
+        Card c;
+        Card.SUIT suit;
+        boolean proceed;
+        
+        switch (currentPhase) {
+            case PICKTRUMP1:
+            case PICKTRUMP2:
+                suit = Card.stringToSuit(payload.get("Suit").asText());
+                proceed = euchreGame.pickTrump(suit);
+                if(proceed){
+                    euchreGame.playTrick(null);
+                }
+                break;
+
+            case REPLACECARD:
+                c = Card.fromJSON(payload.get("Card").asText());
+                euchreGame.replaceCard(c);
+                euchreGame.playTrick(null);
+                break;
+
+            case PLAYTRICK:
+                c = Card.fromJSON(payload.get("Card").asText());
+                proceed = euchreGame.playTrick(c);
+                if(proceed){
+                    euchreGame.scoreTrick();
+                }
+                break;
+        
+            default:
+                break;
+        }
+        
+        
     }
 
     /**

@@ -154,8 +154,8 @@ public class testGameSession {
         assertTrue(game.hasClient(client1));
         assertTrue(game.hasClient(client2));
 
-        // game should not be able to start if there are less than 4 players in the game
-        assertFalse(game.startGame());
+        // game should be able to start with fewer than 4 players since the rest are bots
+        assertTrue(game.startGame());
 
         // add the rest of the players
         assertTrue(game.addClient(client3));

@@ -15,7 +15,8 @@ public class Card {
 		CLUBS,
 		DIAMONDS,
 		HEARTS,
-		SPADES;
+		SPADES,
+		NONE; //Used for selecting trump. NONE is equivalent to passing. Please don't instantiate cards with no suit.
 
 		SUIT getSuit() {
 			return (this.getSuit());
@@ -86,7 +87,7 @@ public class Card {
 			toReturn += "Diamonds";
 		} else if (this.suit == SUIT.HEARTS) {
 			toReturn += "Hearts";
-		} else {
+		} else if (this.suit == SUIT.SPADES){
 			toReturn += "Spades";
 		}
 
@@ -101,9 +102,13 @@ public class Card {
 	 * @return The value of the card based on the trump and the leading value
 	 */
 	public int value(Card trumpSuitCard, SUIT leading) {
-		SUIT sameColor = twinColor(trumpSuitCard);
+		return value(trumpSuitCard.suit, leading);
+	}
 
-		if (this.suit == trumpSuitCard.getSuit()) {
+	public int value(SUIT trump, SUIT leading){
+		SUIT sameColor = twinColor(trump);
+
+		if (this.suit == trump) {
 			if (this.value == 11) { // Jack of trump suit
 				return 44;
 			} else {
@@ -129,7 +134,10 @@ public class Card {
 	 * @return The corresponding suit for the trump
 	 */
 	public static SUIT twinColor(Card trumpSuitCard) {
-		Card.SUIT suit = trumpSuitCard.getSuit();
+		return twinColor(trumpSuitCard.suit);
+	}
+
+	public static SUIT twinColor(SUIT suit){
 		SUIT sameColor = null;
 		switch (suit) {
 			case CLUBS:
@@ -141,8 +149,10 @@ public class Card {
 			case HEARTS:
 				sameColor = SUIT.DIAMONDS;
 				break;
-			default:
+			case DIAMONDS:
 				sameColor = SUIT.HEARTS;
+				break;
+			case NONE:
 				break;
 		}
 		return sameColor;
@@ -178,6 +188,11 @@ public class Card {
 		return this.value(trumpSuitCard, leading) > other.value(trumpSuitCard, leading);
 	}
 
+	/**
+	 * Gets the suit of the same color as the input. Used for classifying the left bauer.
+	 * @param trumpSuit The suit whose pair should be returned
+	 * @return The suit of the same color as the input suit.
+	 */
 	public static SUIT twinColorSuit(SUIT trumpSuit) {
 		SUIT sameColor = null;
 		switch (trumpSuit) {
@@ -190,32 +205,127 @@ public class Card {
 			case HEARTS:
 				sameColor = SUIT.DIAMONDS;
 				break;
-			default:
+			case DIAMONDS:
 				sameColor = SUIT.HEARTS;
+				break;
+			case NONE:
 				break;
 		}
 		return sameColor;
 	}
 
+	/**
+	 * Converts this Card object into a String formatted for JSON
+	 * @return The String representation of the Card
+	 */
 	public String cardToJSON() {
-		String suit = "";
+		String suitString = suitToJSON(this.suit);
+		return value + "-" + suitString;
+	}
+
+	/**
+	 * Converts a card into a consice format for storage in the SQL database. Used to 
+	 * store the game state.
+	 * @return The String representation of this Card
+	 */
+	public String toSqlString(){
+		String sqlString = "" + this.value;
 		switch (this.suit) {
-			case SPADES:
-				suit = "SPADES";
-				break;
-			case DIAMONDS:
-				suit = "DIAMONDS";
-				break;
 			case CLUBS:
-				suit = "CLUBS";
+				sqlString += "C";
+				break;
+			case SPADES:
+				sqlString += "S";
 				break;
 			case HEARTS:
-				suit = "HEARTS";
+				sqlString += "H";
 				break;
-			default:
+			case DIAMONDS:
+				sqlString += "D";
+				break;
+			case NONE:
 				break;
 		}
 
-		return value + "-" + suit;
+		return sqlString;
+	}
+
+	/**
+	 * Creates a card object from a String stored in the SQL database
+	 * @param cardString The String to be converted into a Card
+	 * @return The Card representation of the String
+	 */
+	public static Card fromSqlString(String cardString){
+		String suit = String.valueOf(cardString.charAt(cardString.length() - 1));
+		return new Card(stringToSuit(suit), Integer.valueOf(cardString.substring(0, cardString.length() - 1)));
+	}
+
+	/**
+	 * Converts a single-character or fully elaborated string to a suit enum.
+	 * @param suitString The single-character string to convert to a suit.
+	 * @return The suit represented by the string
+	 */
+	public static SUIT stringToSuit(String suitString){
+		switch(suitString){
+			case "C":
+			case "CLUBS":
+				return SUIT.CLUBS;
+			case "S":
+			case "SPADES":
+				return SUIT.SPADES;
+			case "H":
+			case "HEARTS":
+				return SUIT.HEARTS;
+			case "D":
+			case "DIAMONDS":
+				return SUIT.DIAMONDS;
+			default:
+				return SUIT.NONE;
+
+		}
+	}
+
+	/**
+	 * Returns the suit as a simple one-character String
+	 * @param suit The suit to become a string
+	 * @return The suit represented in a one-character String (C,S,H, or D)
+	 */
+	public static String suitToString(SUIT suit){
+		switch (suit) {
+			case CLUBS:
+				return "C";
+			case SPADES:
+				return "S";
+			case HEARTS:
+				return "H";
+			case DIAMONDS:
+				return "D";
+			default:
+				return "";
+		}
+	}
+
+	public static String suitToJSON(SUIT suit){
+		if(suit == null){
+			return "NONE";
+		}
+		switch (suit) {
+			case SPADES:
+				return "SPADES";
+			case DIAMONDS:
+				return "DIAMONDS";
+			case CLUBS:
+				return "CLUBS";
+			case HEARTS:
+				return "HEARTS";
+			default:
+				return "NONE";
+		}
+	}
+
+	public static Card fromJSON(String input){
+		String value = input.substring(0, input.indexOf("-"));
+		String suit = input.substring(input.indexOf("-") + 1, input.length());
+		return new Card(Card.stringToSuit(suit), Integer.parseInt(value));
 	}
 }

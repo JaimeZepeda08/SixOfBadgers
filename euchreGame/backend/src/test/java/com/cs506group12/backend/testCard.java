@@ -9,6 +9,7 @@ import org.json.*;
 import org.junit.jupiter.api.Test;
 
 import com.cs506group12.backend.models.Card;
+import com.cs506group12.backend.models.Card.SUIT;
 
 /**
  * This class tests the correctness of the Card class
@@ -154,5 +155,48 @@ class testCard {
 			return false;
 		}
 		return true;
+	}
+
+	@Test
+	public void testSqlString(){
+		Card c = new Card(Card.SUIT.CLUBS, 14);
+		String sqlString = c.toSqlString();
+		assertEquals("14C", sqlString);
+	}
+
+	@Test
+	public void testFromSqlString(){
+		Card c = Card.fromSqlString("9D");
+		assertEquals(new Card(Card.SUIT.DIAMONDS,9), c);
+
+		c = Card.fromSqlString("14S");
+		assertEquals(new Card(Card.SUIT.SPADES,14), c);
+	}
+
+	@Test
+	public void testFromJSON(){
+		Card c = new Card(SUIT.SPADES,13);
+		String json = c.cardToJSON();
+		Card testCard = Card.fromJSON(json);
+
+		assertEquals(c, testCard);
+
+		c = new Card(SUIT.DIAMONDS,11);
+		json = c.cardToJSON();
+		testCard = Card.fromJSON(json);
+
+		assertEquals(c, testCard);
+		
+		c = new Card(SUIT.HEARTS,9);
+		json = c.cardToJSON();
+		testCard = Card.fromJSON(json);
+
+		assertEquals(c, testCard);
+
+		c = new Card(SUIT.CLUBS,14);
+		json = c.cardToJSON();
+		testCard = Card.fromJSON(json);
+
+		assertEquals(c, testCard);
 	}
 }

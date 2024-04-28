@@ -4,6 +4,7 @@ import java.sql.*;
 
 /**
  * Class for objects to represent the records of past games played.
+ * @author Eric Knepper
  */
 public class GameRecord {
 
