@@ -55,6 +55,7 @@ public class HumanPlayerDecorator extends PlayerDecorator {
 	 * 
 	 */
 	public Card chooseReplacement(GameState state){
+		//TODO Send message to player for choice of card to replace
 		return null;
 	}
 

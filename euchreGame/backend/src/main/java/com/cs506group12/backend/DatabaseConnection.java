@@ -230,9 +230,8 @@ public class DatabaseConnection {
 
         //Add data to statement
         storeGameState.setString(1, state.getUUID());
-        String[] players = state.getPlayerNames();
         for (int i=0; i<4; i++){
-            storeGameState.setString(i + 2, players[i].toString());
+            storeGameState.setString(i + 2, state.getPlayer(i + 1).getName());
         }
         storeGameState.setTimestamp(6, state.getStartTime());
         storeGameState.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
@@ -300,9 +299,7 @@ public class DatabaseConnection {
             }
         }
 
-        //TODO: Need to get players to connect to restored state - check for AI players, and load 
         //emails of logged in players to match with connected sessions.
-        //Create ArrayList of players
         String[] playerNames = new String[4];
         for(int i=0; i<4; i++){
             playerNames[i]= rs.getString(i+1);
