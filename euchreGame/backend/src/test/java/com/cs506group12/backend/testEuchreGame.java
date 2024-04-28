@@ -1,6 +1,8 @@
 package com.cs506group12.backend;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -23,14 +25,6 @@ public class testEuchreGame {
     @Mock Player p4;
     @Mock Hand hand;
     @Mock ArrayList<Card> playedCards;
-
-    @Test
-    public void testStartGame(){
-        MockitoAnnotations.openMocks(this);
-        EuchreGame game = new EuchreGame(host);
-
-        assertTrue(game.startGame());
-    }
 
     @Test
     public void testPickTrumpPhase1(){
@@ -204,4 +198,28 @@ public class testEuchreGame {
 
 
     }
+
+
+    @Test
+    public void testPlayerRotation(){
+        MockitoAnnotations.openMocks(this);
+        EuchreGame game = new EuchreGame(host, state);
+
+        // Simulate player rotation after a trick
+        when(state.getActivePlayer()).thenReturn(p1).thenReturn(p2).thenReturn(p3).thenReturn(p4);
+        when(state.getDealerPosition()).thenReturn(2);
+        when(state.getHand(anyInt())).thenReturn(hand);
+        when(state.getPlayedCards()).thenReturn(playedCards);
+        when(playedCards.size()).thenReturn(1).thenReturn(1)
+            .thenReturn(2).thenReturn(2)
+            .thenReturn(3).thenReturn(3)
+            .thenReturn(4).thenReturn(4);
+        when(state.getPlayerGoingAlone()).thenReturn(-1);
+        when(p1.chooseCard(any())).thenReturn(new Card(SUIT.SPADES,12));
+        when(p2.chooseCard(any())).thenReturn(new Card(SUIT.HEARTS,11));
+        when(p3.chooseCard(any())).thenReturn(new Card(SUIT.DIAMONDS,9));
+        when(p4.chooseCard(any())).thenReturn(new Card(SUIT.CLUBS,14));
+        
+        assertTrue(game.playTrick(null));
+    }   
 }

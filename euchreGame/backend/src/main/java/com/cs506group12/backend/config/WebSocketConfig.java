@@ -177,7 +177,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
      *
      * @param client The client creating the game.
      */
-    private void handleCreateMessage(Client client, String name) {
+    public void handleCreateMessage(Client client, String name) {
         // create a new game session with the client as the host
         if(!name.equals("guest")) {
             client.setClientId(name);
@@ -195,7 +195,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
      *
      * @param client client that is trying to join a game
      */
-    private void handleJoinMessage(Client client, String id, String name) {
+    public void handleJoinMessage(Client client, String id, String name) {
         if(!name.equals("guest")) {
             client.setClientId(name);
         }
@@ -225,7 +225,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
      * 
      * @param client the client leaving the game
      */
-    private void handleLeaveMessage(Client client) {
+    public void handleLeaveMessage(Client client) {
         if (client.isInGame()) {
             // remove from current game
             GameSession game = client.getGame();
@@ -247,7 +247,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
      * @param game   The GameSession to start.
      * @param client the client that started the game
      */
-    private void handleStartGame(GameSession game, Client client) {
+    public void handleStartGame(GameSession game, Client client) {
         // cast variables
         EuchreGame euchreGame = (EuchreGame) game;
 
@@ -279,7 +279,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
      * 
      * @param client the client requesting the data
      */
-    private void handleGameSetUp(GameSession game, Client client) {
+    public void handleGameSetUp(GameSession game, Client client) {
         client.setReady();
         // make sure that all clients are ready before sending data
         if (game.areClientsReady()) {
@@ -303,7 +303,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
      * @param client  the client that triggered the event
      * @param payload contains the JSON data of the game event
      */
-    private void handleGameEvent(GameSession game, Client client, JsonNode payload) {
+    public void handleGameEvent(GameSession game, Client client, JsonNode payload) {
         // implement game logic
         EuchreGame euchreGame = (EuchreGame) game;
         GameState.PHASE currentPhase = euchreGame.getCurrentPhase();
@@ -365,7 +365,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
      * @param sender  the client that sent the message
      * @param message the string representation of the message
      */
-    private void handleChatMessages(GameSession game, Client sender, String message) {
+    public void handleChatMessages(GameSession game, Client sender, String message) {
         game.processMessage(sender, message);
     }
 }
