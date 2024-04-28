@@ -25,6 +25,7 @@ public class EuchreGame extends GameSession {
         this.state = state;
     }
 
+
     /**
      * Overloads the startGame function of the GameSession Class. It is in charge of
      * initializing the game and setting up initial values
