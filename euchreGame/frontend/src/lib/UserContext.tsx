@@ -1,7 +1,6 @@
 'use client'
 import React, { createContext, useState } from 'react';
-import {reportType, userType} from "@/lib/Types";
-import {useSession} from "next-auth/react";
+import {gameRecord, userType} from "@/lib/Types";
 
 const initTestData: userType = {
     userName: 'guest',
@@ -12,8 +11,8 @@ const initTestData: userType = {
 type userContextType = {
     userData: userType;
     setUserData: (value: userType) => void;
-    savedGames: reportType[];
-    setSavedGames: (value: reportType[]) => void;
+    savedGames: gameRecord[];
+    setSavedGames: (value: gameRecord[]) => void;
 }
 
 export const UserContext = createContext<userContextType>({
@@ -28,9 +27,10 @@ export const UserContext = createContext<userContextType>({
 export const UserProvider = ({ children }: any) => {
     const [userData, setUserData] = useState<userType>(initTestData);
     const [savedGames, setSavedGames] =
-        useState<reportType[]>([]);
+        useState<gameRecord[]>([]);
+
     return (
-        <UserContext.Provider value={{ userData, setUserData, savedGames, setSavedGames }}>
+        <UserContext.Provider value={{ userData, setUserData, savedGames, setSavedGames}}>
             {children}
         </UserContext.Provider>
     );

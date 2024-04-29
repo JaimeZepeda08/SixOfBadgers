@@ -22,26 +22,24 @@ import {UserContext} from "@/lib/UserContext";
 export default function Page() {
   // saved games data that will eventually be grabbed from the backend
   // const records = getGameRecords();
-  const { data: data, status } = useSession();
+  const {status: status } = useSession();
   const {
-    userData,
-    setUserData,
     savedGames,
-    setSavedGames,
   } = useContext(UserContext);
 
   if(status === "authenticated") {
-    // const tempGames: reportType[] = userHandler(userData.email, userData.userName, "games");
-    // setSavedGames(tempGames);
-    const games = [
-      {
-        gameNumber: 1,
-        date: "2024-03-01",
-        winLoss: 1,
-        gameTime: "19:00",
-        points: 102,
-      },
-    ];
+    if(savedGames && savedGames.length === 0) {
+      return (
+          <div
+              className="flex flex-col justify-center items-center"
+              style={{ zoom: 1.5 }}
+          >
+            <div className={'border-4 border-red-500 rounded-md shadow-md mt-48 py-2 px-3'}>
+              <h1 className={'text-red-500 font-bold'}>No saved Games</h1>
+            </div>
+          </div>
+      );
+    } else {
     return (
         // creates a grid of saved games
         <div className="bg-white h-screen border-black mt-2">
@@ -50,31 +48,33 @@ export default function Page() {
             <div className="grid grid-cols-5">
               <div className="border-r border-black pr-4">Game #</div>
               <div className="border-r border-black pr-4">Date</div>
-              <div className="border-r border-black pr-4">W/L</div>
+              <div className="border-r border-black pr-4">Your Team Score</div>
+              <div className="border-r border-black pr-4">Enemy Team Score</div>
               <div className="border-r border-black pr-4">Game Time</div>
               <div className="">Points</div>
             </div>
           </div>
 
           {/* map all data out for each col*/}
-          {games.map((game, index) => (
+          {savedGames.map((game, index) => (
               <div
                   key={index}
                   className="border-t border-2 border-black bg-red-300 text-black py-2 px-4"
               >
                 {/* display data */}
                 <div className="grid grid-cols-5">
-                  <div>{game.gameNumber}</div>
-                  <div>{game.date}</div>
-                  <div>{game.winLoss === 1 ? "W" : "L"}</div>
-                  <div>{game.gameTime}</div>
-                  <div>{game.points}</div>
+                  <div>{index}</div>
+                  <div>{game.startTime.getDate()}</div>
+                  <div>{game.scores[0]}</div>
+                  <div>{game.scores[1]}</div>
+                  <div>{Math.abs(game.endTime.getTime() - game.startTime.getTime())}</div>
                 </div>
               </div>
           ))}
         </div>
     );
   }
+    }
   else {
     return (
         <div

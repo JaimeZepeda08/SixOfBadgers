@@ -131,8 +131,8 @@ Our system will be hosted and played locally. There are no privacy or confidenti
 4. Docker is needed to run the image
 
 #### System Architecture Diagram
+![System Architecture Diagram](./documentation_and_images/sys-architecture-diagram.png)
 
-![system_map](sys-architecture-diagram.png)
 
 
 ### Specification
@@ -288,6 +288,8 @@ B --> C
 C --> D
 D --> E
 ```
+#### Interface Diagram
+![Interface Diagram](./documentation_and_images/Interface-Diagram.png)
 
 ```mermaid
 ---
@@ -347,6 +349,9 @@ GS --> GSS --> GSO --> Players
 
 #### System Architecture Diagram
 ![System Architecture Diagram](./documentation_and_images/sys-architecture-diagram.png)
+#### Euchre State Machine Diagram
+![Euchre State Machine Diagram](./documentation_and_images/Euchre-State-Machine.png)
+
 
 #### Docker and Setting it All Up
 Please refer to ![Docker Documentation](./documentation_and_images/DockerDocumentation.md)

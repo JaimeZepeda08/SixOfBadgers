@@ -16,14 +16,13 @@ export function signInGoogle() {
 }
 
 export default function GoogleSignInButton() {
-    const [ loggedIn, setLoggedIn ] = useState(false);
     const {
         userData,
         setUserData,
-        savedGames,
         setSavedGames,
     } = useContext(UserContext);
 
+    const [isCurrent, setIsCurrent] = useState(false);
     /**
      * Function to sign in with Google OAuth and retrieve user session to be used in client
      */
@@ -39,15 +38,23 @@ export default function GoogleSignInButton() {
                     email: data.user.email,
                     image: data.user.image,
                 });
-            }
-
-            if(!loggedIn && userData.userName !== "guest") {
-                await userHandler(userData.email, userData.userName, "save");
-                setLoggedIn(true);
+                await userHandler(data.user.email, data.user.name, "save");
             }
         }
         login();
-    },[loggedIn, setLoggedIn, data?.user, setUserData, userData]);
+    },[data?.user, setUserData, userData, setSavedGames]);
+
+    // Get the current user's saved games from the database
+    useEffect(() => {
+        async function getGames() {
+                if(userData.userName !== "guest") {
+                    const games = await userHandler(userData.email, userData.userName, "games");
+                    if(!games) return;
+                    setSavedGames(games);
+                }
+        }
+        getGames();
+    }, [isCurrent, setIsCurrent, setSavedGames, userData]);
 
     if (status === 'loading') return <h1> loading... please wait</h1>;
     if (status === 'authenticated') {

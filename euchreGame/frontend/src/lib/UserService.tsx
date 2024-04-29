@@ -1,3 +1,5 @@
+import {gameRecord} from "@/lib/Types";
+
 const localhost: string = "http://localhost:8080";
 
 /**
@@ -14,42 +16,17 @@ function makeUser(email: string, name: string) {
 }
 
 /**
- * Function to get the game records from the server.
- * @param email - email associated with Google account
- * @param name - name associated with Google account
- * @throws Error if the response is not valid
+ * Function to handle user data, either saving user to db or retrieving user's saved games
+ * @param email - user's email associated with Google account
+ * @param name - user's name associated with Google account
+ * @param method - either "save" to save user to db or "games" to retrieve user's saved games
  */
-export async function getGameRecords(email: any, name: any) {
-    const url = `${localhost}/user/games`;
-    const user = makeUser(email, name);
-
-    try {
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.parse(JSON.stringify(user)),
-        });
-        // checks that the response is valid
-        if (!res.ok) {
-            throw new Error("Failed to get records");
-        }
-        // creates and maps an array of Test Objects
-        return await res.json();
-
-    } catch (error) {
-        console.log(error);
-    }
-}
-
 export async function userHandler(email: any, name: any, method: string) {
   let url = "";
   if(method === "save") { url = `${localhost}/user/save`; }
-  else if(method === "games") { url = `${localhost}/user/games`; }
+  else if(method === "games") { url = `${localhost}/user/games/reports`; }
 
   const user = makeUser(email, name);
-  console.log(user);
   let headers = new Headers();
   headers.append('Content-Type', 'application/json');
   headers.append('Accept', 'application/json');
@@ -66,7 +43,9 @@ export async function userHandler(email: any, name: any, method: string) {
       throw new Error("Failed to save Player");
     }
     if(method === "games") {
-      return await res.json();
+      const temp: gameRecord[] = await res.json();
+      console.log(temp);
+      return temp;
     }
 
   } catch (error) {
