@@ -17,7 +17,7 @@ public class GameStateObserver {
 
     public GameStateObserver(){
         this.updates = new HashMap<String,String>();
-        handUpdates = new String[4];
+        handUpdates = new String[]{"","","",""};
     }
     
     //executes a batched update on state change
@@ -26,6 +26,7 @@ public class GameStateObserver {
             player.sendMessage("GameUpdate",this.compileJSONContent(players, player.getPosition()));
         }
         updates.clear();
+        handUpdates = new String[]{"","","",""};
     }
 
     /**
@@ -33,11 +34,11 @@ public class GameStateObserver {
      * @param playerPosition Position of the player to send the update to
      * @return Compiled string for the content of a JSON message to the player
      */
-    private String compileJSONContent(ArrayList<Player> players, int playerPosition){
+    public String compileJSONContent(ArrayList<Player> players, int playerPosition){
         String trickInfo = "";
         if(updates.containsKey("DP")) trickInfo += "dealer" + BKV + updates.get("DP") + BL;
         if(updates.containsKey("LP")) trickInfo += "leading_player" + BKV + updates.get("LP") + BL;
-        if(updates.containsKey("TS")) trickInfo += "trump_suit" + BKV + updates.get("TS") + BL;
+        if(updates.containsKey("TR")) trickInfo += "trump_suit" + BKV + updates.get("TR") + BL;
         if(updates.containsKey("LS")) trickInfo += "leading_suit" + BKV + updates.get("LS") + BL;
         if(updates.containsKey("AT")) trickInfo += "attacking_team" + BKV + updates.get("AT") + BL;
         if(updates.containsKey("SP")) trickInfo += "solo_player" + BKV + updates.get("SP") + BL;
@@ -49,13 +50,15 @@ public class GameStateObserver {
         if(updates.containsKey("TT1")) scoreInfo += "team_one_tricks" + BKV + updates.get("TT1") + BL;
         if(updates.containsKey("TT2")) scoreInfo += "team_two_tricks" + BKV + updates.get("TT2") + BL;
         
-        String playersJson = "all_players\": []";
+        String playersJson = "all_players\": [\"";
         for (int i = 0; i < players.size(); i++) {
-            playersJson += players.get(i).getName() + BKV + players.get(i).getPosition() + BL; //TODO verify json structure here
+            if(i > 0) playersJson += "\", \"";
+            playersJson += players.get(i).getName();
         }
-        playersJson += "\n],";
-        String cardsInfo = handUpdates[(playerPosition - 1) % 4];
-        return "{\n + " + trickInfo + scoreInfo + playersJson + cardsInfo + "}";
+        playersJson += "\"]\n\t";
+        String cardsInfo = "";
+        cardsInfo += handUpdates[(playerPosition - 1) % 4];
+        return "{\n \"" + trickInfo + scoreInfo + playersJson + cardsInfo + "}";
     }
 
     //Adds changes to a player's hand to the update batch
