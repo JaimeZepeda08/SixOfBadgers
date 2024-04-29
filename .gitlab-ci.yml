@@ -90,10 +90,10 @@ release:
     - docker:20.10.16-dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE/backend:$RELEASE_TAG .
-    - docker tag $CI_REGISTRY_IMAGE/backend:$RELEASE_TAG $CI_REGISTRY_PROJ/backend:latest
-    - docker push $CI_REGISTRY_IMAGE/backend:$RELEASE_TAG
-    - docker push $CI_REGISTRY_IMAGE/backend:latest
+    - docker build -t $CI_REGISTRY_IMAGE/euchreGame/backend:$RELEASE_TAG .
+    - docker tag $CI_REGISTRY_IMAGE/euchreGame/backend:$RELEASE_TAG $CI_REGISTRY_PROJ/backend:latest
+    - docker push $CI_REGISTRY_IMAGE/euchreGame/backend:$RELEASE_TAG
+    - docker push $CI_REGISTRY_IMAGE/euchreGame/backend:latest
   tags:
     - dind
   only:
