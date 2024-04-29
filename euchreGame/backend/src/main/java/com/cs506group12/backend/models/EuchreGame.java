@@ -20,6 +20,11 @@ public class EuchreGame extends GameSession {
         super(host);
     }
 
+    /**
+     * Constructor with state injection
+     * @param host The client that started the game
+     * @param state The game state data structure
+     */
     public EuchreGame(Client host, GameState state){
         super(host);
         this.state = state;
@@ -58,6 +63,9 @@ public class EuchreGame extends GameSession {
         return false;
     }
 
+    /**
+     * Method for STARTROUND phase
+     */
     public void startRound(){
         //Player to the left of previous dealer deals next
         int dealerPosition = state.getDealerPosition();
@@ -187,6 +195,11 @@ public class EuchreGame extends GameSession {
         }
     }
 
+    /**
+     * Method for the REPLACECARD state
+     * @param c The card to replace
+     * @return True (proceed to the next state)
+     */
     public boolean replaceCard(Card c){
         state.getHand(state.getDealerPosition()).removeCard(c);
         state.setLeadingPlayer(state.getActivePlayer().getPosition());
@@ -225,6 +238,11 @@ public class EuchreGame extends GameSession {
         }
     }
 
+    /**
+     * Method for the PLAYTRICK state
+     * @param c The card played, or null if no card played yet
+     * @return True if the game should proceed to the next state, or false if awaiting player input
+     */
     public boolean playTrick(Card c){
         //If no card yet played, ask active player for a card
         if(c == null){
@@ -268,6 +286,9 @@ public class EuchreGame extends GameSession {
         }
     }
 
+    /**
+     * Scores the current trick and adds the point to the winning team.
+     */
     public void scoreTrick(){
         ArrayList<Card> playerCards = state.getPlayedCards();
 
@@ -384,11 +405,9 @@ public class EuchreGame extends GameSession {
 
     }
 
+    //Updates the state to ENDGAME, which triggers the observer to update the clients
     public void endGame(int winningTeam){
-        //TODO: the following:
-        //Send messages to clients indicating who won
-        //Send message to host asking to play again
-        //Store game record in database
+        state.setPhase(PHASE.ENDGAME);
     }
 
     public GameState.PHASE getCurrentPhase(){
