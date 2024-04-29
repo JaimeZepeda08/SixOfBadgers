@@ -70,8 +70,8 @@ public class HumanPlayerDecorator extends PlayerDecorator {
 		client.sendMessage(playerToJSON());
 	}
 
-	public void sendMessage(String header, String content){
-        client.sendMessage(header, content);
+	public void sendMessage(String formattedJSON){
+        client.sendMessage(formattedJSON);
     }
 
 	public Client getClient(){

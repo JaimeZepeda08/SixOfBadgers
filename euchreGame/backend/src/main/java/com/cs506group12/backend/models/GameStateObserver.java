@@ -23,7 +23,7 @@ public class GameStateObserver {
     //executes a batched update on state change
     public void sendUpdate(GameState.PHASE currentPhase, GameState.PHASE nextPhase, ArrayList<Player> players){
         for(Player player : players){
-            player.sendMessage("GameUpdate",this.compileJSONContent(players, player.getPosition()));
+            player.sendMessage(this.compileJSONContent(players, player.getPosition()));
         }
         updates.clear();
         handUpdates = new String[]{"","","",""};
@@ -35,6 +35,7 @@ public class GameStateObserver {
      * @return Compiled string for the content of a JSON message to the player
      */
     public String compileJSONContent(ArrayList<Player> players, int playerPosition){
+        String header = "header" + BKV + "gameupdate" + BL;
         String trickInfo = "";
         if(updates.containsKey("DP")) trickInfo += "dealer" + BKV + updates.get("DP") + BL;
         if(updates.containsKey("LP")) trickInfo += "leading_player" + BKV + updates.get("LP") + BL;
@@ -58,7 +59,7 @@ public class GameStateObserver {
         playersJson += "\"]\n\t";
         String cardsInfo = "";
         cardsInfo += handUpdates[(playerPosition - 1) % 4];
-        return "{\n \"" + trickInfo + scoreInfo + playersJson + cardsInfo + "}";
+        return "{\n \"" + header + trickInfo + scoreInfo + playersJson + cardsInfo + "}";
     }
 
     //Adds changes to a player's hand to the update batch
@@ -154,10 +155,4 @@ public class GameStateObserver {
 		cardsString += "]";
 		return cardsString;
 	}
-
-
-
-
-    
-
 }

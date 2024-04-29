@@ -14,5 +14,5 @@ public interface Player {
     public Card chooseReplacement(GameState state);
     public String getName();
     public int getPosition();
-    public void sendMessage(String header, String content);
+    public void sendMessage(String formattedJSON);
 }
