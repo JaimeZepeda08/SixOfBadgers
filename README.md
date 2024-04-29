@@ -199,14 +199,15 @@ B <--> C
 
 ```mermaid
 ---
-title: Initial database schema design
+title: Database Schema
 ---
 erDiagram
 Games ||--o{ Users : "references"
+GameStates ||--o{ Users : "references"
 Users {
 int UserUID PK
-string UserName
-varbinary(512) PasswordHash
+varchar(45) UserName
+varchar(255) EmailAddress
 datetime AccountCreation
 datetime LastLogin
 varchar(512) Settings
@@ -221,6 +222,28 @@ datetime GameStartTime
 datetime GameEndTime
 int Team1Score
 int Team2Score
+}
+GameStates {
+varchar(10) GameStaeUID PK
+int player1 FK
+int player2 FK
+int player3 FK
+int player4 FK
+datetime GameStartTime
+datetime GameEndTime
+int Team1Score
+int Team2Score
+int Team1Tricks
+int Team2Tricks
+varchar(19) Player1Hand
+varchar(19) Player2Hand
+varchar(19) Player3Hand
+varchar(19) Player4Hand
+int Dealer
+int LeadingPlayer
+varchar(1) trump
+int CallingTeam
+int PlayerAlone
 }
 ```
 
@@ -264,6 +287,62 @@ A --> B
 B --> C
 C --> D
 D --> E
+```
+
+```mermaid
+---
+title: Game State Diagram
+---
+flowchart TD
+    A[Start Round]
+    B[Pick Trump face up]
+    C[Replace Card]
+    D[Pick Trump face down]
+    E[Play Trick]
+    F[Score Trick]
+    G[Score Round]
+    H[End Game]
+
+    A --> B
+    B -->|Dealer picks up card| C
+    B -->|All players pass| D
+    C --> E
+    D -->|Suit chosen| E
+    E -->|Players play cards| F
+    F -->|Tricks scored < 5| E
+    F -->|Tricks scored = 5| G
+    G -->|Teams scores < 10| A
+    G -->|Team has scored 10 points| H
+```
+
+```mermaid
+---
+title: Component Communication
+---
+flowchart LR
+subgraph Frontend
+FC1[Frontend Client]
+FC2[Frontend Client]
+FC3[Frontend Client]
+end
+subgraph Players
+BC1[Backend Client]
+BC2[Backend Client]
+BC3[Backend Client]
+P1[Player]
+P2[Player]
+P3[Player]
+P4[AI Player]
+end
+GS[Game Session]
+GSS[Game State]
+GSO[Game State Observer]
+
+FC1 <--> BC1 <--> P1 <--> GS
+FC2 <--> BC2 <--> P2 <--> GS
+FC3 <--> BC3 <--> P3 <--> GS
+P4 <--> GS
+GS --> GSS --> GSO --> Players
 ```
 
 #### System Architecture Diagram
