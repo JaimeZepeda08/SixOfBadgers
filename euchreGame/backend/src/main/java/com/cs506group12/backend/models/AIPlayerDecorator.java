@@ -25,7 +25,7 @@ public class AIPlayerDecorator extends PlayerDecorator{
         return "EuchreBot " + super.decoratedPlayer.getPosition();
     }
 
-    public void sendMessage(String header, String content){
+    public void sendMessage(String formattedJSON){
         return;
     }
 

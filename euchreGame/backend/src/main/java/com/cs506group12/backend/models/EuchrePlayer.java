@@ -38,7 +38,7 @@ public class EuchrePlayer implements Player{
         return this.position;
     }
 
-    public void sendMessage(String header, String content){
+    public void sendMessage(String formattedJSON){
         return;
     }
 
